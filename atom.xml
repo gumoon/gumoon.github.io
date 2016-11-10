@@ -4,7 +4,7 @@
   <title><![CDATA[自由学习网]]></title>
   <link href="http://www.free-abc.com.cn/atom.xml" rel="self"/>
   <link href="http://www.free-abc.com.cn/"/>
-  <updated>2016-11-10T19:14:34+08:00</updated>
+  <updated>2016-11-10T21:40:23+08:00</updated>
   <id>http://www.free-abc.com.cn/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -57,7 +57,7 @@
 
 <p>在距今25万年前，我们的祖先现代人在东非诞生了。</p>
 
-<p>如果把地球的nianl缩短成一年，那么人类出现在这一年最后一天的最后半个小时。</p>
+<p>如果把地球的年龄缩短成一年，那么人类出现在这一年最后一天的最后半个小时。</p>
 
 <p>大约10万年前，开始从东非向四周迁徙。大约在5万年前到达南亚，4万年前到达澳大利亚、中国和欧洲。3万年前到达美洲。</p>
 
@@ -94,7 +94,7 @@
 <p>调整 artboards 到合适的大小</p>
 </blockquote>
 
-<p><img src="http://blog.invisionapp.com/wp-content/uploads/2015/01/artboard2.gif?ver=1" alt="artboards"/></p>
+<p><img src="media/14787476590414/artboard2.gif" alt="artboard2"/></p>
 
 <p>Okay, okay—this might not be the most mind-blowing tip on the list, but it’s helpful and important. Sketch provides a lot of predefined artboards to get you started right. Just type A and pick the artboard you need.</p>
 
@@ -108,7 +108,7 @@
 <p>打开网格</p>
 </blockquote>
 
-<p><img src="http://blog.invisionapp.com/wp-content/uploads/2015/01/layout.gif?ver=1" alt="layout"/></p>
+<p><img src="media/14787476590414/layout.gif" alt="layout"/></p>
 
 <p>Sketch makes it super easy to set up a layout that works for you. Just go to View &gt; Layout Settings… to configure your layout, or press Ctrl+L to view your default layout.</p>
 
@@ -122,7 +122,7 @@
 <p>秒级复制</p>
 </blockquote>
 
-<p><img src="http://blog.invisionapp.com/wp-content/uploads/2015/01/duplicate2.gif?ver=1" alt="duplicate"/></p>
+<p><img src="media/14787476590414/duplicate2.gif" alt="duplicate2"/></p>
 
 <p>I’ve used this trick in Illustrator for years, and it’s the same in Sketch. If you hold Option, then click and drag an element, it will copy it. Once you’ve placed it, just hit Cmd+D to do it again and again.</p>
 
@@ -140,7 +140,7 @@
 <p>测量距离</p>
 </blockquote>
 
-<p><img src="http://blog.invisionapp.com/wp-content/uploads/2015/01/measurement2.gif?ver=1" alt="measurement"/></p>
+<p><img src="media/14787476590414/measurement2.gif" alt="measurement2"/></p>
 
 <p>If you want to make beautiful things, you have to be intentional about details. To measure an element’s distance from other items on the page, select it on screen and hold Option. Then get ready to feel really OCD.</p>
 
@@ -154,7 +154,7 @@
 <p>现在就使用共享样式，之后你会感谢自己的</p>
 </blockquote>
 
-<p><img src="http://blog.invisionapp.com/wp-content/uploads/2015/01/styles.gif?ver=1" alt="styles"/></p>
+<p><img src="media/14787476590414/styles.gif" alt="styles"/></p>
 
 <p>You’re 100 screens in, on your 3rd round of reviews. The finish line is in sight. And then your client says, “Can we change all the buttons to blue?”</p>
 
@@ -170,7 +170,7 @@
 
 <p><strong>6. Totally abuse symbols</strong></p>
 
-<p><img src="http://blog.invisionapp.com/wp-content/uploads/2015/01/symbols2.gif?ver=1" alt="symbols"/></p>
+<p><img src="media/14787476590414/symbols2.gif" alt="symbols2"/></p>
 
 <p>Symbols are a really helpful aspect of Sketch—and while what I propose here is probably an abuse of them, it’s pretty much invaluable.</p>
 
@@ -178,19 +178,19 @@
 
 <p><strong>7. Move shapes while you draw them</strong></p>
 
-<p><img src="http://blog.invisionapp.com/wp-content/uploads/2015/01/drag2.gif?ver=1" alt="drag"/></p>
+<p><img src="media/14787476590414/drag2.gif" alt="drag2"/></p>
 
 <p>This tip is just super practical. When you’re drawing a shape (say, a circle), it’s tough to get the placement just right on the first go. But if you hold the spacebar while drawing, you can move your shape as you create it, then continue sizing it before committing it to your artboard.</p>
 
 <p><strong>8. Change opacity on the fly</strong></p>
 
-<p><img src="http://blog.invisionapp.com/wp-content/uploads/2015/01/transparency.gif?ver=1" alt="transparency"/></p>
+<p><img src="media/14787476590414/transparency.gif" alt="transparency"/></p>
 
 <p>This works just like it does in Photoshop, but a lot of people still don’t know about it. Use the number keys (1–0) on your keyboard to set opacity levels in 10% intervals.</p>
 
 <p><strong>9. Save frustration with “Scale”</strong></p>
 
-<p><img src="http://blog.invisionapp.com/wp-content/uploads/2015/01/scale2.gif?ver=1" alt="scale"/></p>
+<p><img src="media/14787476590414/scale2.gif" alt="scale2"/></p>
 
 <p>We all make mistakes—let’s say you designed a button, but made it way too big. You’ve got a border radius of 20px and a 4px outline. If you just drag the corner to shrink it, you’re going to be unhappy with the result. So instead, click Scale and resize to the dimensions you need.</p>
 
@@ -200,7 +200,7 @@
 <p>最大化你的工作区</p>
 </blockquote>
 
-<p><img src="http://blog.invisionapp.com/wp-content/uploads/2015/01/maximize-space.gif?ver=1" alt="maximize-space"/></p>
+<p><img src="media/14787476590414/maximize-space.gif" alt="maximize-space"/></p>
 
 <p>If you’re working on a smaller screen, just about any app can start to feel cramped, and Sketch is no exception. To hide the left and right panels, press Ctrl+Option+Cmd+3. Or, show / hide the left and right panels individually with Ctrl+Option+Cmd+1 or Ctrl+Option+Cmd+2.</p>
 
