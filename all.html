@@ -84,175 +84,466 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14798739132293.html">从零开始配置阿里云ECS</a></h1>
-			<p class="meta"><time datetime="2016-11-23T12:05:13+08:00" 
+		  	<h1 class="entry-title"><a href="14798983960110.html">saltstack实践</a></h1>
+			<p class="meta"><time datetime="2016-11-23T18:53:16+08:00" 
 			pubdate data-updated="true">2016/11/23</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<h2 id="toc_0">装完centos7.0 64位系统后的状态</h2>
-
-<ol>
-<li>默认操作系统情况</li>
-</ol>
-
-<pre><code>[root@iZ25gxj8d82Z etc]# uname -a
-Linux iZ25gxj8d82Z 3.10.0-123.9.3.el7.x86_64 #1 SMP Thu Nov 6 15:06:03 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
-</code></pre>
-
-<ol>
-<li>开启的对外端口情况</li>
-</ol>
-
-<pre><code>[root@iZ25gxj8d82Z ~]# ss -ntlp
-State      Recv-Q Send-Q                                                                                       Local Address:Port                                                                                         Peer Address:Port
-LISTEN     0      128                                                                                                      *:22                                                                                                      *:*      users:((&quot;sshd&quot;,895,3))
-</code></pre>
-
-<p>只开放了22端口。</p>
-
-<ol>
-<li>检查默认开机启动应用</li>
-</ol>
-
-<pre><code>[root@iZ25gxj8d82Z ~]# systemctl list-unit-files |grep enable
-crond.service                          enabled
-cups.service                           enabled
-dmraid-activation.service              enabled
-getty@.service                         enabled
-lvm2-monitor.service                   enabled
-microcode.service                      enabled
-nscd.service                           enabled
-ntpd.service                           enabled
-rsyslog.service                        enabled
-sshd.service                           enabled
-sysstat.service                        enabled
-systemd-readahead-collect.service      enabled
-systemd-readahead-drop.service         enabled
-systemd-readahead-replay.service       enabled
-cups.socket                            enabled
-dm-event.socket                        enabled
-lvm2-lvmetad.socket                    enabled
-nscd.socket                            enabled
-default.target                         enabled
-multi-user.target                      enabled
-</code></pre>
-
-<ol>
-<li>默认用户情况</li>
-</ol>
-
-<pre><code>[root@iZ25gxj8d82Z ~]# cat /etc/passwd
-root:x:0:0:root:/root:/bin/bash
-bin:x:1:1:bin:/bin:/sbin/nologin
-daemon:x:2:2:daemon:/sbin:/sbin/nologin
-adm:x:3:4:adm:/var/adm:/sbin/nologin
-lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
-sync:x:5:0:sync:/sbin:/bin/sync
-shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
-halt:x:7:0:halt:/sbin:/sbin/halt
-mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
-operator:x:11:0:operator:/root:/sbin/nologin
-games:x:12:100:games:/usr/games:/sbin/nologin
-ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
-nobody:x:99:99:Nobody:/:/sbin/nologin
-dbus:x:81:81:System message bus:/:/sbin/nologin
-polkitd:x:999:998:User for polkitd:/:/sbin/nologin
-avahi:x:70:70:Avahi mDNS/DNS-SD Stack:/var/run/avahi-daemon:/sbin/nologin
-avahi-autoipd:x:170:170:Avahi IPv4LL Stack:/var/lib/avahi-autoipd:/sbin/nologin
-libstoragemgmt:x:998:997:daemon account for libstoragemgmt:/var/run/lsm:/sbin/nologin
-ntp:x:38:38::/etc/ntp:/sbin/nologin
-abrt:x:173:173::/etc/abrt:/sbin/nologin
-postfix:x:89:89::/var/spool/postfix:/sbin/nologin
-sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
-chrony:x:997:996::/var/lib/chrony:/sbin/nologin
-nscd:x:28:28:NSCD Daemon:/:/sbin/nologin
-tcpdump:x:72:72::/:/sbin/nologin
-</code></pre>
-
-<p>以下都可以通过 saltstack 这个工具来实现：</p>
-
-<h2 id="toc_1">更新系统</h2>
-
-<p>查看目前有哪些源：</p>
-
-<pre><code>yum repolist all 
-</code></pre>
-
-<p>替换官方centos源为阿里云源镜像。</p>
-
+		  	<ul>
+<li>
+<a href="#toc_0">解决什么需求？</a>
+</li>
+<li>
+<a href="#toc_1">解决方案</a>
+</li>
+<li>
+<a href="#toc_2">介绍</a>
+</li>
+<li>
+<a href="#toc_3">安装</a>
+</li>
+<li>
+<a href="#toc_4">master配置</a>
+</li>
+<li>
+<a href="#toc_5">minion配置</a>
+</li>
+<li>
+<a href="#toc_6">salt常用命令</a>
 <ul>
-<li>备份： </li>
+<li>
+<a href="#toc_7">命令帮助文档</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_8">普通用户执行salt</a>
+</li>
+<li>
+<a href="#toc_9">target</a>
+</li>
+<li>
+<a href="#toc_10">pkg</a>
+</li>
+<li>
+<a href="#toc_11">service</a>
+</li>
+<li>
+<a href="#toc_12">使用状态文件同步状态</a>
+</li>
 </ul>
 
-<pre><code>mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+
+<h2 id="toc_0">解决什么需求？</h2>
+
+<ul>
+<li>配置文件可以统一通过版本管理平台进行管理</li>
+<li>配置文件可以迅速统一对所有机器进行一致性配置</li>
+<li>配置管理和远程执行</li>
+</ul>
+
+<h2 id="toc_1">解决方案</h2>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: left">需求</th>
+<th style="text-align: right">解决方案</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td style="text-align: left">操作系统和软件的安装、配置、初始化等；</td>
+<td style="text-align: right">Puppet, Chef, CFEngine, AnsibleWorks, SaltStack</td>
+</tr>
+<tr>
+<td style="text-align: left">自动执行任务，比如定期备份、清除日志等；</td>
+<td style="text-align: right">Fabric, AnsibleWorks, SaltStack</td>
+</tr>
+<tr>
+<td style="text-align: left">手动执行任务，比如部署应用、升级、重启、检查和校验文件系统、增加用户等。</td>
+<td style="text-align: right">Fabric, Rake, AnsibleWorks, SaltStack</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="toc_2">介绍</h2>
+
+<ul>
+<li><a href="http://www.saltstack.cn">http://www.saltstack.cn</a> </li>
+<li><a href="http://saltstack.com">http://saltstack.com</a></li>
+<li>saltstack 采用 zeromq 消息队列进行通信，和 Puppet/Chef 比起来，saltstack 速度快得多。minion与master之间通过ZeroMQ消息队列通信。</li>
+<li>saltstack 是用 python 语言编写的批量管理工具，完全开源，遵守Apache2协议。</li>
+<li>saltstack 需要在一台机器（主控）上安装服务器软件（SaltStack 称之为 salt master），在多台机器（受控）上安装客户端软件（SaltStack 称之为 salt minion）。在主控机器上给下属（受控）发命令，在受控机器上接受和执行上级（主控）的命令。</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: left">名称</th>
+<th style="text-align: center">功能</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td style="text-align: left">Master</td>
+<td style="text-align: center">控制中心，salt命令运行和资源状态管理端</td>
+</tr>
+<tr>
+<td style="text-align: left">Minion</td>
+<td style="text-align: center">需要管理的客户端机器，会主动去连接master端，并从master端得到资源状态信息，同步资源管理信息</td>
+</tr>
+<tr>
+<td style="text-align: left">State</td>
+<td style="text-align: center">配置管理的指令集</td>
+</tr>
+<tr>
+<td style="text-align: left">Module</td>
+<td style="text-align: center">包含命令行下运行的命令和在配置文件里面使用的命令；模块的函数可以在命令行下运行</td>
+</tr>
+<tr>
+<td style="text-align: left">Grains</td>
+<td style="text-align: center">Minion端的变量，静态的</td>
+</tr>
+<tr>
+<td style="text-align: left">Pillar</td>
+<td style="text-align: center">Minion端的变量，动态的</td>
+</tr>
+<tr>
+<td style="text-align: left">highstate</td>
+<td style="text-align: center">给 minion 永久添加状态，从sls配置文件读取到的，即同步状态配置</td>
+</tr>
+<tr>
+<td style="text-align: left">salt schedule</td>
+<td style="text-align: center">自动保持客户端配置</td>
+</tr>
+</tbody>
+</table>
+
+<p>命令执行具体步骤：<br/>
+1. Salt stack的Master与Minion之间通过ZeroMQ进行消息传递，使用了ZeroMQ的发布-订阅模式，连接方式包括tcp、ipc<br/>
+2. salt命令，将 <code>cmd.run ls</code> 命令从 <code>salt.client.LocalClient.cmd_cli</code> 发布到master，获取一个 Jobid，根据jobid获取命令执行结果。<br/>
+3. master接收到命令后，将要执行的命令发送到客户端minion。<br/>
+4. minion从消息总线上接收到要处理的命令，交给 <code>minion._handle_aes</code> 处理。<br/>
+5. <code>minion._handle_aes</code> 发起一个本地线程调用cmd mod 执行ls命令。线程执行完ls后，调用 <code>minion._return_pub</code> 方法，将执行结果通过消息总线返回给master<br/>
+6. master接收到客户端返回的结果，调用 <code>master._handle_aes</code> 方法，将结果写到文件中<br/>
+7. <code>salt.client.LocalClient.cmd_cli</code> 通过轮询获取job执行结果，将结果输出到终端。</p>
+
+<h2 id="toc_3">安装</h2>
+
+<p>需要先安装 epel 库。</p>
+
+<p><code>yun install salt-master.noarch salt-minion.noarch</code></p>
+
+<p>配置开机启动&amp;并且启动：</p>
+
+<pre><code>systemctl enable salt-master.service 
+systemctl start salt-master.service
+systemctl enable salt-minion.service
+systemctl start salt-minion.service
+</code></pre>
+
+<p>打开防火墙：</p>
+
+<pre><code>firewall-cmd --zone=public --add-port=4505/tcp --permanent
+firewall-cmd --zone=public --add-port=4506/tcp --permanent
+firewall-cmd --reload
+</code></pre>
+
+<pre><code>➜  salt  yum list installed |grep salt
+salt.noarch                           2015.5.5-1.el7                   @epel
+salt-master.noarch                    2015.5.5-1.el7                   @epel
+salt-minion.noarch                    2015.5.5-1.el7                   @epel
+</code></pre>
+
+<h2 id="toc_4">master配置</h2>
+
+<p>将日志配置得更详细点，以便日后排除故障。</p>
+
+<pre><code>log_level: debug
+log_level_logfile: debug
+</code></pre>
+
+<p>和 puppet 一样， salt 的 master 和 minions 是通过证书通信的，故存在证书的信任颁发问题。<br/>
+认证 minion:</p>
+
+<pre><code>salt-key -L   （在master上执行，查看当前需要接受的 keys ，master 和 minions 都需要把服务开启）
+salt-key -a 1st-salt-minion（minionID）（请求加入受控的minion id）
+</code></pre>
+
+<p>master下发任务匹配到的minion上去，minion执行模块函数，并返回结果。master监听4505和4506端口，4505对应的是ZMQ的PUB system，用来发送消息，4506对应的是REP system是来接受消息的。</p>
+
+<p>若 master 启动失败，请运行 salt-master 来排错。</p>
+
+<p>这两个端口的监听是python程序。</p>
+
+<h2 id="toc_5">minion配置</h2>
+
+<p><code>vim /etc/salt/minion</code><br/>
+配置master: 127.0.0.1 、id: 1st-salt-minion</p>
+
+<p>原理：<br/>
+在启动时，下属客户机会生成一个密钥和一个id。然后，它会连接到salt领主服务器并验证自己的身份。salt领主服务器在允许下属客户机下载配置前，必须接受下属的密钥。</p>
+
+<p>master可以发送任何指令让minion执行。salt有很多可执行模块，比如 cmd模块，在安装minion的时候已经自带了。它们通常位于你的python库中，<code>locate salt | grep /usr/</code> 可以看到salt自带的所有东西。</p>
+
+<p>若minion启动失败，请运行：salt-minion 命令来排错。<br/>
+更改 master 后，重启 minion h</p>
+
+<p>不需要监听特殊的端口。但是有tcp连接。可以通过 netstat -t 来，原因是：minion主动连接master</p>
+
+<h2 id="toc_6">salt常用命令</h2>
+
+<ul>
+<li>salt 该命令执行salt的执行模块，通常在master端执行。也是我们最常用到的命令</li>
+</ul>
+
+<pre><code>salt [options] &#39;&lt;target&gt;&#39; &lt;function&gt; [arguments] 
+salt &#39;*&#39; test.ping
+salt &#39;*&#39; cmd.run &quot;uptime&quot;
+salt &#39;*&#39; cmd.run &#39;ls -l&#39;
+salt -G &#39;os:Centos&#39; test.ping  ##salt使用一个名为颗粒（Grains）的界面来获取系统信息。你可以使用颗粒在指定属性的系统上运行命令。
 </code></pre>
 
 <ul>
-<li>下载新的 CentOS-Base.repo 到 /etc/yum.repos.d/ （此处使用阿里云源站内网域名，不占用公网流量）</li>
+<li>salt-run 该命令执行runner(salt带的或者自定义的，runner以后会讲)，通常在master端执行，比如经常用到的manage</li>
 </ul>
 
-<pre><code>wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyuncs.com/repo/Centos-7.repo
+<pre><code>salt-run [options] [runner.func]
+salt-run manage.status   ##查看所有minion状态
+salt-run manage.down   ##查看所有没在线的minion
+salt-run manage.up     ##查看所有在线的minion
 </code></pre>
 
 <ul>
-<li>之后运行以下命令，生成缓存</li>
+<li>salt-key 密钥管理，通常在master端执行</li>
 </ul>
 
-<pre><code>yum makecache
+<pre><code>salt-key [options]
+salt-key -L ##查看所有minion-key
+salt-key -a &lt;key-name&gt; ##接受某个minion-key
+salt-key -d &lt;key-name&gt; ##删除某个minion-key
+salt-key -A ##接受所有的minion-key
+salt-key -D ##删除所有的minon-key
 </code></pre>
 
 <ul>
-<li>更新系统软件：</li>
+<li>salt-call 该命令通常在minion上执行，minion自己执行可执行模块，不是通过master下发job</li>
 </ul>
 
-<pre><code>yum update
-</code></pre>
-
-<h2 id="toc_2">打开防火墙，并设置开机自启动</h2>
-
-<pre><code>systemctl enable firewalld.service 
-systemctl start firewalld.service
-</code></pre>
-
-<h2 id="toc_3">安装 zsh , oh-my-zsh</h2>
-
-<ul>
-<li>安装 zsh，配置 zsh 为root用户默认shell。 </li>
-</ul>
-
-<pre><code>yum install zsh 
-which zsh (/usr/bin/zsh) 
-vim /etc/shells 在文件末尾增加一行 /usr/bin/zsh 
-chsh -s SHELL
+<pre><code>salt-call [options] &lt;function&gt; [arguments]
+salt-call test.ping ##自己执行test.ping命令
+salt-call cmd.run &#39;ifconfig&#39; ##自己执行cmd.run函数
+salt-call state.sls production/default/vim
 </code></pre>
 
 <ul>
-<li>安装 oh-my-zsh </li>
+<li>salt-cp 分发文件到minion上，不支持目录分发，通常在master运行</li>
 </ul>
 
-<pre><code>sh -c &quot;$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)&quot;
+<pre><code>salt-cp [options] &#39;&lt;target&gt;&#39; SOURCE DEST
+salt-cp &#39;*&#39; testfile.html /tmp
+salt-cp &#39;test&#39; index.html /tmp/a.html 
 </code></pre>
 
 <ul>
-<li>安装 autojump:</li>
+<li>salt-ssh</li>
+<li>salt-master master运行命令</li>
 </ul>
 
-<pre><code>yum install autojump-zsh
+<pre><code>salt-master [options]
+salt-master ##前台运行master
+salt-master -d ## 后台运行master
+salt-master -i debug ##前台debug输出
 </code></pre>
 
 <ul>
-<li>配置 .zshrc ：</li>
+<li>salt-minion minion运行命令</li>
 </ul>
 
-<pre><code>plugins=(git history autojump)
+<pre><code>salt-minion [options]
+salt-minion ##前台运行minion
+salt-minion -d ## 后台运行minion
+salt-minion -i debug ##前台debug输出
 </code></pre>
 
-<h2 id="toc_4">确认git，svn安装情况</h2>
+<ul>
+<li>salt-syndic syndic是salt的代理。</li>
+</ul>
 
-<pre><code>git --version
-svn --version
+<h3 id="toc_7">命令帮助文档</h3>
+
+<pre><code>salt &#39;*&#39; sys.doc ##查看所有执行模块的帮助
+salt &#39;*&#39; sys.doc test ##查看test模块的帮助
+salt &#39;*&#39; sys.doc test.ping ##查看test模块ping函数的帮助
 </code></pre>
+
+<h2 id="toc_8">普通用户执行salt</h2>
+
+<p>默认root用户具有执行salt权限。<br/>
+普通用户执行salt两种方案：</p>
+
+<ul>
+<li>salt ACL </li>
+<li>salt external_auth</li>
+</ul>
+
+<h2 id="toc_9">target</h2>
+
+<p>指定你的命令或者模块应用在哪个minion上。</p>
+
+<ul>
+<li>globbing 默认</li>
+</ul>
+
+<pre><code>salt &#39;test*&#39; test.ping
+</code></pre>
+
+<ul>
+<li>RE 正则</li>
+</ul>
+
+<pre><code>salt -E &#39;web1-(pro|devel)&#39; test.ping
+</code></pre>
+
+<ul>
+<li>List列表</li>
+</ul>
+
+<pre><code>salt -L &#39;127.0.0.1, test*&#39; test.ping 
+</code></pre>
+
+<ul>
+<li>grains（谷物）
+<a href="http://docs.saltstack.cn/zh_CN/latest/topics/targeting/grains.html">http://docs.saltstack.cn/zh_CN/latest/topics/targeting/grains.html</a>
+<strong>grains是minion启动时加载的，在运行过程中不会发生变化，所以是静态数据。grains中包含诸如运行的内核版本，操作系统等信息。</strong>
+grains这个跟puppet的facter功能一样。主要负责采集客户端一些基本信息，这个也完全可以自定义，可以在客户端自定义，然后自动汇报上来；也可以从服务器端定义然后推下去，采集完后，再汇报上来。pillar 跟 grains 比较的话，他的灵活性强点，想怎么定义就怎么定义，然后取值就行。</li>
+</ul>
+
+<pre><code>salt -G &#39;os:CentOS&#39; test.ping
+salt &#39;test*&#39; grains.items #查看所有grains键值
+salt &#39;test*&#39; grains.ls #查看所有grains项
+salt &#39;test*&#39; grains.item num_cpus #查看某个grains的值
+</code></pre>
+
+<p>可以给每个 minion 配置自定义的 grains ，方便系统管理员管理。</p>
+
+<ul>
+<li>组
+编辑配置文件 /etc/salt/master </li>
+</ul>
+
+<pre><code>nodegroups:
+  webserver: &#39;L@bj_123.56.204.140,hk_58.96.169.47&#39;
+  testserver: &#39;bj_182.92.101.72&#39;
+</code></pre>
+
+<p>之后重启 master 。<br/>
+测试：</p>
+
+<pre><code> salt -N webserver test.ping
+ salt -N testserver test.ping
+</code></pre>
+
+<p>关于组的混合匹配：(Compound matchers)</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: left">Letter</th>
+<th style="text-align: center">含义</th>
+<th style="text-align: right">例子</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td style="text-align: left">G</td>
+<td style="text-align: center">Grains glob匹配</td>
+<td style="text-align: right">G@os:Ubuntu</td>
+</tr>
+<tr>
+<td style="text-align: left">E</td>
+<td style="text-align: center">PCRE Minon id匹配</td>
+<td style="text-align: right">E@web\d+.(dev|qa|prod).loc</td>
+</tr>
+<tr>
+<td style="text-align: left">P</td>
+<td style="text-align: center">Grains PCRE匹配</td>
+<td style="text-align: right">P@os:(Redhat|Fedora|CentOS)</td>
+</tr>
+<tr>
+<td style="text-align: left">L</td>
+<td style="text-align: center">minions列表</td>
+<td style="text-align: right"><a href="mailto:L@minion1.example.com">L@minion1.example.com</a>,minion3.domain.com or bl*.domain.com</td>
+</tr>
+<tr>
+<td style="text-align: left">I</td>
+<td style="text-align: center">Pillar glob匹配</td>
+<td style="text-align: right">I@pdata:foobar</td>
+</tr>
+<tr>
+<td style="text-align: left">S</td>
+<td style="text-align: center">子网、IP地址匹配</td>
+<td style="text-align: right">S@192.168.1.0/24 or S@192.168.1.100</td>
+</tr>
+<tr>
+<td style="text-align: left">R</td>
+<td style="text-align: center">Range cluster匹配</td>
+<td style="text-align: right">R@%foo.bar</td>
+</tr>
+<tr>
+<td style="text-align: left">D</td>
+<td style="text-align: center">Minion Data匹配</td>
+<td style="text-align: right">D@key:value</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li>pillar
+Pillar 是 Salt 非常重要的一个组件，它用于给特定的 minion 定义任何你需要的数据， 这些数据可以被 Salt 的其他组件使用。Salt 在 0.9.8 版本中引入了 Pillar。Pillar 在解析完成 后，是一个嵌套的 dict 结构；最上层的 key 是 minion ID，其 value 是该 minion 所拥有的 Pillar 数据；每一个 value 也都是 key/value。这里可以看出 Pillar 的一个特点，Pillar 数据是与特定 minion 关联的，也就是说每一个minion 都只能看到自己的数据， 所以 Pillar 可以用来传递敏感数据 （在 Salt 的设计中， Pillar 使用独立的加密 session，也是为了保证敏感数据的安全性）</li>
+</ul>
+
+<p>Pillar 可以用在哪些地方？</p>
+
+<p><strong>敏感数据</strong><br/>
+例如 ssh key，加密证书等，由于 Pillar 使用独立的加密 session，可以确保这些敏感数据不被其他 minion 看到。</p>
+
+<p><strong>变量</strong><br/>
+可以在 Pillar 中处理平台差异性，比如针对不同的操作系统设置软件包的名字，然后在State 中引用。 </p>
+
+<p><strong>其他任何数据</strong><br/>
+可以在 Pillar 中添加任何需要用到的数据。比如定义用户和 UID 的对应关系，mnion 的角色等。 </p>
+
+<p><strong>用在 Targetting 中</strong><br/>
+Pillar 可以用来选择 minion，使用-I 选项<br/>
+默认情况下，master 配置文件中的所有数据都添加到 Pillar 中，且对所有 minion 可用。如果要禁用这一默认值，可以在 master 配置文件中添加如下数据，重启服务后生效<strong>？？？此处存疑。好像默认没有添加master配置文件中的数据到 pillar 中。</strong></p>
+
+<h2 id="toc_10">pkg</h2>
+
+<p>saltstack安装包管理。<br/>
+<code>salt &#39;*&#39; pkg.install tree</code></p>
+
+<h2 id="toc_11">service</h2>
+
+<p>saltstack服务管理。</p>
+
+<h2 id="toc_12">使用状态文件同步状态</h2>
+
+<p>类似于puppet的pp文件功能，salt的state文件扩展名为.sls，采用的和puppet一样的设计思路，即服务器最终应该具有的一些状态，比如应该安装有什么软件包？哪些服务应该保持运行或者开机自启动？哪些配置文件需要保持同步？等等。这样用户无需关心这个过程究竟是怎样的，只需要描述最终状态即可，即使运行失败，saltstack也会返回一个友好的错误信息，提示用户应该如何处理。<br/>
+* salt默认的根目录在 /srv/salt 中，没有这个目录需要建立一个。<br/>
+* saltstack的sls状态文件采用的是yaml模板和jinja2模板，编写的时候注意格式，注意缩排和空格。<br/>
+* <code>salt &#39;*&#39; state.sls production/default/vim</code><br/>
+* 执行完上面的命令，salt帮我们成功的安装好了vim-enhanced这个软件包，接下来我们只需要同步一下vim的配置文件，那么每台新部署的服务器都会有一个友好的vim可供使用。今后发现有更好的vim配置，也无需一个个scp到服务器上，仅仅只需要执行一下状态同步就可以了。<br/>
+* top.sls：这个文件类似于puppet的site.pp文件，作为“最高同步”操作的入口文件，执行”最高同步”操作时，将从此sls文件中获取状态对minion进行同步。</p>
+
+<p>salt state 主要用来描述系统、软件、服务、配置文件应该处于的状态，常常被称为配置管理！！！</p>
+
+<p>sls 遵从 YAML 规范，它使用两个空格代替tab，：或 - 后面要有空格。</p>
 
 
 		</div>
@@ -291,12 +582,14 @@ svn --version
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(27)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84.html">后端架构&nbsp;(10)</a>&nbsp;&nbsp;
+	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        
+	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -309,6 +602,24 @@ svn --version
 	  
 	      
 		      <li class="post">
+		        <a href="14798983960110.html">saltstack实践</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14798980187717.html">浏览器缓存机制</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
 		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
 		      </li>
 	     
@@ -316,24 +627,6 @@ svn --version
 	      
 		      <li class="post">
 		        <a href="redis-safe.html">redis 安全</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="14798724609507.html">redis配置安装最佳实践</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="php-phpinfo.html">配置访问 phpinfo 的域名</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="php7-php56.html">php7回滚到php5.6</a>
 		      </li>
 	     
 	  

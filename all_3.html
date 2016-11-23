@@ -84,35 +84,175 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="php-phpinfo.html">配置访问 phpinfo 的域名</a></h1>
-			<p class="meta"><time datetime="2016-11-23T11:33:06+08:00" 
+		  	<h1 class="entry-title"><a href="14798739132293.html">从零开始配置阿里云ECS</a></h1>
+			<p class="meta"><time datetime="2016-11-23T12:05:13+08:00" 
 			pubdate data-updated="true">2016/11/23</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<h2 id="toc_0">修改 default.conf</h2>
+		  	<h2 id="toc_0">装完centos7.0 64位系统后的状态</h2>
 
-<p>取消注释掉关于php fastcgi那一段。<br/>
-修改 root /usr/share/nginx/html 下的<br/>
-     <code>fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;</code><br/>
-重启 nginx 。</p>
+<ol>
+<li>默认操作系统情况</li>
+</ol>
 
-<h2 id="toc_1">增加phpinfo.php 文件</h2>
+<pre><code>[root@iZ25gxj8d82Z etc]# uname -a
+Linux iZ25gxj8d82Z 3.10.0-123.9.3.el7.x86_64 #1 SMP Thu Nov 6 15:06:03 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
 
-<p>在 /usr/share/nginx/html 文件夹下，增加 phpinfo.php</p>
+<ol>
+<li>开启的对外端口情况</li>
+</ol>
 
-<h2 id="toc_2">访问验证</h2>
+<pre><code>[root@iZ25gxj8d82Z ~]# ss -ntlp
+State      Recv-Q Send-Q                                                                                       Local Address:Port                                                                                         Peer Address:Port
+LISTEN     0      128                                                                                                      *:22                                                                                                      *:*      users:((&quot;sshd&quot;,895,3))
+</code></pre>
 
-<p><code>http://{IP}/phpinfo.php</code></p>
+<p>只开放了22端口。</p>
 
-<h2 id="toc_3">配置关闭访问，防止信息泄露</h2>
+<ol>
+<li>检查默认开机启动应用</li>
+</ol>
 
-<h3 id="toc_4">防止恶意解析</h3>
+<pre><code>[root@iZ25gxj8d82Z ~]# systemctl list-unit-files |grep enable
+crond.service                          enabled
+cups.service                           enabled
+dmraid-activation.service              enabled
+getty@.service                         enabled
+lvm2-monitor.service                   enabled
+microcode.service                      enabled
+nscd.service                           enabled
+ntpd.service                           enabled
+rsyslog.service                        enabled
+sshd.service                           enabled
+sysstat.service                        enabled
+systemd-readahead-collect.service      enabled
+systemd-readahead-drop.service         enabled
+systemd-readahead-replay.service       enabled
+cups.socket                            enabled
+dm-event.socket                        enabled
+lvm2-lvmetad.socket                    enabled
+nscd.socket                            enabled
+default.target                         enabled
+multi-user.target                      enabled
+</code></pre>
 
-<p>配置 默认站点指向某个文件夹，设置该文件夹对nginx用户无任何权限。<br/>
-然后就会报：403 Forbidden 错误。从而无法访问。</p>
+<ol>
+<li>默认用户情况</li>
+</ol>
 
-<p>默认 /usr/share/nginx/html 的文件夹权限是 755,改为 chmod 700 html即可。</p>
+<pre><code>[root@iZ25gxj8d82Z ~]# cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+polkitd:x:999:998:User for polkitd:/:/sbin/nologin
+avahi:x:70:70:Avahi mDNS/DNS-SD Stack:/var/run/avahi-daemon:/sbin/nologin
+avahi-autoipd:x:170:170:Avahi IPv4LL Stack:/var/lib/avahi-autoipd:/sbin/nologin
+libstoragemgmt:x:998:997:daemon account for libstoragemgmt:/var/run/lsm:/sbin/nologin
+ntp:x:38:38::/etc/ntp:/sbin/nologin
+abrt:x:173:173::/etc/abrt:/sbin/nologin
+postfix:x:89:89::/var/spool/postfix:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+chrony:x:997:996::/var/lib/chrony:/sbin/nologin
+nscd:x:28:28:NSCD Daemon:/:/sbin/nologin
+tcpdump:x:72:72::/:/sbin/nologin
+</code></pre>
+
+<p>以下都可以通过 saltstack 这个工具来实现：</p>
+
+<h2 id="toc_1">更新系统</h2>
+
+<p>查看目前有哪些源：</p>
+
+<pre><code>yum repolist all 
+</code></pre>
+
+<p>替换官方centos源为阿里云源镜像。</p>
+
+<ul>
+<li>备份： </li>
+</ul>
+
+<pre><code>mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+</code></pre>
+
+<ul>
+<li>下载新的 CentOS-Base.repo 到 /etc/yum.repos.d/ （此处使用阿里云源站内网域名，不占用公网流量）</li>
+</ul>
+
+<pre><code>wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyuncs.com/repo/Centos-7.repo
+</code></pre>
+
+<ul>
+<li>之后运行以下命令，生成缓存</li>
+</ul>
+
+<pre><code>yum makecache
+</code></pre>
+
+<ul>
+<li>更新系统软件：</li>
+</ul>
+
+<pre><code>yum update
+</code></pre>
+
+<h2 id="toc_2">打开防火墙，并设置开机自启动</h2>
+
+<pre><code>systemctl enable firewalld.service 
+systemctl start firewalld.service
+</code></pre>
+
+<h2 id="toc_3">安装 zsh , oh-my-zsh</h2>
+
+<ul>
+<li>安装 zsh，配置 zsh 为root用户默认shell。 </li>
+</ul>
+
+<pre><code>yum install zsh 
+which zsh (/usr/bin/zsh) 
+vim /etc/shells 在文件末尾增加一行 /usr/bin/zsh 
+chsh -s SHELL
+</code></pre>
+
+<ul>
+<li>安装 oh-my-zsh </li>
+</ul>
+
+<pre><code>sh -c &quot;$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)&quot;
+</code></pre>
+
+<ul>
+<li>安装 autojump:</li>
+</ul>
+
+<pre><code>yum install autojump-zsh
+</code></pre>
+
+<ul>
+<li>配置 .zshrc ：</li>
+</ul>
+
+<pre><code>plugins=(git history autojump)
+</code></pre>
+
+<h2 id="toc_4">确认git，svn安装情况</h2>
+
+<pre><code>git --version
+svn --version
+</code></pre>
 
 
 		</div>
@@ -151,12 +291,14 @@ $(document).ready(function(event) {
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(27)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84.html">后端架构&nbsp;(10)</a>&nbsp;&nbsp;
+	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        
+	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -169,6 +311,24 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
+		        <a href="14798983960110.html">saltstack实践</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14798980187717.html">浏览器缓存机制</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
 		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
 		      </li>
 	     
@@ -176,24 +336,6 @@ $(document).ready(function(event) {
 	      
 		      <li class="post">
 		        <a href="redis-safe.html">redis 安全</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="14798724609507.html">redis配置安装最佳实践</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="php-phpinfo.html">配置访问 phpinfo 的域名</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="php7-php56.html">php7回滚到php5.6</a>
 		      </li>
 	     
 	  

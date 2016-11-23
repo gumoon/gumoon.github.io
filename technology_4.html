@@ -84,31 +84,55 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="php7-php56.html">php7回滚到php5.6</a></h1>
-			<p class="meta"><time datetime="2016-11-23T11:29:08+08:00" 
+		  	<h1 class="entry-title"><a href="redis-safe.html">redis 安全</a></h1>
+			<p class="meta"><time datetime="2016-11-23T11:44:23+08:00" 
 			pubdate data-updated="true">2016/11/23</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<h2 id="toc_0">为什么回滚到php5.6，而不是用最新的php7</h2>
+		  	<h2 id="toc_0">权限控制</h2>
 
-<ol>
-<li>memcached的扩展，源码编译安装的时候，php7不提供合适的头文件。</li>
-<li>php7还是不稳定版本，生产环境下，暂缓</li>
-</ol>
+<ul>
+<li><p>指定监听ip（127.0.0.1 或者 某个网段）<br/>
+在redis.conf 文件中找到<code>bind 192.168.3.112 127.0.0.1</code>。修改。</p></li>
+<li><p>绑定 0.0.0.0 ，用 iptables 来控制访问权限<br/>
+如果正常业务中redis服务需要被其他服务器来访问，可以设置iptables策略仅允许指定的ip来访问redis服务。</p></li>
+<li><p>设置 redis 访问密码来保证数据安全<br/>
+在redis.conf 中找到“requirepass”字段，在后面填上你需要的密码，redis客户端也需要使用密码来访问redis服务。</p></li>
+</ul>
 
-<h2 id="toc_1">如何切换回php5.6</h2>
+<blockquote>
+<p>通过设置配置文件中 requirepass 项的值(使用命令 CONFIG SET requirepass password )，可以使用密码来保护 Redis 服务器。</p>
 
-<ol>
-<li>按照文档<a href="php56-install.html">安装好 php5.6</a></li>
-<li>修改 /etc/init.d/php-fpm 脚本</li>
-<li>修改 /etc/profile 的PATH（可能不需要改）</li>
-<li>修改 ~/.zshrc 的PATH</li>
-<li>修改 /etc/passwd 的php用户目录（可能不需要改）</li>
-<li>编译php扩展，并添加到php.ini 文件中的相应位置开启</li>
-<li>kill php-fpm进程</li>
-<li>重启 php-fpm 进程</li>
-</ol>
+<p>如果开启了密码保护的话，在每次连接 Redis 服务器之后，就要使用 AUTH 命令解锁，解锁之后才能使用其他 Redis 命令。</p>
+
+<p>如果 AUTH 命令给定的密码 password 和配置文件中的密码相符的话，服务器会返回 OK 并开始接受命令输入。</p>
+
+<p>另一方面，假如密码不匹配的话，服务器将返回一个错误，并要求客户端需重新输入密码。<br/>
+因为 Redis 高性能的特点，在很短时间内尝试猜测非常多个密码是有可能的，因此请确保使用的密码足够复杂和足够长，以免遭受密码猜测攻击。</p>
+</blockquote>
+
+<ul>
+<li>修改redis服务运行账号
+请以较低权限账号运行redis服务，且禁用该账号的登录权限。可以限制攻击者往磁盘写入文件，但是redis数据还是能被黑客访问到，或者被黑客恶意删除。</li>
+</ul>
+
+<pre><code>groupadd -r redis &amp;&amp; useradd -r -g redis -s /bin/nologin -d /var/lib/redis -M redis
+
+XEC=/usr/local/bin/redis-server
+CLIEXEC=/usr/local/bin/redis-cli
+PIDFILE=/var/run/redis_6379.pid
+CONF=&quot;/etc/redis/6379.conf&quot;
+REDISPORT=&quot;6379&quot;
+</code></pre>
+
+<h3 id="toc_1">漏洞描述与危害</h3>
+
+<p>对公网开放，且未启用认证的redis服务器。</p>
+
+<p>攻击者无需认证访问到内部数据，可能导致敏感信息泄露，黑客也可以恶意执行 flushall 来清空所有数据。</p>
+
+<p>攻击者可通过 eval 执行 lua 代码，或通过数据备份功能往磁盘写入后门文件，如果 redis  以 root 身份运行，黑客可以给 root 账户写入 ssh 公钥文件，直接通过ssh登录受害服务器。</p>
 
 
 		</div>
@@ -147,12 +171,14 @@ $(document).ready(function(event) {
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(27)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84.html">后端架构&nbsp;(10)</a>&nbsp;&nbsp;
+	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        
+	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -165,6 +191,24 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
+		        <a href="14798983960110.html">saltstack实践</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14798980187717.html">浏览器缓存机制</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
 		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
 		      </li>
 	     
@@ -172,24 +216,6 @@ $(document).ready(function(event) {
 	      
 		      <li class="post">
 		        <a href="redis-safe.html">redis 安全</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="14798724609507.html">redis配置安装最佳实践</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="php-phpinfo.html">配置访问 phpinfo 的域名</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="php7-php56.html">php7回滚到php5.6</a>
 		      </li>
 	     
 	  

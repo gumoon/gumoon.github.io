@@ -84,31 +84,21 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14793015188240.html">重要概念</a></h1>
-			<p class="meta"><time datetime="2016-11-16T21:05:18+08:00" 
-			pubdate data-updated="true">2016/11/16</time></p>
+		  	<h1 class="entry-title"><a href="14793813370586.html">Selector</a></h1>
+			<p class="meta"><time datetime="2016-11-17T19:15:37+08:00" 
+			pubdate data-updated="true">2016/11/17</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<h2 id="toc_0">创建项目时的概念</h2>
+		  	<p>例子：<br/>
+<code>NotificationCenter.default.addObserver(self, selector: #selector(downloadImage), name: Notification.Name(&quot;BLDownloadImageNotification&quot;), object: nil)</code></p>
 
-<p>organization identifier : 组织标识。一般情况下，这里输入的是公司或组织的域名。</p>
+<p>语法：<br/>
+<code>#selector(downloadImage)</code><br/>
+<code>#selector(self.downloadImage)</code></p>
 
-<p>Bundle Identifier : 捆绑标识符。改标识符由 Product Name + Company Identifier 构成。因为在 App Store 上发布应用时会用到它，所以它的命名不可重复。</p>
-
-<p>通用工程是指一个工程在 iPhone 和 iPad 上都可以正常运行。</p>
-
-<h2 id="toc_1">Storyboard</h2>
-
-<p>把控件拖到Storyboard的居中位置后，运行，我们发现并非居中，还需要为控件添加 Auto Layout 约束。</p>
-
-<p>一个工程只需要一个主故事板文件就可以了。</p>
-
-<p>每个视图控制器都对应一个Scene(场景）。可以理解为应用的一个界面或屏幕，其中有很多视图或控件。相当于一个xib。</p>
-
-<p>Segue不但定义了Scene之间的跳转方式，还体现了Scene之间的关系。跳转的类型分：Push、Modal、Popover和自定义方式。</p>
-
-<p>push是树形导航模式，Modal是模态导航模式，popover是呈现浮动窗口。</p>
+<p>错误提示：<br/>
+<em>unrecognized selector sent to instance</em></p>
 
 
 		</div>
@@ -147,12 +137,14 @@ $(document).ready(function(event) {
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(27)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84.html">后端架构&nbsp;(10)</a>&nbsp;&nbsp;
+	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        
+	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -165,6 +157,24 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
+		        <a href="14798983960110.html">saltstack实践</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14798980187717.html">浏览器缓存机制</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
 		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
 		      </li>
 	     
@@ -172,24 +182,6 @@ $(document).ready(function(event) {
 	      
 		      <li class="post">
 		        <a href="redis-safe.html">redis 安全</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="14798724609507.html">redis配置安装最佳实践</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="php-phpinfo.html">配置访问 phpinfo 的域名</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="php7-php56.html">php7回滚到php5.6</a>
 		      </li>
 	     
 	  

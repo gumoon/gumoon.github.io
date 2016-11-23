@@ -84,66 +84,176 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14798693795226.html">nginx最佳实践</a></h1>
-			<p class="meta"><time datetime="2016-11-23T10:49:39+08:00" 
+		  	<h1 class="entry-title"><a href="php56-install.html">源码编译安装php5.6.22最佳实践</a></h1>
+			<p class="meta"><time datetime="2016-11-23T11:11:39+08:00" 
 			pubdate data-updated="true">2016/11/23</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<h2 id="toc_0">安装</h2>
+		  	<h2 id="toc_0">准备工作</h2>
 
-<p>从 <code>http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm</code> 下载最新源更新包。</p>
+<ul>
+<li>更新系统 </li>
+</ul>
 
-<pre><code>rpm -ivh nginx-release-centos-7-0.el7.ngx.noarch.rpm (这个文件从nginx官网下载的) 
-yum install nginx （一定先下载上面那个rpm，确保安装最新的nginx稳定版并且进行了包校验）
+<pre><code>yum update
 </code></pre>
 
-<p>检查安装的版本：</p>
+<ul>
+<li>安装 xml2, 确保有 xml2-config 命令</li>
+</ul>
 
-<pre><code>nginx -V 
+<pre><code>yum install libxml2-devel.x86_64 libxml2.x86_64  
+rpm -ql libxml2-devel.x86_64
 </code></pre>
 
-<p>打开80端口：</p>
+<ul>
+<li>安装 openssl</li>
+</ul>
 
-<pre><code>firewall-cmd --add-service=http --permanent 
-firewall-cmd —reload 
+<pre><code>yum install openssl-devel.x86_64 openssl.x86_64
 </code></pre>
 
-<p>启动服务：</p>
+<ul>
+<li>安装 curl</li>
+</ul>
 
-<pre><code>systemctl enable nginx.service
-systemctl start nginx.service
-systemctl restart nginx.service
-
-nginx 启动nginx
-nginx -s reload 重启nginx
+<pre><code>yum install libcurl.x86_64 libcurl-devel.x86_64
 </code></pre>
 
-<p>然后检测是否安装成功。</p>
+<ul>
+<li>安装 libmcrypt</li>
+</ul>
 
-<h2 id="toc_1">配置</h2>
-
-<ol>
-<li>worker_processes auto nginx进程数，建议按照cpu核数来指定。2个4核cpu时计为8. auto 将自动检测cpu核数。</li>
-<li>worker_rlimit_nofile 65535; 这个指令是指一个nginx进程打开的最多文件描述符数目，理论值应该是最多打开文件数（ulimit -n)与nginx进程数相除，但是nginx分配请求并不是那么均匀，所以最好与 ulimit -n 的值保持一致。 现在在 linux2.6内核下进程最大打开文件数为65535，所以 worker_rlimit_nofile 就相应应该填写65535. 这是因为 nginx 调度时分配请求到进程并不是那么均衡，所以加入填写10240，总并发量达到3-4万时就有进程可能超过10240，这是就会返回502错误。</li>
-<li>use epoll; nginx自动选择最高效的连接处理方法。这个不需要指定。</li>
-<li>worker_connections number; 每个 worker_process 可以同时打开的最大连接数。理论上每台nginx服务器的最大连接数为 worker_processes*worker_connections。
-还有 fastcgi , https 等等</li>
-</ol>
-
-<h2 id="toc_2">nginx的高性能指标</h2>
-
-<p>每秒处理请求数1000以上。（SAE每秒处理请求数是5000）<br/>
-每个请求的处理时间：100毫秒以下。</p>
-
-<h2 id="toc_3">如何评测</h2>
-
-<pre><code>ab -n 10000 -c 100 http://www.yourdomain.com/
+<pre><code>yum install libmcrypt.x86_64 libmcrypt-devel.x86_64
 </code></pre>
 
-<h2 id="toc_4">问题排查</h2>
+<ul>
+<li>安装 gd 需要的lib
+<a href="php-gd.html">gd扩展（验证码用的到）</a></li>
+</ul>
 
-<p>多看日志</p>
+<h2 id="toc_1">编译</h2>
+
+<ul>
+<li>没有 <code>--with-mysql</code> 这种选项了</li>
+<li>编译了gd扩展 </li>
+</ul>
+
+<pre><code>./configure 
+--prefix=/usr/local/php56 
+--exec-prefix=/usr/local/php56 
+--bindir=/usr/local/php56/bin 
+--sbindir=/usr/local/php56/sbin 
+--includedir=/usr/local/php56/include 
+--libdir=/usr/local/php56/lib/php 
+--mandir=/usr/local/php56/php/man 
+--with-config-file-path=/usr/local/php56/etc 
+--with-mcrypt=/usr/include 
+--with-mhash 
+--with-openssl 
+--with-mysqli=shared,mysqlnd 
+--with-pdo-mysql=shared,mysqlnd 
+--with-iconv 
+--with-zlib 
+--enable-zip 
+--enable-inline-optimization 
+--disable-debug 
+--disable-rpath 
+--enable-shared 
+--enable-xml 
+--enable-bcmath 
+--enable-shmop 
+--enable-sysvsem 
+--enable-mbregex 
+--enable-mbstring 
+--enable-gd-native-ttf 
+--enable-pcntl 
+--enable-sockets 
+--with-xmlrpc 
+--enable-soap 
+--without-pear 
+--with-gettext 
+--enable-session 
+--with-curl 
+--enable-opcache 
+--enable-fpm 
+--with-fpm-user=nginx 
+--with-fpm-group=nginx 
+--without-gdbm 
+--disable-fileinfo 
+--with-freetype-dir=/usr/lib64 
+--with-jpeg-dir=/usr/lib64 
+--with-gd
+</code></pre>
+
+<p>(复制到命令行执行之前，需要去掉换行符）</p>
+
+<pre><code>make &amp;&amp; make install
+make clean
+</code></pre>
+
+<h2 id="toc_2">php7回滚到php56</h2>
+
+<p><a href="php7-php56.html">php7回滚到php56</a><br/>
+如果走这一步的话，下面的步骤有些就不需要再执行了。</p>
+
+<pre><code>cp php.ini-production /usr/local/php56/etc/php.ini
+cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+cp /usr/local/php56/etc/php-fpm.conf.default /usr/local/php56/etc/php-fpm.conf
+</code></pre>
+
+<h2 id="toc_3">设置path</h2>
+
+<pre><code>vim .zshrc
+</code></pre>
+
+<p>修改用户跟目录下的 .zshrc 文件，把 /usr/local/php56/bin 加在path项的前面。</p>
+
+<pre><code>source .zshrc
+</code></pre>
+
+<h2 id="toc_4">创建php日志文件目录</h2>
+
+<pre><code>mkdir -p /var/log/php-fpm/ &amp;&amp; mkdir -p /var/run/php-fpm &amp;&amp; cd /var/run/ &amp;&amp; chown -R nginx:nginx php-fpm
+
+mkdir -p /var/lib/php/session
+
+chown -R nginx:nginx /var/lib/php
+</code></pre>
+
+<h2 id="toc_5">检查扩展是否都安装了，安装并开启</h2>
+
+<pre><code>cd /usr/local/php56/lib/php/extensions/no-debug-non-zts-20131226
+</code></pre>
+
+<h2 id="toc_6">配置 php.ini 的 extension及其它</h2>
+
+<pre><code>zend_extension=opcache.so
+extension=mysqli.so
+extension=pdo_mysql.so
+</code></pre>
+
+<p>或者，使用 slat 同步php.ini &amp; php-fpm.conf 文件</p>
+
+<p>启动php-fpm：<br/>
+先给 /etc/init.d/php-fpm 增加可执行权限。</p>
+
+<pre><code>/etc/init.d/php-fpm start
+</code></pre>
+
+<h2 id="toc_7">配置 memcached 扩展</h2>
+
+<p><a href="php-memcached.html">php5.6 安装 memcached扩展</a></p>
+
+<h2 id="toc_8">配置gd扩展</h2>
+
+<p><a href="php-gd.html">gd扩展（验证码用的到）</a></p>
+
+<h2 id="toc_9">查看phpinfo</h2>
+
+<p>检查扩展安装情况。<br/>
+<a href="php-phpinfo.html">配置访问 phpinfo 的域名</a></p>
 
 
 		</div>
@@ -182,12 +292,14 @@ nginx -s reload 重启nginx
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(27)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84.html">后端架构&nbsp;(10)</a>&nbsp;&nbsp;
+	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        
+	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -200,6 +312,24 @@ nginx -s reload 重启nginx
 	  
 	      
 		      <li class="post">
+		        <a href="14798983960110.html">saltstack实践</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14798980187717.html">浏览器缓存机制</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
 		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
 		      </li>
 	     
@@ -207,24 +337,6 @@ nginx -s reload 重启nginx
 	      
 		      <li class="post">
 		        <a href="redis-safe.html">redis 安全</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="14798724609507.html">redis配置安装最佳实践</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="php-phpinfo.html">配置访问 phpinfo 的域名</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="php7-php56.html">php7回滚到php5.6</a>
 		      </li>
 	     
 	  

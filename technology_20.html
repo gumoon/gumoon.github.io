@@ -84,15 +84,39 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14791839279392.html">UIScrollView</a></h1>
-			<p class="meta"><time datetime="2016-11-15T12:25:27+08:00" 
-			pubdate data-updated="true">2016/11/15</time></p>
+		  	<h1 class="entry-title"><a href="14793126581644.html">类和结构体</a></h1>
+			<p class="meta"><time datetime="2016-11-17T00:10:58+08:00" 
+			pubdate data-updated="true">2016/11/17</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<p>当显示内容超过应用程序窗口大小时，用它。</p>
+		  	<ul>
+<li>定义类</li>
+<li>定义结构体</li>
+<li>修饰符</li>
+<li>定义属性</li>
+<li>定义构造器</li>
+<li>定义方法</li>
+<li>创建类实例</li>
+<li>创建结构体实例</li>
+<li>引用类型的比较</li>
+<li>self关键字</li>
+<li>类和结构体的选择</li>
+</ul>
 
-<p>它是 <code>UITableView</code> 和 <code>UITextView</code> 的父类。</p>
+<p>存储属性必须指定初始值。</p>
+
+<p>类的实例可以称为对象。枚举和结构体的实例不能叫对象。</p>
+
+<p>枚举、结构体是值类型，传递的时候需要复制，类是引用类型。</p>
+
+<p>结构体的主要目的是用于封装少量相关的简单数据<br/>
+如果需要在传递参数或者赋值时自动复制副本，使用结构体。<br/>
+明确该类型无须继承另一个已有的类或者被其他类继承时，使用结构体。</p>
+
+<p>大部分时候，应该自定类，而不是结构体。</p>
+
+<p>只有类才支持继承，枚举和结构体都不可以。</p>
 
 
 		</div>
@@ -131,12 +155,14 @@ $(document).ready(function(event) {
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(27)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84.html">后端架构&nbsp;(10)</a>&nbsp;&nbsp;
+	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        
+	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -149,6 +175,24 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
+		        <a href="14798983960110.html">saltstack实践</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14798980187717.html">浏览器缓存机制</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
 		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
 		      </li>
 	     
@@ -156,24 +200,6 @@ $(document).ready(function(event) {
 	      
 		      <li class="post">
 		        <a href="redis-safe.html">redis 安全</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="14798724609507.html">redis配置安装最佳实践</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="php-phpinfo.html">配置访问 phpinfo 的域名</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="php7-php56.html">php7回滚到php5.6</a>
 		      </li>
 	     
 	  

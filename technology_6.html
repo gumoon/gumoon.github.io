@@ -84,176 +84,35 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="php56-install.html">源码编译安装php5.6.22最佳实践</a></h1>
-			<p class="meta"><time datetime="2016-11-23T11:11:39+08:00" 
+		  	<h1 class="entry-title"><a href="php-phpinfo.html">配置访问 phpinfo 的域名</a></h1>
+			<p class="meta"><time datetime="2016-11-23T11:33:06+08:00" 
 			pubdate data-updated="true">2016/11/23</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<h2 id="toc_0">准备工作</h2>
+		  	<h2 id="toc_0">修改 default.conf</h2>
 
-<ul>
-<li>更新系统 </li>
-</ul>
+<p>取消注释掉关于php fastcgi那一段。<br/>
+修改 root /usr/share/nginx/html 下的<br/>
+     <code>fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;</code><br/>
+重启 nginx 。</p>
 
-<pre><code>yum update
-</code></pre>
+<h2 id="toc_1">增加phpinfo.php 文件</h2>
 
-<ul>
-<li>安装 xml2, 确保有 xml2-config 命令</li>
-</ul>
+<p>在 /usr/share/nginx/html 文件夹下，增加 phpinfo.php</p>
 
-<pre><code>yum install libxml2-devel.x86_64 libxml2.x86_64  
-rpm -ql libxml2-devel.x86_64
-</code></pre>
+<h2 id="toc_2">访问验证</h2>
 
-<ul>
-<li>安装 openssl</li>
-</ul>
+<p><code>http://{IP}/phpinfo.php</code></p>
 
-<pre><code>yum install openssl-devel.x86_64 openssl.x86_64
-</code></pre>
+<h2 id="toc_3">配置关闭访问，防止信息泄露</h2>
 
-<ul>
-<li>安装 curl</li>
-</ul>
+<h3 id="toc_4">防止恶意解析</h3>
 
-<pre><code>yum install libcurl.x86_64 libcurl-devel.x86_64
-</code></pre>
+<p>配置 默认站点指向某个文件夹，设置该文件夹对nginx用户无任何权限。<br/>
+然后就会报：403 Forbidden 错误。从而无法访问。</p>
 
-<ul>
-<li>安装 libmcrypt</li>
-</ul>
-
-<pre><code>yum install libmcrypt.x86_64 libmcrypt-devel.x86_64
-</code></pre>
-
-<ul>
-<li>安装 gd 需要的lib
-<a href="php-gd.html">gd扩展（验证码用的到）</a></li>
-</ul>
-
-<h2 id="toc_1">编译</h2>
-
-<ul>
-<li>没有 <code>--with-mysql</code> 这种选项了</li>
-<li>编译了gd扩展 </li>
-</ul>
-
-<pre><code>./configure 
---prefix=/usr/local/php56 
---exec-prefix=/usr/local/php56 
---bindir=/usr/local/php56/bin 
---sbindir=/usr/local/php56/sbin 
---includedir=/usr/local/php56/include 
---libdir=/usr/local/php56/lib/php 
---mandir=/usr/local/php56/php/man 
---with-config-file-path=/usr/local/php56/etc 
---with-mcrypt=/usr/include 
---with-mhash 
---with-openssl 
---with-mysqli=shared,mysqlnd 
---with-pdo-mysql=shared,mysqlnd 
---with-iconv 
---with-zlib 
---enable-zip 
---enable-inline-optimization 
---disable-debug 
---disable-rpath 
---enable-shared 
---enable-xml 
---enable-bcmath 
---enable-shmop 
---enable-sysvsem 
---enable-mbregex 
---enable-mbstring 
---enable-gd-native-ttf 
---enable-pcntl 
---enable-sockets 
---with-xmlrpc 
---enable-soap 
---without-pear 
---with-gettext 
---enable-session 
---with-curl 
---enable-opcache 
---enable-fpm 
---with-fpm-user=nginx 
---with-fpm-group=nginx 
---without-gdbm 
---disable-fileinfo 
---with-freetype-dir=/usr/lib64 
---with-jpeg-dir=/usr/lib64 
---with-gd
-</code></pre>
-
-<p>(复制到命令行执行之前，需要去掉换行符）</p>
-
-<pre><code>make &amp;&amp; make install
-make clean
-</code></pre>
-
-<h2 id="toc_2">php7回滚到php56</h2>
-
-<p><a href="php7-php56.html">php7回滚到php56</a><br/>
-如果走这一步的话，下面的步骤有些就不需要再执行了。</p>
-
-<pre><code>cp php.ini-production /usr/local/php56/etc/php.ini
-cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
-cp /usr/local/php56/etc/php-fpm.conf.default /usr/local/php56/etc/php-fpm.conf
-</code></pre>
-
-<h2 id="toc_3">设置path</h2>
-
-<pre><code>vim .zshrc
-</code></pre>
-
-<p>修改用户跟目录下的 .zshrc 文件，把 /usr/local/php56/bin 加在path项的前面。</p>
-
-<pre><code>source .zshrc
-</code></pre>
-
-<h2 id="toc_4">创建php日志文件目录</h2>
-
-<pre><code>mkdir -p /var/log/php-fpm/ &amp;&amp; mkdir -p /var/run/php-fpm &amp;&amp; cd /var/run/ &amp;&amp; chown -R nginx:nginx php-fpm
-
-mkdir -p /var/lib/php/session
-
-chown -R nginx:nginx /var/lib/php
-</code></pre>
-
-<h2 id="toc_5">检查扩展是否都安装了，安装并开启</h2>
-
-<pre><code>cd /usr/local/php56/lib/php/extensions/no-debug-non-zts-20131226
-</code></pre>
-
-<h2 id="toc_6">配置 php.ini 的 extension及其它</h2>
-
-<pre><code>zend_extension=opcache.so
-extension=mysqli.so
-extension=pdo_mysql.so
-</code></pre>
-
-<p>或者，使用 slat 同步php.ini &amp; php-fpm.conf 文件</p>
-
-<p>启动php-fpm：<br/>
-先给 /etc/init.d/php-fpm 增加可执行权限。</p>
-
-<pre><code>/etc/init.d/php-fpm start
-</code></pre>
-
-<h2 id="toc_7">配置 memcached 扩展</h2>
-
-<p><a href="php-memcached.html">php5.6 安装 memcached扩展</a></p>
-
-<h2 id="toc_8">配置gd扩展</h2>
-
-<p><a href="php-gd.html">gd扩展（验证码用的到）</a></p>
-
-<h2 id="toc_9">查看phpinfo</h2>
-
-<p>检查扩展安装情况。<br/>
-<a href="php-phpinfo.html">配置访问 phpinfo 的域名</a></p>
+<p>默认 /usr/share/nginx/html 的文件夹权限是 755,改为 chmod 700 html即可。</p>
 
 
 		</div>
@@ -292,12 +151,14 @@ extension=pdo_mysql.so
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(27)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84.html">后端架构&nbsp;(10)</a>&nbsp;&nbsp;
+	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        
+	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -310,6 +171,24 @@ extension=pdo_mysql.so
 	  
 	      
 		      <li class="post">
+		        <a href="14798983960110.html">saltstack实践</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14798980187717.html">浏览器缓存机制</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
 		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
 		      </li>
 	     
@@ -317,24 +196,6 @@ extension=pdo_mysql.so
 	      
 		      <li class="post">
 		        <a href="redis-safe.html">redis 安全</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="14798724609507.html">redis配置安装最佳实践</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="php-phpinfo.html">配置访问 phpinfo 的域名</a>
-		      </li>
-	     
-	  
-	      
-		      <li class="post">
-		        <a href="php7-php56.html">php7回滚到php5.6</a>
 		      </li>
 	     
 	  
