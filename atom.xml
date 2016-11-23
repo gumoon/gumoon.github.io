@@ -4,7 +4,7 @@
   <title><![CDATA[自由学习网]]></title>
   <link href="http://www.free-abc.com.cn/atom.xml" rel="self"/>
   <link href="http://www.free-abc.com.cn/"/>
-  <updated>2016-11-23T12:05:38+08:00</updated>
+  <updated>2016-11-23T17:09:38+08:00</updated>
   <id>http://www.free-abc.com.cn/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -255,9 +255,9 @@ REDISPORT=&quot;6379&quot;
 
 <p>安装参数见：README</p>
 
-<p>源码放在了：/home/huliang 目录</p>
+<p>源码放在了：/home/gumoon 目录</p>
 
-<p>使用 huliang 这个账户进行安装的。</p>
+<p>使用 gumoon 这个账户进行安装的。</p>
 
 <pre><code>tar zxvf redis-3.0.4.tar.gz
 cd redis-3.0.4
@@ -274,7 +274,8 @@ Data dir       : /var/lib/redis/6379<br/>
 Executable     : /usr/local/bin/redis-server<br/>
 Cli Executable : /usr/local/bin/redis-cli</p>
 
-<p><code>/etc/init.d/redis_6379 restart</code>  <strong>此启动脚本已废弃，改为使用 systemd 服务</strong></p>
+<p>启动 redis 服务：<br/>
+<code>/etc/init.d/redis_6379 start</code>  </p>
 
 <h2 id="toc_2">配置</h2>
 
@@ -371,7 +372,7 @@ WantedBy=multi-user.target
 <h2 id="toc_1">如何切换回php5.6</h2>
 
 <ol>
-<li>按照文档<a href="php-install.html">安装好 php5.6</a></li>
+<li>按照文档<a href="php56-install.html">安装好 php5.6</a></li>
 <li>修改 /etc/init.d/php-fpm 脚本</li>
 <li>修改 /etc/profile 的PATH（可能不需要改）</li>
 <li>修改 ~/.zshrc 的PATH</li>
