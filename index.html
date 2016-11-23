@@ -84,55 +84,175 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14787476787496.html">宇宙简史</a></h1>
-			<p class="meta"><time datetime="2016-11-10T11:14:38+08:00" 
-			pubdate data-updated="true">2016/11/10</time></p>
+		  	<h1 class="entry-title"><a href="14798739132293.html">从零开始配置阿里云ECS</a></h1>
+			<p class="meta"><time datetime="2016-11-23T12:05:13+08:00" 
+			pubdate data-updated="true">2016/11/23</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<p>宇宙起源于大爆炸。</p>
+		  	<h2 id="toc_0">装完centos7.0 64位系统后的状态</h2>
 
-<p>地球大约形成于45.4亿年前。</p>
+<ol>
+<li>默认操作系统情况</li>
+</ol>
 
-<p>少量重元素集聚在一起，坍塌、自旋，形成了地球。</p>
+<pre><code>[root@iZ25gxj8d82Z etc]# uname -a
+Linux iZ25gxj8d82Z 3.10.0-123.9.3.el7.x86_64 #1 SMP Thu Nov 6 15:06:03 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
 
-<p>几亿年后（距今约38/42亿年），大量液态水逐步汇聚，形成海洋。</p>
+<ol>
+<li>开启的对外端口情况</li>
+</ol>
 
-<p>RNA出现于距今约40亿年前。</p>
+<pre><code>[root@iZ25gxj8d82Z ~]# ss -ntlp
+State      Recv-Q Send-Q                                                                                       Local Address:Port                                                                                         Peer Address:Port
+LISTEN     0      128                                                                                                      *:22                                                                                                      *:*      users:((&quot;sshd&quot;,895,3))
+</code></pre>
 
-<p>又过了两亿年，地球上出现了最早的单细胞生物，它提供化合作用获得能量生存。</p>
+<p>只开放了22端口。</p>
 
-<p>距今36亿年前，出现了能够进行光合作用的单细胞微生物。</p>
+<ol>
+<li>检查默认开机启动应用</li>
+</ol>
 
-<p>距今18亿年，出现了有细胞核的单细胞原生生物。</p>
+<pre><code>[root@iZ25gxj8d82Z ~]# systemctl list-unit-files |grep enable
+crond.service                          enabled
+cups.service                           enabled
+dmraid-activation.service              enabled
+getty@.service                         enabled
+lvm2-monitor.service                   enabled
+microcode.service                      enabled
+nscd.service                           enabled
+ntpd.service                           enabled
+rsyslog.service                        enabled
+sshd.service                           enabled
+sysstat.service                        enabled
+systemd-readahead-collect.service      enabled
+systemd-readahead-drop.service         enabled
+systemd-readahead-replay.service       enabled
+cups.socket                            enabled
+dm-event.socket                        enabled
+lvm2-lvmetad.socket                    enabled
+nscd.socket                            enabled
+default.target                         enabled
+multi-user.target                      enabled
+</code></pre>
 
-<p>距今10亿年，才出现多细胞生物。</p>
+<ol>
+<li>默认用户情况</li>
+</ol>
 
-<p>距今6亿年，古生代。</p>
+<pre><code>[root@iZ25gxj8d82Z ~]# cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+polkitd:x:999:998:User for polkitd:/:/sbin/nologin
+avahi:x:70:70:Avahi mDNS/DNS-SD Stack:/var/run/avahi-daemon:/sbin/nologin
+avahi-autoipd:x:170:170:Avahi IPv4LL Stack:/var/lib/avahi-autoipd:/sbin/nologin
+libstoragemgmt:x:998:997:daemon account for libstoragemgmt:/var/run/lsm:/sbin/nologin
+ntp:x:38:38::/etc/ntp:/sbin/nologin
+abrt:x:173:173::/etc/abrt:/sbin/nologin
+postfix:x:89:89::/var/spool/postfix:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+chrony:x:997:996::/var/lib/chrony:/sbin/nologin
+nscd:x:28:28:NSCD Daemon:/:/sbin/nologin
+tcpdump:x:72:72::/:/sbin/nologin
+</code></pre>
 
-<p>约5.4-4.9亿年前，地球进入寒武纪。</p>
+<p>以下都可以通过 saltstack 这个工具来实现：</p>
 
-<p>随着地球大气中的越来越丰富，形成了臭氧层、它可以保护地球陆地免受紫外线直接照射。</p>
+<h2 id="toc_1">更新系统</h2>
 
-<p>到4亿年前的志留纪，植物才出现在陆地。</p>
+<p>查看目前有哪些源：</p>
 
-<p>距今4.2-3.7亿年的泥盆纪，地球上出现了昆虫和早期鱼类。</p>
+<pre><code>yum repolist all 
+</code></pre>
 
-<p>距今2.5亿年的二叠纪和三叠纪初期，一场大灾难降临地球，95%以上的物种都灭绝了。</p>
+<p>替换官方centos源为阿里云源镜像。</p>
 
-<p>距今2-1.5亿年，侏罗纪，恐龙和其他爬行动物成为地球的主人。恐龙统治地球长达1.6亿年。</p>
+<ul>
+<li>备份： </li>
+</ul>
 
-<p>距今6500万年前，灾难再次降临，恐龙灭绝。哺乳动物开始成为这个星球的主宰。</p>
+<pre><code>mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+</code></pre>
 
-<p>距今350万年前，真正被称为人的动物肯尼亚平脸人出现了。</p>
+<ul>
+<li>下载新的 CentOS-Base.repo 到 /etc/yum.repos.d/ （此处使用阿里云源站内网域名，不占用公网流量）</li>
+</ul>
 
-<p>在距今25万年前，我们的祖先现代人在东非诞生了。</p>
+<pre><code>wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyuncs.com/repo/Centos-7.repo
+</code></pre>
 
-<p>如果把地球的年龄缩短成一年，那么人类出现在这一年最后一天的最后半个小时。</p>
+<ul>
+<li>之后运行以下命令，生成缓存</li>
+</ul>
 
-<p>大约10万年前，开始从东非向四周迁徙。大约在5万年前到达南亚，4万年前到达澳大利亚、中国和欧洲。3万年前到达美洲。</p>
+<pre><code>yum makecache
+</code></pre>
 
-<p>从大约3万年前，现代的人类成为了地球的主人。要再过两万多年，人类的文明才真正开始。这已经是一年最后的一分钟了。</p>
+<ul>
+<li>更新系统软件：</li>
+</ul>
+
+<pre><code>yum update
+</code></pre>
+
+<h2 id="toc_2">打开防火墙，并设置开机自启动</h2>
+
+<pre><code>systemctl enable firewalld.service 
+systemctl start firewalld.service
+</code></pre>
+
+<h2 id="toc_3">安装 zsh , oh-my-zsh</h2>
+
+<ul>
+<li>安装 zsh，配置 zsh 为root用户默认shell。 </li>
+</ul>
+
+<pre><code>yum install zsh 
+which zsh (/usr/bin/zsh) 
+vim /etc/shells 在文件末尾增加一行 /usr/bin/zsh 
+chsh -s SHELL
+</code></pre>
+
+<ul>
+<li>安装 oh-my-zsh </li>
+</ul>
+
+<pre><code>sh -c &quot;$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)&quot;
+</code></pre>
+
+<ul>
+<li>安装 autojump:</li>
+</ul>
+
+<pre><code>yum install autojump-zsh
+</code></pre>
+
+<ul>
+<li>配置 .zshrc ：</li>
+</ul>
+
+<pre><code>plugins=(git history autojump)
+</code></pre>
+
+<h2 id="toc_4">确认git，svn安装情况</h2>
+
+<pre><code>git --version
+svn --version
+</code></pre>
 
 
 		</div>
@@ -169,6 +289,17 @@ $(document).ready(function(event) {
 	        
 	        
 	      </li>
+	  
+	      <li class="post">
+	        <a href="technology.html"><strong>技术文档&nbsp;(27)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
+	        
+	        	<a href="%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84.html">后端架构&nbsp;(10)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
 	   
 	  </ul>
 	</section>
@@ -178,33 +309,57 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
-		        <a href="14787476787496.html">宇宙简史</a>
+		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14787476590414.html">11 TIPS FOR PROTOTYPING WITH SKETCH</a>
+		        <a href="redis-safe.html">redis 安全</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14787476590487.html">Canvas</a>
+		        <a href="14798724609507.html">redis配置安装最佳实践</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14787476590525.html">Inspector</a>
+		        <a href="php-phpinfo.html">配置访问 phpinfo 的域名</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14787476590580.html">Introduction</a>
+		        <a href="php7-php56.html">php7回滚到php5.6</a>
 		      </li>
 	     
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
 	  
 	      
 	  

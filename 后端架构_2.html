@@ -1,0 +1,306 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>
+    
+  后端架构 - 自由学习网
+  
+
+  </title>
+  <meta name="author" content="gumoon">
+  <meta name="description" content="积累、思考、成长、分享、厚积薄发、学以致用">
+
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link href="asset/css/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="atom.xml" rel="alternate" title="自由学习网" type="application/atom+xml">
+  <script src="asset/js/modernizr-2.0.js"></script>
+  <script src="asset/js/jquery.min.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/solarized_light.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <style type="text/css">
+  .cat-children-p{ padding: 6px 0px;}
+  .hljs{background: none;}
+  </style>
+  <script type="text/javascript">
+  var isAddSildbar = true;
+  </script>
+  <script src="asset/js/octopress.js" type="text/javascript"></script>
+</head>
+<script type="text/javascript">
+//链接新开窗口
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+$(document).ready(function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="index.html">自由学习网</a></h1>
+  
+    <h2>积累、思考、成长、分享、厚积薄发、学以致用</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="wd" value="site:www.free-abc.com.cn" />
+    <input class="search" type="text" name="wd" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+
+  <li id=""><a target="_self" href="index.html">首页</a></li>
+
+  <li id=""><a target="_self" href="archives.html">归档</a></li>
+
+  <li id=""><a target="_self" href="about.html">关于我</a></li>
+
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content"> 
+<div class="blog-index">
+
+	<article>
+		 <header>
+		  	<h1 class="entry-title"><a href="14798724609507.html">redis配置安装最佳实践</a></h1>
+			<p class="meta"><time datetime="2016-11-23T11:41:00+08:00" 
+			pubdate data-updated="true">2016/11/23</time></p>
+		 </header>
+	  	<div class="entry-content">
+		  	
+		  	<h2 id="toc_0">介绍</h2>
+
+<p>略</p>
+
+<h2 id="toc_1">安装</h2>
+
+<p>在官网下载的redis3.04源码。</p>
+
+<p>安装参数见：README</p>
+
+<p>源码放在了：/home/huliang 目录</p>
+
+<p>使用 huliang 这个账户进行安装的。</p>
+
+<pre><code>tar zxvf redis-3.0.4.tar.gz
+cd redis-3.0.4
+make
+make install  （安装到 /usr/local/bin)
+./utils/install_server.sh
+</code></pre>
+
+<p>配置：<br/>
+Port           : 6379<br/>
+Config file    : /etc/redis/6379.conf<br/>
+Log file       : /var/log/redis_6379.log<br/>
+Data dir       : /var/lib/redis/6379<br/>
+Executable     : /usr/local/bin/redis-server<br/>
+Cli Executable : /usr/local/bin/redis-cli</p>
+
+<p><code>/etc/init.d/redis_6379 restart</code>  <strong>此启动脚本已废弃，改为使用 systemd 服务</strong></p>
+
+<h2 id="toc_2">配置</h2>
+
+<h3 id="toc_3">创建redis用户</h3>
+
+<pre><code>groupadd -r redis &amp;&amp; useradd -r -g redis -s /sbin/nologin -d /var/lib/redis -M redis
+</code></pre>
+
+<h3 id="toc_4">开机启动脚本</h3>
+
+<p>位置：/lib/systemd/system/redis.service</p>
+
+<pre><code>[Unit]
+Description=Redis Server
+Before=httpd.service
+After=network.target
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/sysconfig/redis
+User=redis
+Group=redis
+ExecStart=/usr/local/bin/redis-server /etc/redis/6379.conf
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+
+<p>EnvironmentFile 可以配置一些参数，但是，路径不能配置，必须写绝对路径。</p>
+
+<h2 id="toc_5">redis安全</h2>
+
+<p><a href="redis-safe.html">redis安全</a></p>
+
+<h2 id="toc_6">集群</h2>
+
+<ul>
+<li>twemproxy代理 （<a href="https://github.com/twitter/twemproxy">https://github.com/twitter/twemproxy</a> ）</li>
+</ul>
+
+<h2 id="toc_7">常用命令</h2>
+
+<p>略</p>
+
+
+		</div>
+
+		
+
+	</article>
+  
+	<div class="pagination">
+	 <a class="prev" href="后端架构_3.html">&larr; Older</a> 
+<a href="archives.html">Blog Archives</a>
+	 <a class="next" href="后端架构_1.html">Newer &rarr;</a>  
+	    
+	</div>
+</div>
+ <aside class="sidebar"> 
+
+	<section>
+	  <h1>分类</h1>
+	  <ul id="recent_posts">
+	  
+	      <li class="post">
+	        <a href="translate.html"><strong>翻译文档&nbsp;(7)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="stetch.html">stetch&nbsp;(7)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	  
+	      <li class="post">
+	        <a href="history.html"><strong>历史&nbsp;(1)</strong></a>
+	        
+	        
+	        
+	      </li>
+	  
+	      <li class="post">
+	        <a href="technology.html"><strong>技术文档&nbsp;(27)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
+	        
+	        	<a href="%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84.html">后端架构&nbsp;(10)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	   
+	  </ul>
+	</section>
+	<section>
+	  <h1>最新发布</h1>
+	  <ul id="recent_posts">
+	  
+	      
+		      <li class="post">
+		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="redis-safe.html">redis 安全</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14798724609507.html">redis配置安装最佳实践</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="php-phpinfo.html">配置访问 phpinfo 的域名</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="php7-php56.html">php7回滚到php5.6</a>
+		      </li>
+	     
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	   
+	  </ul>
+	</section>
+	
+</aside> </div></div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 -  -
+  <span class="credit">Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; Theme by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+
+  
+    
+
+<script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?831fc9a0be36b03335a3f24dda056e34";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</body>
+</html>

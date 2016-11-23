@@ -84,22 +84,71 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14787476590703.html">Toolbar</a></h1>
-			<p class="meta"><time datetime="2016-11-10T11:14:19+08:00" 
-			pubdate data-updated="true">2016/11/10</time></p>
+		  	<h1 class="entry-title"><a href="14798699605642.html">memcached 最佳实践</a></h1>
+			<p class="meta"><time datetime="2016-11-23T10:59:20+08:00" 
+			pubdate data-updated="true">2016/11/23</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<p>The toolbar in Sketch contains all the tools you need to create your design. The default setup—seen below, contains tools that will insert layers, edit shapes, and organize your document.</p>
+		  	<h2 id="toc_0">介绍</h2>
 
-<p>The first item on the left, is the Insert pop-up menu. Any item you select here will draw a new layer while the Group and Ungroup items used for organizing your Layer List.</p>
+<ul>
+<li>它比memcache好，有加锁机制等</li>
+<li>它比redis性能更高</li>
+<li>它特别适合于缓存小数据片</li>
+<li>在阿里云上使用yum安装memcached。</li>
+</ul>
 
-<p>Create Symbol allows you to convert the selected layer or group into a Symbol.<br/>
-The Zoom buttons let you see more or less of your document depending on the zoom level, which is indicated by a percentage under the icon.<br/>
-Following that are four of the editing controls that allow you to manipulate your selected shape. Mask and Scale also become active when a shape is selected, and these tools will allow you to clip layers to shapes, and resize them respectively.<br/>
-The next set of four icons are the boolean operations which are used to combine shapes.<br/>
-Forward and Backward are also used for organizing your document. Mirror allows you to view your design on the web or iOS device. The View pop-up menu allows you to show and hide visual aids that can be used when working with complex documents. And finally, the Export button will let you export your assets.<br/>
-These are just a handful of tools that Sketch offers. By Control-clicking and choosing “Customize Toolbar…” from the shortcut menu you can create your own toolbar layout.</p>
+<h2 id="toc_1">与php配合</h2>
+
+<ul>
+<li>安装php的memcached扩展后，就可以通过php语言来编写访问memcached服务的脚本了</li>
+<li>php的memcached扩展，通过 libmemcached 库来跟memcached服务器交互</li>
+<li>php7无法编译memcached扩展。提示头文件找不到。</li>
+<li>最后改成使用<a href="php-memcached.html">php5.6 安装 memcached 扩展</a></li>
+</ul>
+
+<h2 id="toc_2">安装</h2>
+
+<p>执行：</p>
+
+<pre><code>yum search memcached
+</code></pre>
+
+<p>找到合适的版本的memcached，在这之前，需要先配置好更新及时的 yum源（没有专门的源，配置好 epel 源即可）。 </p>
+
+<p>执行：</p>
+
+<pre><code>yum install memcached.x86_64 libmemcached.x86_64 libmemcached-devel.x86_64
+</code></pre>
+
+<p>选择：libmemcached.x86_64（php扩展连接memcached服务器时会用到）、 libmemcached-devel.x86_64（php扩展编译时会用到）、 memcached.x86_64、libevent-devel(memcached编译的时候需要，会默认安装)这三个软件包进行安装。 </p>
+
+<h2 id="toc_3">进程挂掉自动重启</h2>
+
+<p>待补充</p>
+
+<h2 id="toc_4">测试memcached</h2>
+
+<pre><code>telnet 127.0.0.1 11211
+</code></pre>
+
+<h2 id="toc_5">开机自动启动</h2>
+
+<p>自从centos7以来，系统服务的管理通过 systemd 来管理。 通过yum安装的memcached，默认已经安装了 memcached.service 脚本。 开机自动启动配置： </p>
+
+<pre><code>systemctl enable memcached.service
+</code></pre>
+
+<h2 id="toc_6">权限控制</h2>
+
+<p>修改 <code>/lib/systemd/system/memcached.service</code> 增加 <code>-l 127.0.0.1</code> 参数，然后重启即可。 </p>
+
+<pre><code>systemctl daemon-reload
+ systemctl restart memcached 
+</code></pre>
+
+<p>增加 -l 127.0.0.1 后，ipv6地址的监听就没有了。(ss -ntlp) </p>
 
 
 		</div>
@@ -109,7 +158,7 @@ These are just a handful of tools that Sketch offers. By Control-clicking and ch
 	</article>
   
 	<div class="pagination">
-	
+	 <a class="prev" href="all_8.html">&larr; Older</a> 
 <a href="archives.html">Blog Archives</a>
 	 <a class="next" href="all_6.html">Newer &rarr;</a>  
 	    
@@ -136,6 +185,17 @@ These are just a handful of tools that Sketch offers. By Control-clicking and ch
 	        
 	        
 	      </li>
+	  
+	      <li class="post">
+	        <a href="technology.html"><strong>技术文档&nbsp;(27)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
+	        
+	        	<a href="%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84.html">后端架构&nbsp;(10)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
 	   
 	  </ul>
 	</section>
@@ -145,33 +205,57 @@ These are just a handful of tools that Sketch offers. By Control-clicking and ch
 	  
 	      
 		      <li class="post">
-		        <a href="14787476787496.html">宇宙简史</a>
+		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14787476590414.html">11 TIPS FOR PROTOTYPING WITH SKETCH</a>
+		        <a href="redis-safe.html">redis 安全</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14787476590487.html">Canvas</a>
+		        <a href="14798724609507.html">redis配置安装最佳实践</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14787476590525.html">Inspector</a>
+		        <a href="php-phpinfo.html">配置访问 phpinfo 的域名</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14787476590580.html">Introduction</a>
+		        <a href="php7-php56.html">php7回滚到php5.6</a>
 		      </li>
 	     
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
 	  
 	      
 	  

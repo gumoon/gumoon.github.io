@@ -84,159 +84,55 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14787476590414.html">11 TIPS FOR PROTOTYPING WITH SKETCH</a></h1>
-			<p class="meta"><time datetime="2016-11-10T11:14:19+08:00" 
-			pubdate data-updated="true">2016/11/10</time></p>
+		  	<h1 class="entry-title"><a href="redis-safe.html">redis 安全</a></h1>
+			<p class="meta"><time datetime="2016-11-23T11:44:23+08:00" 
+			pubdate data-updated="true">2016/11/23</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<blockquote>
-<p>用 sketch 做原型设计的 11 个技巧</p>
-</blockquote>
+		  	<h2 id="toc_0">权限控制</h2>
 
-<p>The fine folks over at Bohemian Coding built Sketch specifically for designers who make things for screens, so it’s a natural for prototyping.</p>
-
-<blockquote>
-<p>Bohemian公司的优秀工程师们开发的 Sketch 是给设计师用的。所以，该软件自然可以用来做原型设计。</p>
-</blockquote>
-
-<p>Here are a few tips for using Sketch to prototype that should make things smoother, faster, and easier for ya.</p>
-
-<blockquote>
-<p>这里是一些使用 Sketch 做原型设计和让你的工作更顺畅、快速、简单的技巧。</p>
-</blockquote>
-
-<p><strong>1. Size your artboards right</strong></p>
+<ul>
+<li><p>指定监听ip（127.0.0.1 或者 某个网段）<br/>
+在redis.conf 文件中找到<code>bind 192.168.3.112 127.0.0.1</code>。修改。</p></li>
+<li><p>绑定 0.0.0.0 ，用 iptables 来控制访问权限<br/>
+如果正常业务中redis服务需要被其他服务器来访问，可以设置iptables策略仅允许指定的ip来访问redis服务。</p></li>
+<li><p>设置 redis 访问密码来保证数据安全<br/>
+在redis.conf 中找到“requirepass”字段，在后面填上你需要的密码，redis客户端也需要使用密码来访问redis服务。</p></li>
+</ul>
 
 <blockquote>
-<p>调整 artboards 到合适的大小</p>
+<p>通过设置配置文件中 requirepass 项的值(使用命令 CONFIG SET requirepass password )，可以使用密码来保护 Redis 服务器。</p>
+
+<p>如果开启了密码保护的话，在每次连接 Redis 服务器之后，就要使用 AUTH 命令解锁，解锁之后才能使用其他 Redis 命令。</p>
+
+<p>如果 AUTH 命令给定的密码 password 和配置文件中的密码相符的话，服务器会返回 OK 并开始接受命令输入。</p>
+
+<p>另一方面，假如密码不匹配的话，服务器将返回一个错误，并要求客户端需重新输入密码。<br/>
+因为 Redis 高性能的特点，在很短时间内尝试猜测非常多个密码是有可能的，因此请确保使用的密码足够复杂和足够长，以免遭受密码猜测攻击。</p>
 </blockquote>
 
-<p><img src="media/14787476590414/artboard2.gif" alt="artboard2"/></p>
+<ul>
+<li>修改redis服务运行账号
+请以较低权限账号运行redis服务，且禁用该账号的登录权限。可以限制攻击者往磁盘写入文件，但是redis数据还是能被黑客访问到，或者被黑客恶意删除。</li>
+</ul>
 
-<p>Okay, okay—this might not be the most mind-blowing tip on the list, but it’s helpful and important. Sketch provides a lot of predefined artboards to get you started right. Just type A and pick the artboard you need.</p>
+<pre><code>groupadd -r redis &amp;&amp; useradd -r -g redis -s /bin/nologin -d /var/lib/redis -M redis
 
-<blockquote>
-<p>好，好---也许这不是这些技巧中最令人印象深刻的技巧，但是它有用而且重要。Sketch 提供很多预定义的 artboards 帮你正确的开始。只需要按字母A，然后选择你想要的 artboard。</p>
-</blockquote>
-
-<p><strong>2. Get your grid on</strong></p>
-
-<blockquote>
-<p>打开网格</p>
-</blockquote>
-
-<p><img src="media/14787476590414/layout.gif" alt="layout"/></p>
-
-<p>Sketch makes it super easy to set up a layout that works for you. Just go to View &gt; Layout Settings… to configure your layout, or press Ctrl+L to view your default layout.</p>
-
-<blockquote>
-<p>Sketch 设置布局超级简单。在菜单栏选择 显示 &gt; 画布 &gt; 布局设置 来配置你的布局。然后使用 Ctrl + L 快捷键来查看你的布局。</p>
-</blockquote>
-
-<p><strong>3. Duplicate anything in seconds</strong></p>
-
-<blockquote>
-<p>秒级复制</p>
-</blockquote>
-
-<p><img src="media/14787476590414/duplicate2.gif" alt="duplicate2"/></p>
-
-<p>I’ve used this trick in Illustrator for years, and it’s the same in Sketch. If you hold Option, then click and drag an element, it will copy it. Once you’ve placed it, just hit Cmd+D to do it again and again.</p>
-
-<blockquote>
-<p>多年前我在 Illustrator 中使用这个技巧，Sketch 一样的使用方法。按住 Option，然后拖拽一个元素，Sketch 将复制它。把复制的元素松手后，不断按 Cmd+D 将复制出一个个重复元素。</p>
-</blockquote>
-
-<pre><code>Note: If this doesn&#39;t work as shown above, go to Preferences &gt; Layers and uncheck Offset pasted 
-&amp; duplicated objects
+XEC=/usr/local/bin/redis-server
+CLIEXEC=/usr/local/bin/redis-cli
+PIDFILE=/var/run/redis_6379.pid
+CONF=&quot;/etc/redis/6379.conf&quot;
+REDISPORT=&quot;6379&quot;
 </code></pre>
 
-<p><strong>4. Measure distances</strong></p>
+<h3 id="toc_1">漏洞描述与危害</h3>
 
-<blockquote>
-<p>测量距离</p>
-</blockquote>
+<p>对公网开放，且未启用认证的redis服务器。</p>
 
-<p><img src="media/14787476590414/measurement2.gif" alt="measurement2"/></p>
+<p>攻击者无需认证访问到内部数据，可能导致敏感信息泄露，黑客也可以恶意执行 flushall 来清空所有数据。</p>
 
-<p>If you want to make beautiful things, you have to be intentional about details. To measure an element’s distance from other items on the page, select it on screen and hold Option. Then get ready to feel really OCD.</p>
-
-<blockquote>
-<p>如果你想让事物更漂亮，你不得不注意细节。为了测量两个元素之间的距离，只要在屏幕上选择一个元素，然后按住 Option 。准备去感受自己的强迫症吧。</p>
-</blockquote>
-
-<p><strong>5. Use shared styles now, thank yourself later</strong></p>
-
-<blockquote>
-<p>现在就使用共享样式，之后你会感谢自己的</p>
-</blockquote>
-
-<p><img src="media/14787476590414/styles.gif" alt="styles"/></p>
-
-<p>You’re 100 screens in, on your 3rd round of reviews. The finish line is in sight. And then your client says, “Can we change all the buttons to blue?”</p>
-
-<blockquote>
-<p>你做了100个页面给你的客户检查。截止日期就在眼前。然而，你的客户说，“能否把按钮颜色都改为蓝色？”</p>
-</blockquote>
-
-<p>Instead of flipping your table, you just say “Ok”—because you used shared styles on all those buttons. When you’re creating UI elements you’ll use again and again, set their style by clicking No Shared Style, then Create New Shared Style, and give it a memorable name.</p>
-
-<blockquote>
-<p>你不用骂娘翻桌子，可以轻松的说“没问题”。因为你使用了共享样式在所有的按钮上。当你创建的元素将被使用多次，给它们设置共享样式吧。</p>
-</blockquote>
-
-<p><strong>6. Totally abuse symbols</strong></p>
-
-<p><img src="media/14787476590414/symbols2.gif" alt="symbols2"/></p>
-
-<p>Symbols are a really helpful aspect of Sketch—and while what I propose here is probably an abuse of them, it’s pretty much invaluable.</p>
-
-<p>If you’ve got a screen with a lot of states, modals, or options that go on top of it, make that whole screen a symbol, duplicate the artboard, and create your alternate versions. This way, if you need to update the underlying screen, you won’t be kicking yourself when you have to change all those other versions, too.</p>
-
-<p><strong>7. Move shapes while you draw them</strong></p>
-
-<p><img src="media/14787476590414/drag2.gif" alt="drag2"/></p>
-
-<p>This tip is just super practical. When you’re drawing a shape (say, a circle), it’s tough to get the placement just right on the first go. But if you hold the spacebar while drawing, you can move your shape as you create it, then continue sizing it before committing it to your artboard.</p>
-
-<p><strong>8. Change opacity on the fly</strong></p>
-
-<p><img src="media/14787476590414/transparency.gif" alt="transparency"/></p>
-
-<p>This works just like it does in Photoshop, but a lot of people still don’t know about it. Use the number keys (1–0) on your keyboard to set opacity levels in 10% intervals.</p>
-
-<p><strong>9. Save frustration with “Scale”</strong></p>
-
-<p><img src="media/14787476590414/scale2.gif" alt="scale2"/></p>
-
-<p>We all make mistakes—let’s say you designed a button, but made it way too big. You’ve got a border radius of 20px and a 4px outline. If you just drag the corner to shrink it, you’re going to be unhappy with the result. So instead, click Scale and resize to the dimensions you need.</p>
-
-<p><strong>10. Maximize your workspace</strong></p>
-
-<blockquote>
-<p>最大化你的工作区</p>
-</blockquote>
-
-<p><img src="media/14787476590414/maximize-space.gif" alt="maximize-space"/></p>
-
-<p>If you’re working on a smaller screen, just about any app can start to feel cramped, and Sketch is no exception. To hide the left and right panels, press Ctrl+Option+Cmd+3. Or, show / hide the left and right panels individually with Ctrl+Option+Cmd+1 or Ctrl+Option+Cmd+2.</p>
-
-<blockquote>
-<p>如果你在小屏上工作，使用任何软件都会感觉狭小，使用 Sketch 也不例外。隐藏左右两边的面板，按 Ctrl+Option+3。或者，显示/隐藏 左边和右边的面板，分别按 Ctrl+Option+Cmd+1 和 Ctrl+Option+Cmd+2。</p>
-</blockquote>
-
-<p><strong>11. Drop Sketch files into InVision</strong></p>
-
-<blockquote>
-<p>让 Sketch 文件不可见</p>
-</blockquote>
-
-<p>Handily, you can drop Sketch files right into InVision to automatically turn your artboards into screens. If you want to exclude a certain artboard or page, just add a minus sign in front of the layer or page name, like so: “-modal exploration”</p>
-
-<blockquote>
-<p>你可以非常方便直接让 Sketch 文件不可见，以自动转换画板为屏幕。如果你想要排除一个特定的画板或者页面，只要添加减号到图层或页面名的前面。像这样：&quot;-modal exploration&quot; （没有试验成功~）</p>
-</blockquote>
+<p>攻击者可通过 eval 执行 lua 代码，或通过数据备份功能往磁盘写入后门文件，如果 redis  以 root 身份运行，黑客可以给 root 账户写入 ssh 公钥文件，直接通过ssh登录受害服务器。</p>
 
 
 		</div>
@@ -273,6 +169,17 @@ $(document).ready(function(event) {
 	        
 	        
 	      </li>
+	  
+	      <li class="post">
+	        <a href="technology.html"><strong>技术文档&nbsp;(27)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
+	        
+	        	<a href="%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84.html">后端架构&nbsp;(10)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
 	   
 	  </ul>
 	</section>
@@ -282,33 +189,57 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
-		        <a href="14787476787496.html">宇宙简史</a>
+		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14787476590414.html">11 TIPS FOR PROTOTYPING WITH SKETCH</a>
+		        <a href="redis-safe.html">redis 安全</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14787476590487.html">Canvas</a>
+		        <a href="14798724609507.html">redis配置安装最佳实践</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14787476590525.html">Inspector</a>
+		        <a href="php-phpinfo.html">配置访问 phpinfo 的域名</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14787476590580.html">Introduction</a>
+		        <a href="php7-php56.html">php7回滚到php5.6</a>
 		      </li>
 	     
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
 	  
 	      
 	  

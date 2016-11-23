@@ -84,45 +84,31 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14787476590580.html">Introduction</a></h1>
-			<p class="meta"><time datetime="2016-11-10T11:14:19+08:00" 
-			pubdate data-updated="true">2016/11/10</time></p>
+		  	<h1 class="entry-title"><a href="php7-php56.html">php7回滚到php5.6</a></h1>
+			<p class="meta"><time datetime="2016-11-23T11:29:08+08:00" 
+			pubdate data-updated="true">2016/11/23</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<p>Sketch is a vector drawing app intended for designers of all sorts. Vector-based drawing is by far the best way to design websites, icons or interfaces. On top of this vector editing we have added support for basic bitmap styles, such as blur and color corrections.</p>
+		  	<h2 id="toc_0">为什么回滚到php5.6，而不是用最新的php7</h2>
 
-<blockquote>
-<p>Sketch 是一个为所有设计师设计的绘制矢量图形的APP。基于矢量的绘制，是迄今为止设计网站、图标、界面最好的的方式。在矢量之上，我们支持基本的位图样式，像模糊和颜色校正。</p>
-</blockquote>
+<ol>
+<li>memcached的扩展，源码编译安装的时候，php7不提供合适的头文件。</li>
+<li>php7还是不稳定版本，生产环境下，暂缓</li>
+</ol>
 
-<p>We’ve made Sketch both powerful and easy to understand. Experienced designers can easily transfer their existing skills in a matter of hours, and replace Adobe Photoshop, Illustrator or Fireworks for most digital design tasks.</p>
+<h2 id="toc_1">如何切换回php5.6</h2>
 
-<blockquote>
-<p>我们已经让 Sketch 既强大又容易上手。有经验的设计师能够很容易在数小时内熟悉，并且替换 Adobe Photoshop, Illustrator 或者 Fireworks 的大部分设计任务。</p>
-</blockquote>
-
-<h2 id="toc_0">Why use Sketch</h2>
-
-<p>Sketch has a great UI and was built for the kind of things you want to do when you design icons or interfaces. It’s a one-window app, and what you need is always in reach. We support Multiple Fills per layer and we have the best text rendering and text styles out there. The canvas is infinite and we have some great asset exporting tools we’re sure you will love.</p>
-
-<blockquote>
-<p>Sketch 有一个很漂亮的界面，并且为你设计图标和界面，开发了一系列你想要的功能。它是一个单窗口应用，你想要的都触手可及。我们支持多种图层填充，我们有最好的文本表现和文本样式。画布是没有边界的，我们有一些非常棒的资源导出工具，你一定会喜欢。</p>
-</blockquote>
-
-<p>You can view the canvas both in a resolution-independent view where you have infinite precision, or you can turn on Pixel Preview and you will know exactly how every pixel will look on export - if you care about such a thing.</p>
-
-<blockquote>
-<p>你能够用你拥有的任意精度的分辨率无关的屏幕来查看画布。或者你也可以开启像素预览，你将精确地知道导出的文件中的每一个像素，如果你关心这一点的话。</p>
-</blockquote>
-
-<h2 id="toc_1">What Sketch is not</h2>
-
-<p>Sketch is not a bitmap editor. This means that if you want to do photo correction or draw with brushes, this is not the app for you.</p>
-
-<blockquote>
-<p>Sketch 不是一个位图编辑器。这意味着如果你想修图或者使用画笔画画，它不是你想要的。</p>
-</blockquote>
+<ol>
+<li>按照文档<a href="php-install.html">安装好 php5.6</a></li>
+<li>修改 /etc/init.d/php-fpm 脚本</li>
+<li>修改 /etc/profile 的PATH（可能不需要改）</li>
+<li>修改 ~/.zshrc 的PATH</li>
+<li>修改 /etc/passwd 的php用户目录（可能不需要改）</li>
+<li>编译php扩展，并添加到php.ini 文件中的相应位置开启</li>
+<li>kill php-fpm进程</li>
+<li>重启 php-fpm 进程</li>
+</ol>
 
 
 		</div>
@@ -159,6 +145,17 @@ $(document).ready(function(event) {
 	        
 	        
 	      </li>
+	  
+	      <li class="post">
+	        <a href="technology.html"><strong>技术文档&nbsp;(27)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
+	        
+	        	<a href="%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84.html">后端架构&nbsp;(10)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
 	   
 	  </ul>
 	</section>
@@ -168,33 +165,57 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
-		        <a href="14787476787496.html">宇宙简史</a>
+		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14787476590414.html">11 TIPS FOR PROTOTYPING WITH SKETCH</a>
+		        <a href="redis-safe.html">redis 安全</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14787476590487.html">Canvas</a>
+		        <a href="14798724609507.html">redis配置安装最佳实践</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14787476590525.html">Inspector</a>
+		        <a href="php-phpinfo.html">配置访问 phpinfo 的域名</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14787476590580.html">Introduction</a>
+		        <a href="php7-php56.html">php7回滚到php5.6</a>
 		      </li>
 	     
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
 	  
 	      
 	  
