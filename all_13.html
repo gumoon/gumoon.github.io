@@ -73,7 +73,7 @@ $(document).ready(function(event) {
 
   <li id=""><a target="_self" href="archives.html">归档</a></li>
 
-  <li id=""><a target="_self" href="about.html">关于我</a></li>
+  <li id=""><a target="_self" href="about.html">关于</a></li>
 
 </ul>
 
@@ -84,19 +84,50 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14798309909156.html">Notification.Name</a></h1>
-			<p class="meta"><time datetime="2016-11-23T00:09:50+08:00" 
-			pubdate data-updated="true">2016/11/23</time></p>
+		  	<h1 class="entry-title"><a href="14805282358853.html">obs配置</a></h1>
+			<p class="meta"><time datetime="2016-12-01T01:50:35+08:00" 
+			pubdate data-updated="true">2016/12/1</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<hr/>
+		  	<p><a href="https://www.livecoding.tv/obs-guide-mac/">https://www.livecoding.tv/obs-guide-mac/</a><br/>
+* 输出选项</p>
 
-<p>表达的意义：通知名称。</p>
+<pre><code>Then navigate to &#39;Output&#39;. Here we will just make these changes:
+Video Bitrate: 2300kbps
+Audio Bitrate: 160kbps
+Check &quot;Enable Advanced Encoder Settings&quot;
+Set your custom buffer size to exactly your video birate
+Custom Encoder Settings: keyint=5
+</code></pre>
 
-<p>是一个嵌套类型。</p>
+<ul>
+<li>视频选项</li>
+</ul>
 
-<p>该类型是一个结构体。</p>
+<pre><code>Then navigate to &#39;Video&#39;. Here we will just make these changes:
+Resolution: 
+1. Set your base resolution in OBS exactly to your desktop native resolution. 
+2. Divide your first resolution size by the second one, e.g. 1920 divided by 1080 gives 1.7777 or 2560/1600 = 1.6 If you get 1.7777, set downscale resolution size to 1920 * 1080. If you get 1.6 set it 1280 * 800 
+3. Set your buffer size to the same value as your video bitrate 
+4. Advanced -&gt; Video -&gt; Keyframe interval = 5 
+5. Advanced -&gt; Video -&gt; Code profile = High (A good CPU can deal with Higher profile) 
+6. FPS: 20 (play with 15-30 if your screen is blurry)
+</code></pre>
+
+<ul>
+<li>问题</li>
+</ul>
+
+<pre><code>Problem: Frequent disconnections even the recommended video bit rate is used. OBS has 2 output modes simple and advanced which is the first option you see in the output tab. Sometimes the video bit rate entered in simple may be different from what you have when you change it to advanced. Please before you can switch between modes you need to stop streaming temporarily.
+Solution: Make sure the video bitrate, custom buffer size set in simple and advanced mode are the same.
+
+Problem: Screen is blurry?
+Solution: Go to video tab and Set your FPS to 10.
+
+Problem: Having Dropped frames.
+Solution: You need to do a speedtest using speedtest.net and compare the result of your upload speed with your video bitrate. The video bit rate should not be more than your upload speed.
+</code></pre>
 
 
 		</div>
@@ -135,14 +166,26 @@ $(document).ready(function(event) {
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
 	        
-	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -155,31 +198,31 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
-		        <a href="14798983960110.html">saltstack实践</a>
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798980187717.html">浏览器缓存机制</a>
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="redis-safe.html">redis 安全</a>
+		        <a href="14809496478909.html">laravel 安装</a>
 		      </li>
 	     
 	  

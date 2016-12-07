@@ -73,7 +73,7 @@ $(document).ready(function(event) {
 
   <li id=""><a target="_self" href="archives.html">归档</a></li>
 
-  <li id=""><a target="_self" href="about.html">关于我</a></li>
+  <li id=""><a target="_self" href="about.html">关于</a></li>
 
 </ul>
 
@@ -84,23 +84,62 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14791755622498.html">UIWindow</a></h1>
-			<p class="meta"><time datetime="2016-11-15T10:06:02+08:00" 
-			pubdate data-updated="true">2016/11/15</time></p>
+		  	<h1 class="entry-title"><a href="14800951049621.html">mac下安装php70</a></h1>
+			<p class="meta"><time datetime="2016-11-26T01:31:44+08:00" 
+			pubdate data-updated="true">2016/11/26</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<p>Windows 是app的基本组成部分。UIKit 处理了大部分窗口相关的交互。</p>
+		  	<pre><code>brew update
+brew install homebrew/php/php70
+</code></pre>
 
-<p>Xcode 模板自动为开发者提供了主窗口。</p>
+<pre><code>==&gt; Pouring php70-7.0.13_6.sierra.bottle.tar.gz
+==&gt; Caveats
+The php.ini file can be found in:
+    /usr/local/etc/php/7.0/php.ini
 
-<p>大部分app只需要一个窗口，用于在设备的主屏幕上显示 app 的内容。</p>
+✩✩✩✩ Extensions ✩✩✩✩
 
-<p>你不需要为 <code>UIWindow</code> 创建子类，你想在子类中实现的行为，通常通过 <code>ViewController</code> 实现更加简单。</p>
+If you are having issues with custom extension compiling, ensure that
+you are using the brew version, by placing /usr/local/bin before /usr/sbin in your PATH:
 
-<p>尽管开发者可以直接添加 subview 到窗口中，但是，更好的方式是，提供 view controller 来管理窗口内容。（基于MVC设计模式）</p>
+      PATH=&quot;/usr/local/bin:$PATH&quot;
 
-<p>当触控事件发生是，会把事件递送给窗口，那些非坐标相关的事件，递送给 key window。</p>
+PHP70 Extensions will always be compiled against this PHP. Please install them
+using --without-homebrew-php to enable compiling against system PHP.
+
+✩✩✩✩ PHP CLI ✩✩✩✩
+
+If you wish to swap the PHP you use on the command line, you should add the following to ~/.bashrc,
+~/.zshrc, ~/.profile or your shell&#39;s equivalent configuration file:
+
+      export PATH=&quot;$(brew --prefix homebrew/php/php70)/bin:$PATH&quot;
+
+✩✩✩✩ FPM ✩✩✩✩
+
+To launch php-fpm on startup:
+    mkdir -p ~/Library/LaunchAgents
+    cp /usr/local/opt/php70/homebrew.mxcl.php70.plist ~/Library/LaunchAgents/
+    launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.php70.plist
+
+The control script is located at /usr/local/opt/php70/sbin/php70-fpm
+
+OS X 10.8 and newer come with php-fpm pre-installed, to ensure you are using the brew version you need to make sure /usr/local/sbin is before /usr/sbin in your PATH:
+
+  PATH=&quot;/usr/local/sbin:$PATH&quot;
+
+You may also need to edit the plist to use the correct &quot;UserName&quot;.
+
+Please note that the plist was called &#39;homebrew-php.josegonzalez.php70.plist&#39; in old versions
+of this formula.
+
+With the release of macOS Sierra the Apache module is now not built by default. If you want to build it on your system
+you have to install php with the --with-apache option. See  brew options php70  for more details.
+
+To have launchd start homebrew/php/php70 now and restart at login:
+  brew services start homebrew/php/php70
+</code></pre>
 
 
 		</div>
@@ -139,14 +178,26 @@ $(document).ready(function(event) {
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
 	        
-	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -159,31 +210,31 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
-		        <a href="14798983960110.html">saltstack实践</a>
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798980187717.html">浏览器缓存机制</a>
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="redis-safe.html">redis 安全</a>
+		        <a href="14809496478909.html">laravel 安装</a>
 		      </li>
 	     
 	  

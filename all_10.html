@@ -73,7 +73,7 @@ $(document).ready(function(event) {
 
   <li id=""><a target="_self" href="archives.html">归档</a></li>
 
-  <li id=""><a target="_self" href="about.html">关于我</a></li>
+  <li id=""><a target="_self" href="about.html">关于</a></li>
 
 </ul>
 
@@ -84,71 +84,25 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14798699605642.html">memcached 最佳实践</a></h1>
-			<p class="meta"><time datetime="2016-11-23T10:59:20+08:00" 
-			pubdate data-updated="true">2016/11/23</time></p>
+		  	<h1 class="entry-title"><a href="14807401998111.html">laravel authentication(用户验证）</a></h1>
+			<p class="meta"><time datetime="2016-12-03T12:43:19+08:00" 
+			pubdate data-updated="true">2016/12/3</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<h2 id="toc_0">介绍</h2>
+		  	<h2 id="toc_0">创建验证体系脚手架</h2>
 
-<ul>
-<li>它比memcache好，有加锁机制等</li>
-<li>它比redis性能更高</li>
-<li>它特别适合于缓存小数据片</li>
-<li>在阿里云上使用yum安装memcached。</li>
-</ul>
-
-<h2 id="toc_1">与php配合</h2>
-
-<ul>
-<li>安装php的memcached扩展后，就可以通过php语言来编写访问memcached服务的脚本了</li>
-<li>php的memcached扩展，通过 libmemcached 库来跟memcached服务器交互</li>
-<li>php7无法编译memcached扩展。提示头文件找不到。</li>
-<li>最后改成使用<a href="php-memcached.html">php5.6 安装 memcached 扩展</a></li>
-</ul>
-
-<h2 id="toc_2">安装</h2>
-
-<p>执行：</p>
-
-<pre><code>yum search memcached
+<pre><code>php artisan make:auth  （scaffold all of the routes and views you need for authentication)
+php artisan migrate
 </code></pre>
 
-<p>找到合适的版本的memcached，在这之前，需要先配置好更新及时的 yum源（没有专门的源，配置好 epel 源即可）。 </p>
+<p>验证的配置文件：<code>config/auth.php</code></p>
 
-<p>执行：</p>
+<p>laravel的验证系统由：guards（警卫）和 provider 组成。<br/>
+guards 定义了怎么验证用户。例如： session guard 维护session 和 cookies 来验证。<br/>
+provider 定义了用户在存储中怎么被检索。例如：Eloquent、database query builder.</p>
 
-<pre><code>yum install memcached.x86_64 libmemcached.x86_64 libmemcached-devel.x86_64
-</code></pre>
-
-<p>选择：libmemcached.x86_64（php扩展连接memcached服务器时会用到）、 libmemcached-devel.x86_64（php扩展编译时会用到）、 memcached.x86_64、libevent-devel(memcached编译的时候需要，会默认安装)这三个软件包进行安装。 </p>
-
-<h2 id="toc_3">进程挂掉自动重启</h2>
-
-<p>待补充</p>
-
-<h2 id="toc_4">测试memcached</h2>
-
-<pre><code>telnet 127.0.0.1 11211
-</code></pre>
-
-<h2 id="toc_5">开机自动启动</h2>
-
-<p>自从centos7以来，系统服务的管理通过 systemd 来管理。 通过yum安装的memcached，默认已经安装了 memcached.service 脚本。 开机自动启动配置： </p>
-
-<pre><code>systemctl enable memcached.service
-</code></pre>
-
-<h2 id="toc_6">权限控制</h2>
-
-<p>修改 <code>/lib/systemd/system/memcached.service</code> 增加 <code>-l 127.0.0.1</code> 参数，然后重启即可。 </p>
-
-<pre><code>systemctl daemon-reload
- systemctl restart memcached 
-</code></pre>
-
-<p>增加 -l 127.0.0.1 后，ipv6地址的监听就没有了。(ss -ntlp) </p>
+<p>管理后台的用户验证方式和用户信息存储方式，可以自定义。</p>
 
 
 		</div>
@@ -187,14 +141,26 @@ $(document).ready(function(event) {
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
 	        
-	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -207,31 +173,31 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
-		        <a href="14798983960110.html">saltstack实践</a>
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798980187717.html">浏览器缓存机制</a>
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="redis-safe.html">redis 安全</a>
+		        <a href="14809496478909.html">laravel 安装</a>
 		      </li>
 	     
 	  

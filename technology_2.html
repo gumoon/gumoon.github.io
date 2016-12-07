@@ -73,7 +73,7 @@ $(document).ready(function(event) {
 
   <li id=""><a target="_self" href="archives.html">归档</a></li>
 
-  <li id=""><a target="_self" href="about.html">关于我</a></li>
+  <li id=""><a target="_self" href="about.html">关于</a></li>
 
 </ul>
 
@@ -84,36 +84,132 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14798974234237.html">YSlow性能优化指导</a></h1>
-			<p class="meta"><time datetime="2016-11-23T18:37:03+08:00" 
-			pubdate data-updated="true">2016/11/23</time></p>
+		  	<h1 class="entry-title"><a href="14811252163506.html">centos7.2 编译安装php7.1.0</a></h1>
+			<p class="meta"><time datetime="2016-12-07T23:40:16+08:00" 
+			pubdate data-updated="true">2016/12/7</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<ol>
-<li>favicon 的大小要小于2k。因为会从服务器根目录读，所以，要减小root下的 cookie 大小，并且让 favicon.ico 可缓存。</li>
-<li>不是使用html的标签属性来 scale 图片。这样你可以避免从服务器加载一个更大的图片。</li>
-<li>避免 AlphaImageLoader 过滤。它会增加内存消耗。</li>
-<li>加载静态资源的域，避免带 cookie.</li>
-<li>cookie 要尽量小。</li>
-<li>减少dom元素。增加浏览器解析速度。</li>
-<li>ajax 请求尽量使用get方式。因为 post 方式请求是，header和data分开发送，而get方式，header和data一起发送。但是，ie的最大url长度是2k，如果大于2k的数据，应该使用post。</li>
-<li>确保 ajax 请求回来的数据可以缓存。</li>
-<li>配置 etags ，增加缓存机会。</li>
-<li>避免重复的js和css文件，它非常消耗性能。重复的js文件，ie和firefox会请求多次。</li>
-<li>避免url重定向。</li>
-<li>最小化js和css。减少字节数，减少加载时间。</li>
-<li>别使用太多域名，减少 dns lookups 次数。</li>
-<li>别把js和css写在html里面。通过外部引用的方式加载js和css。</li>
-<li>避免css计算。</li>
-<li>把js引用放在页面底部。因为js加载的时候，会禁止并行加载，浏览器就不能加载其他内容了。</li>
-<li>把css引用放在页面顶部。css越早加载，页面越早展现。</li>
-<li>服务器使用gzip压缩。gzip能压缩70%。</li>
-<li>给 images , js ,css , flash  增加 expires 头。使它们变得<strong>可缓存</strong>。</li>
-<li>避免空 src 和 href 。因为不同浏览器会有不同的默认行为，针对空地址。</li>
-<li>使用cdn分发网络，提供静态自己加载速度。</li>
-<li>减少http请求。合并文件，合并多个脚本文件到一个脚本文件，合并多个css文件到一个css文件，使用 css sprites 和 image maps.</li>
-</ol>
+		  	<p>centos7.2 源里的php版本才5.4。根本不满足现代web应用需求。</p>
+
+<p>从 php.net 的下载页面，下载：</p>
+
+<pre><code>wget http://cn2.php.net/get/php-7.1.0.tar.gz/from/this/mirror
+mv mirror php-7.1.0.tar.gz
+tar zxvf php-7.1.0.tar.gz 
+</code></pre>
+
+<h2 id="toc_0">准备工作</h2>
+
+<ul>
+<li>更新系统 </li>
+</ul>
+
+<pre><code>yum update
+</code></pre>
+
+<ul>
+<li>安装 xml2, 确保有 xml2-config 命令</li>
+</ul>
+
+<pre><code>yum install libxml2-devel.x86_64 libxml2.x86_64  
+rpm -ql libxml2-devel.x86_64
+</code></pre>
+
+<ul>
+<li>安装 openssl</li>
+</ul>
+
+<pre><code>yum install openssl-devel.x86_64 openssl.x86_64
+</code></pre>
+
+<ul>
+<li>安装 curl</li>
+</ul>
+
+<pre><code>yum install libcurl.x86_64 libcurl-devel.x86_64
+</code></pre>
+
+<ul>
+<li>安装 libmcrypt</li>
+</ul>
+
+<pre><code>yum install libmcrypt.x86_64 libmcrypt-devel.x86_64
+</code></pre>
+
+<ul>
+<li>安装 gd 需要的lib
+<a href="php-gd.html">gd扩展（验证码用的到）</a></li>
+</ul>
+
+<h2 id="toc_1">编译</h2>
+
+<pre><code>./configure --prefix=/usr/local/php710 --exec-prefix=/usr/local/php710 --bindir=/usr/local/php710/bin --sbindir=/usr/local/php710/sbin --includedir=/usr/local/php710/include --libdir=/usr/local/php710/lib/php --mandir=/usr/local/php710/php/man --with-config-file-path=/usr/local/php710/etc --with-mcrypt=/usr/include --with-mhash --with-openssl --with-mysqli=shared,mysqlnd --with-pdo-mysql=shared,mysqlnd --with-iconv --with-zlib --enable-zip --enable-inline-optimization --disable-debug --disable-rpath --enable-shared --enable-xml --enable-bcmath --enable-shmop --enable-sysvsem --enable-mbregex --enable-mbstring --enable-gd-native-ttf --enable-pcntl --enable-sockets --with-xmlrpc --enable-soap --without-pear --with-gettext --enable-session --with-curl --enable-opcache --enable-fpm --with-fpm-user=nginx --with-fpm-group=nginx --without-gdbm --disable-fileinfo --with-freetype-dir=/usr/lib64 --with-jpeg-dir=/usr/lib64 --with-gd
+</code></pre>
+
+<pre><code>make &amp;&amp; make install
+make clean
+</code></pre>
+
+<h2 id="toc_2">配置文件</h2>
+
+<pre><code>cp php.ini-production /usr/local/php710/etc/php.ini
+cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+cp /usr/local/php710/etc/php-fpm.conf.default /usr/local/php710/etc/php-fpm.conf
+cp /usr/local/php710/etc/php-fpm.d/www.conf.default /usr/local/php710/etc/php-fpm.d/www.conf
+</code></pre>
+
+<h2 id="toc_3">设置path</h2>
+
+<pre><code>vim .zshrc
+</code></pre>
+
+<p>修改用户跟目录下的 .zshrc 文件，把 /usr/local/php710/bin 加在path项的前面。</p>
+
+<pre><code>source .zshrc
+</code></pre>
+
+<h2 id="toc_4">创建php日志文件目录</h2>
+
+<pre><code>mkdir -p /var/log/php-fpm/ &amp;&amp; mkdir -p /var/run/php-fpm &amp;&amp; cd /var/run/ &amp;&amp; chown -R nginx:nginx php-fpm
+
+mkdir -p /var/lib/php/session
+
+chown -R nginx:nginx /var/lib/php
+</code></pre>
+
+<h2 id="toc_5">检查扩展是否都安装了，安装并开启</h2>
+
+<pre><code>cd /usr/local/php710/lib/php/extensions/no-debug-non-zts-20160303
+</code></pre>
+
+<h2 id="toc_6">配置 php.ini 的 extension及其它</h2>
+
+<pre><code>zend_extension=opcache.so
+extension=mysqli.so
+extension=pdo_mysql.so
+</code></pre>
+
+<p>或者，使用 slat 同步php.ini &amp; php-fpm.conf 文件</p>
+
+<p>启动php-fpm：<br/>
+先给 /etc/init.d/php-fpm 增加可执行权限。</p>
+
+<pre><code>/etc/init.d/php-fpm start
+</code></pre>
+
+<h2 id="toc_7">配置 memcached 扩展</h2>
+
+<p><a href="php-memcached.html">php5.6 安装 memcached扩展</a></p>
+
+<h2 id="toc_8">配置gd扩展</h2>
+
+<p><a href="php-gd.html">gd扩展（验证码用的到）</a></p>
+
+<h2 id="toc_9">查看phpinfo</h2>
+
+<p>检查扩展安装情况。<br/>
+<a href="php-phpinfo.html">配置访问 phpinfo 的域名</a></p>
 
 
 		</div>
@@ -152,14 +248,26 @@ $(document).ready(function(event) {
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
 	        
-	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -172,31 +280,31 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
-		        <a href="14798983960110.html">saltstack实践</a>
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798980187717.html">浏览器缓存机制</a>
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="redis-safe.html">redis 安全</a>
+		        <a href="14809496478909.html">laravel 安装</a>
 		      </li>
 	     
 	  

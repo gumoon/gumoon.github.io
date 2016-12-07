@@ -1,0 +1,434 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>
+    
+  web - 自由学习网
+  
+
+  </title>
+  <meta name="author" content="gumoon">
+  <meta name="description" content="积累、思考、成长、分享、厚积薄发、学以致用">
+
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link href="asset/css/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="atom.xml" rel="alternate" title="自由学习网" type="application/atom+xml">
+  <script src="asset/js/modernizr-2.0.js"></script>
+  <script src="asset/js/jquery.min.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/solarized_light.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <style type="text/css">
+  .cat-children-p{ padding: 6px 0px;}
+  .hljs{background: none;}
+  </style>
+  <script type="text/javascript">
+  var isAddSildbar = true;
+  </script>
+  <script src="asset/js/octopress.js" type="text/javascript"></script>
+</head>
+<script type="text/javascript">
+//链接新开窗口
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+$(document).ready(function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="index.html">自由学习网</a></h1>
+  
+    <h2>积累、思考、成长、分享、厚积薄发、学以致用</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="wd" value="site:www.free-abc.com.cn" />
+    <input class="search" type="text" name="wd" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+
+  <li id=""><a target="_self" href="index.html">首页</a></li>
+
+  <li id=""><a target="_self" href="archives.html">归档</a></li>
+
+  <li id=""><a target="_self" href="about.html">关于</a></li>
+
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content"> 
+<div class="blog-index">
+
+	<article>
+		 <header>
+		  	<h1 class="entry-title"><a href="14799853328864.html">Bootstrap 实践</a></h1>
+			<p class="meta"><time datetime="2016-11-24T19:02:12+08:00" 
+			pubdate data-updated="true">2016/11/24</time></p>
+		 </header>
+	  	<div class="entry-content">
+		  	
+		  	<h2 id="toc_0">介绍</h2>
+
+<ul>
+<li>getbootstrap.com</li>
+</ul>
+
+<h2 id="toc_1">在 laravel 中使用 bootstrap</h2>
+
+<p>在根目录的 package.json 文件中增加：<code>&quot;bootstrap&quot;: &quot;^3&quot;</code><br/>
+然后执行：<code>npm update</code> 命令。</p>
+
+<p>更多信息，请查看：<br/>
+<a href="http://www.golaravel.com/laravel/docs/5.1/elixir/">Elixir</a></p>
+
+<h2 id="toc_2">使用</h2>
+
+<p><a href="http://www.bootcss.com">http://www.bootcss.com</a></p>
+
+<p>html5文档类型：<br/>
+Bootstrap 使用到的某些html元素和css属性需要将页面设置为html5文档类型。在你的项目中的每个页面都需要参照下面的格式进行设置。</p>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;zh-CN&quot;&gt;
+  ...
+&lt;/html&gt;
+</code></pre>
+
+<p>Bootstrap 是移动设备优先的。为了确保适当的绘制和触屏缩放，需要在 <code>&lt;head&gt;</code> 之中添加 viewport 元数据标签。</p>
+
+<pre><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no&quot;&gt; //禁用缩放功能，让你的网站看上去更像原生应用的感觉。
+</code></pre>
+
+<p>Bootstrap 排版、链接样式设置了基本的全局样式。在 scaffolding.less 中可以找到对应的源码。</p>
+
+<p>为了增强跨浏览器表现的一致性，使用了 Normalize.css。</p>
+
+<p>Bootstrap需要为页面内容和栅格系统包裹一个 <code>.container</code> 容器。我们提供了两个作此用处的类。由于 padding 等属性的原因，这两种容器类不能互相嵌套。</p>
+
+<p><code>.container</code> 类用于固定宽度并支持响应式布局的容器。</p>
+
+<pre><code>&lt;div class=&quot;container&quot;&gt;
+  ...
+&lt;/div&gt;
+</code></pre>
+
+<p><code>.container_fluid</code> 类用于100%宽度，占据全部视口（viewport) 的容器。</p>
+
+<pre><code>&lt;div class=&quot;container-fluid&quot;&gt;
+  ...
+&lt;/div&gt;
+</code></pre>
+
+<h3 id="toc_3">栅格系统</h3>
+
+<p>随着屏幕或视口尺寸的增加，系统会自动分为最多12列。<br/>
+栅格系统用于通过一系列的行（row）与列（column）的组合来创建页面布局，你的内容就可以放入这些创建好的布局中。<br/>
+工作原理：<br/>
+1. row 必须包含在 .container （固定宽度）或 .container_fluid （100%宽度）中，以便为其赋予合适的排列（aligment)和内补（padding）。<br/>
+2. 通过 行 (row）在水平方向创建一组列(column)。<br/>
+3. 你的内容应当放置于列内，并且只有列可以作为行的直接子元素。<br/>
+4. 类似 .row 和 .col-xs-4 这种预定义的类，可以用来快速创建栅格布局。Bootstrap 源码中定义的 mixin 也可以用来创建语义化的布局。<br/>
+5. 通过为“列（column）”设置 padding 属性，从而创建列与列之间的间隔（gutter）。通过为 .row 元素设置负值 margin 从而抵消掉为 .container 元素设置的 padding，也就间接为“行（row）”所包含的“列（column）”抵消掉了padding。<br/>
+6. The negative margin is why the examples below are outdented. It&#39;s so that content within grid columns is lined up with non-grid content.<br/>
+7. Grid columns are created by specifying the number of twelve available columns you wish to span. For example, three equal columns would use three .col-xs-4.<br/>
+8. 如果一“行（row）”中包含了的“列（column）”大于 12，多余的“列（column）”所在的元素将被作为一个整体另起一行排列。<br/>
+9. Grid classes apply to devices with screen widths greater than or equal to the breakpoint sizes, and override grid classes targeted at smaller devices. Therefore, applying any .col-md- class to an element will not only affect its styling on medium devices but also on large devices if a .col-lg- class is not present.</p>
+
+<p>Bootstrap 将全局 font-size 设置为 14px, line-height 设置为 1.428。这些属性直接赋予 <body> 元素和所有段落元素。<br/>
+<p> 元素还被设置了等于 1/2 行高（即 10px）的底部外边距。<br/>
+.lead 类可以让段落突出显示。</p>
+
+<p>高亮 <mark></mark><br/>
+删除效果：<del></del><br/>
+无用文本：<s></s><br/>
+<small>内的文本将被设置为父容器字体大小的85%。标题元素中嵌套的 <small> 元素被设置不同的 font-size 。<br/>
+在html5中，<b>用于高亮单词和短语，不带任何着重的意味；而 <i> 标签用于发言、技术词汇等。</p>
+
+<p>文本对齐类：text-left, text-center, test-right, test-justify, text-nowrap 。</p>
+
+<p>缩略词：</p>
+
+<pre><code>&lt;abbr title=&quot;attribute&quot;&gt;attr&lt;/abbr&gt;
+</code></pre>
+
+<p>地址：</p>
+
+<pre><code>&lt;address&gt;
+  &lt;strong&gt;Twitter, Inc.&lt;/strong&gt;&lt;br&gt;
+  795 Folsom Ave, Suite 600&lt;br&gt;
+  San Francisco, CA 94107&lt;br&gt;
+  &lt;abbr title=&quot;Phone&quot;&gt;P:&lt;/abbr&gt; (123) 456-7890
+&lt;/address&gt;
+
+&lt;address&gt;
+  &lt;strong&gt;Full Name&lt;/strong&gt;&lt;br&gt;
+  &lt;a href=&quot;mailto:#&quot;&gt;first.last@example.com&lt;/a&gt;
+&lt;/address&gt;
+</code></pre>
+
+<p>引用：</p>
+
+<pre><code>&lt;blockquote&gt;
+  &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.&lt;/p&gt;
+  &lt;footer&gt;Someone famous in &lt;cite title=&quot;Source Title&quot;&gt;Source Title&lt;/cite&gt;&lt;/footer&gt;
+&lt;/blockquote&gt;
+
+//右对齐
+&lt;blockquote class=&quot;blockquote-reverse&quot;&gt;
+  ...
+&lt;/blockquote&gt;
+</code></pre>
+
+<p>列表：<br/>
+有序列表和无序列表。</p>
+
+<p>无样式列表：class=&quot;list-unstyled&quot;,只针对于直接子元素。<br/>
+将列表元素放置于同一行：list-inline</p>
+
+<p>描述：</p>
+
+<pre><code>&lt;dl class=&quot;dl-horizontal&quot;&gt;
+  &lt;dt&gt;...&lt;/dt&gt;
+  &lt;dd&gt;...&lt;/dd&gt;
+&lt;/dl&gt;
+</code></pre>
+
+<p>表格<br/>
+默认表格：table</p>
+
+<p>条纹状表格：.table-striped<br/>
+带边框表格：.table-bordered<br/>
+鼠标悬停：.table-hover<br/>
+紧缩表格：.table-condensed<br/>
+为行或单元格设置颜色：.active, .success, .info, .warning, .danger</p>
+
+<p>响应式表格：.table-responsive<br/>
+将任何 .table 元素包裹在 .table-responsive 元素内，即可创建响应式表格。</p>
+
+<pre><code>&lt;div class=&quot;table-responsive&quot;&gt;
+  &lt;table class=&quot;table&quot;&gt;
+    ...
+  &lt;/table&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>表单：</p>
+
+<p>所有设置了 .form-control 类的 <input>、<textarea> 和 <select> 元素都将被默认设置宽度属性为 width: 100%;。 将 label 元素和前面提到的控件包裹在 .form-group 中可以获得最好的排列。</p>
+
+<p>内联表单：<br/>
+为 <form> 元素添加 .form-inline 类。</p>
+
+<p>水平排列的表单：<br/>
+通过为表单添加 .form-horizontal 类，并联合使用 Bootstrap 预置的栅格类，可以将 label 标签和控件组水平并排布局。这样做将改变 .form-group 的行为，使其表现为栅格系统中的行（row），因此就无需再额外添加 .row 了。</p>
+
+<pre><code>&lt;form class=&quot;form-horizontal&quot; role=&quot;form&quot;&gt;
+  &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;inputEmail3&quot; class=&quot;col-sm-2 control-label&quot;&gt;Email&lt;/label&gt;
+    &lt;div class=&quot;col-sm-10&quot;&gt;
+      &lt;input type=&quot;email&quot; class=&quot;form-control&quot; id=&quot;inputEmail3&quot; placeholder=&quot;Email&quot;&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;inputPassword3&quot; class=&quot;col-sm-2 control-label&quot;&gt;Password&lt;/label&gt;
+    &lt;div class=&quot;col-sm-10&quot;&gt;
+      &lt;input type=&quot;password&quot; class=&quot;form-control&quot; id=&quot;inputPassword3&quot; placeholder=&quot;Password&quot;&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;form-group&quot;&gt;
+    &lt;div class=&quot;col-sm-offset-2 col-sm-10&quot;&gt;
+      &lt;div class=&quot;checkbox&quot;&gt;
+        &lt;label&gt;
+          &lt;input type=&quot;checkbox&quot;&gt; Remember me
+        &lt;/label&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;form-group&quot;&gt;
+    &lt;div class=&quot;col-sm-offset-2 col-sm-10&quot;&gt;
+      &lt;button type=&quot;submit&quot; class=&quot;btn btn-default&quot;&gt;Sign in&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/form&gt;
+</code></pre>
+
+<p>包括大部分表单控件、文本输入域控件，还支持所有 HTML5 类型的输入控件： text、password、datetime、datetime-local、date、month、time、week、number、email、url、search、tel 和 color。</p>
+
+
+		</div>
+
+		
+
+	</article>
+  
+	<div class="pagination">
+	 <a class="prev" href="web_3.html">&larr; Older</a> 
+<a href="archives.html">Blog Archives</a>
+	 <a class="next" href="web_1.html">Newer &rarr;</a>  
+	    
+	</div>
+</div>
+ <aside class="sidebar"> 
+
+	<section>
+	  <h1>分类</h1>
+	  <ul id="recent_posts">
+	  
+	      <li class="post">
+	        <a href="translate.html"><strong>翻译文档&nbsp;(7)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="stetch.html">stetch&nbsp;(7)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	  
+	      <li class="post">
+	        <a href="history.html"><strong>历史&nbsp;(1)</strong></a>
+	        
+	        
+	        
+	      </li>
+	  
+	      <li class="post">
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
+	        
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	   
+	  </ul>
+	</section>
+	<section>
+	  <h1>最新发布</h1>
+	  <ul id="recent_posts">
+	  
+	      
+		      <li class="post">
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14809496478909.html">laravel 安装</a>
+		      </li>
+	     
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	   
+	  </ul>
+	</section>
+	
+</aside> </div></div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 -  -
+  <span class="credit">Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; Theme by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+
+  
+    
+
+<script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?831fc9a0be36b03335a3f24dda056e34";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</body>
+</html>

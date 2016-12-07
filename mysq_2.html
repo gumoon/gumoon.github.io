@@ -1,0 +1,315 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>
+    
+  mysql - 自由学习网
+  
+
+  </title>
+  <meta name="author" content="gumoon">
+  <meta name="description" content="积累、思考、成长、分享、厚积薄发、学以致用">
+
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link href="asset/css/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="atom.xml" rel="alternate" title="自由学习网" type="application/atom+xml">
+  <script src="asset/js/modernizr-2.0.js"></script>
+  <script src="asset/js/jquery.min.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/solarized_light.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <style type="text/css">
+  .cat-children-p{ padding: 6px 0px;}
+  .hljs{background: none;}
+  </style>
+  <script type="text/javascript">
+  var isAddSildbar = true;
+  </script>
+  <script src="asset/js/octopress.js" type="text/javascript"></script>
+</head>
+<script type="text/javascript">
+//链接新开窗口
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+$(document).ready(function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="index.html">自由学习网</a></h1>
+  
+    <h2>积累、思考、成长、分享、厚积薄发、学以致用</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="wd" value="site:www.free-abc.com.cn" />
+    <input class="search" type="text" name="wd" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+
+  <li id=""><a target="_self" href="index.html">首页</a></li>
+
+  <li id=""><a target="_self" href="archives.html">归档</a></li>
+
+  <li id=""><a target="_self" href="about.html">关于</a></li>
+
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content"> 
+<div class="blog-index">
+
+	<article>
+		 <header>
+		  	<h1 class="entry-title"><a href="14800526722335.html">mac系统安装 mysql</a></h1>
+			<p class="meta"><time datetime="2016-11-25T13:44:32+08:00" 
+			pubdate data-updated="true">2016/11/25</time></p>
+		 </header>
+	  	<div class="entry-content">
+		  	
+		  	<h2 id="toc_0">通过brew 安装 mariadb</h2>
+
+<blockquote>
+<p>If you need a database, try MariaDB by running <code>brew install mariadb</code> on your command line. Once MariaDB has been installed, you may start it using the <code>brew services start mariadb</code> command. You can then connect to the database at <code>127.0.0.1</code> using the <code>root</code> username and an empty string for the password.</p>
+</blockquote>
+
+<pre><code>Updating Homebrew...
+==&gt; Downloading https://homebrew.bintray.com/bottles/mariadb-10.1.19.sierra.bottle.tar.gz
+######################################################################## 100.0%
+==&gt; Pouring mariadb-10.1.19.sierra.bottle.tar.gz
+==&gt; Using the sandbox
+==&gt; /usr/local/Cellar/mariadb/10.1.19/bin/mysql_install_db --verbose --user=gumoon --basedir=/usr/local/Cellar/mariadb/10.1.19 --datadir=/usr/local/var/mysql --tmpdir=/t
+==&gt; Caveats
+A &quot;/etc/my.cnf&quot; from another install may interfere with a Homebrew-built
+server starting up correctly.
+
+To connect:
+    mysql -uroot
+
+To have launchd start mariadb now and restart at login:
+  brew services start mariadb
+Or, if you don&#39;t want/need a background service you can just run:
+  mysql.server start
+==&gt; Summary
+🍺  /usr/local/Cellar/mariadb/10.1.19: 574 files, 136.6M
+</code></pre>
+
+<h2 id="toc_1">通过 dmg 安装 mysql5.7</h2>
+
+<h3 id="toc_2">下载最新的MySQL社区版</h3>
+
+<p>官方下载地址：<a href="http://dev.mysql.com/downloads/mysql/">http://dev.mysql.com/downloads/mysql/</a><br/>
+为了安装更方便，建议下载dmg安装包。<br/>
+最新的版本是5.7.9。</p>
+
+<h3 id="toc_3">安装mysql</h3>
+
+<p>双击mysql-5.7.9-osx10.10-x86_64.dmg文件，加载镜像<br/>
+双击mysql-5.7.9-osx10.9-x86_64.pkg，开始安装<br/>
+一路下一步，即可安装成功<br/>
+注意：安装完成之后会弹出一个对话框，告诉我们生成了一个root账户的临时密码。请注意保存，否则重设密码会比较麻烦。</p>
+
+<h3 id="toc_4">启动mysql</h3>
+
+<p>打开系统偏好设置，会发现多了一个MySQL图标，点击它，会进入MySQL的设置界面：<br/>
+安装之后，默认MySQL的状态是stopped，关闭的，需要点击“Start MySQL Server”按钮来启动它，启动之后，状态会变成running。<br/>
+下方还有一个复选框按钮，可以设置是否在系统启动的时候自动启动MySQL，默认是勾选的，建议取消，节省开机时间。</p>
+
+<h3 id="toc_5">通过终端连接mysql</h3>
+
+<p>打开终端，为Path路径附加MySQL的bin目录<br/>
+PATH=&quot;$PATH&quot;:/usr/local/mysql/bin<br/>
+然后通过以下命令登陆MySQL（密码就是前面自动生成的临时密码）<br/>
+mysql -u root -p<br/>
+登陆成功，但是运行命令的时候会报错，提示我们需要重设密码。<br/>
+mysql&gt; show databases;<br/>
+ERROR 1820 (HY000): You must reset your password using ALTER USER statement before executing this statement.<br/>
+mysql&gt; <br/>
+修改密码，新密码为123456<br/>
+set PASSWORD =PASSWORD(&#39;123456&#39;);<br/>
+再次执行show databases;就正常了。</p>
+
+<h3 id="toc_6">如何卸载？</h3>
+
+<p>删除那个文件夹就行吧。<br/>
+PATH也记得修改下。</p>
+
+<p>我先不删，留着研究下。</p>
+
+
+		</div>
+
+		
+
+	</article>
+  
+	<div class="pagination">
+	
+<a href="archives.html">Blog Archives</a>
+	 <a class="next" href="mysq_1.html">Newer &rarr;</a>  
+	    
+	</div>
+</div>
+ <aside class="sidebar"> 
+
+	<section>
+	  <h1>分类</h1>
+	  <ul id="recent_posts">
+	  
+	      <li class="post">
+	        <a href="translate.html"><strong>翻译文档&nbsp;(7)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="stetch.html">stetch&nbsp;(7)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	  
+	      <li class="post">
+	        <a href="history.html"><strong>历史&nbsp;(1)</strong></a>
+	        
+	        
+	        
+	      </li>
+	  
+	      <li class="post">
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
+	        
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	   
+	  </ul>
+	</section>
+	<section>
+	  <h1>最新发布</h1>
+	  <ul id="recent_posts">
+	  
+	      
+		      <li class="post">
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14809496478909.html">laravel 安装</a>
+		      </li>
+	     
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	   
+	  </ul>
+	</section>
+	
+</aside> </div></div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 -  -
+  <span class="credit">Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; Theme by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+
+  
+    
+
+<script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?831fc9a0be36b03335a3f24dda056e34";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,316 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>
+    
+  nginx - 自由学习网
+  
+
+  </title>
+  <meta name="author" content="gumoon">
+  <meta name="description" content="积累、思考、成长、分享、厚积薄发、学以致用">
+
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link href="asset/css/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="atom.xml" rel="alternate" title="自由学习网" type="application/atom+xml">
+  <script src="asset/js/modernizr-2.0.js"></script>
+  <script src="asset/js/jquery.min.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/solarized_light.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <style type="text/css">
+  .cat-children-p{ padding: 6px 0px;}
+  .hljs{background: none;}
+  </style>
+  <script type="text/javascript">
+  var isAddSildbar = true;
+  </script>
+  <script src="asset/js/octopress.js" type="text/javascript"></script>
+</head>
+<script type="text/javascript">
+//链接新开窗口
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+$(document).ready(function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="index.html">自由学习网</a></h1>
+  
+    <h2>积累、思考、成长、分享、厚积薄发、学以致用</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="wd" value="site:www.free-abc.com.cn" />
+    <input class="search" type="text" name="wd" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+
+  <li id=""><a target="_self" href="index.html">首页</a></li>
+
+  <li id=""><a target="_self" href="archives.html">归档</a></li>
+
+  <li id=""><a target="_self" href="about.html">关于</a></li>
+
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content"> 
+<div class="blog-index">
+
+	<article>
+		 <header>
+		  	<h1 class="entry-title"><a href="14798693795226.html">nginx最佳实践</a></h1>
+			<p class="meta"><time datetime="2016-11-23T10:49:39+08:00" 
+			pubdate data-updated="true">2016/11/23</time></p>
+		 </header>
+	  	<div class="entry-content">
+		  	
+		  	<h2 id="toc_0">安装</h2>
+
+<p>从 <code>http://nginx.org/packages/centos/7/x86_64/RPMS/</code> 下载最新源更新包。</p>
+
+<pre><code>rpm -ivh nginx-release-centos-7-0.el7.ngx.noarch.rpm (这个文件从nginx官网下载的) 
+yum install nginx （一定先下载上面那个rpm，确保安装最新的nginx稳定版并且进行了包校验）
+</code></pre>
+
+<p>或者配置 <code>/etc/yum.repos.d/nginx.repo</code> （要先创建）:</p>
+
+<pre><code>[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/OS/OSRELEASE/$basearch/
+gpgcheck=0
+enabled=1
+</code></pre>
+
+<p>Replace “OS” with “rhel” or “centos”, depending on the distribution used, and “OSRELEASE” with “5”, “6”, or “7”, for 5.x, 6.x, or 7.x versions, respectively.</p>
+
+<p>检查安装的版本：</p>
+
+<pre><code>nginx -V 
+</code></pre>
+
+<p>打开80端口：</p>
+
+<pre><code>firewall-cmd --add-service=http --permanent 
+firewall-cmd -—reload 
+</code></pre>
+
+<p>启动服务：</p>
+
+<pre><code>systemctl enable nginx.service
+systemctl start nginx.service
+systemctl restart nginx.service
+
+nginx 启动nginx
+nginx -s reload 重启nginx
+</code></pre>
+
+<p>然后检测是否安装成功。</p>
+
+<h2 id="toc_1">配置</h2>
+
+<ol>
+<li>worker_processes auto nginx进程数，建议按照cpu核数来指定。2个4核cpu时计为8. auto 将自动检测cpu核数。</li>
+<li>worker_rlimit_nofile 65535; 这个指令是指一个nginx进程打开的最多文件描述符数目，理论值应该是最多打开文件数（ulimit -n)与nginx进程数相除，但是nginx分配请求并不是那么均匀，所以最好与 ulimit -n 的值保持一致。 现在在 linux2.6内核下进程最大打开文件数为65535，所以 worker_rlimit_nofile 就相应应该填写65535. 这是因为 nginx 调度时分配请求到进程并不是那么均衡，所以加入填写10240，总并发量达到3-4万时就有进程可能超过10240，这是就会返回502错误。</li>
+<li>use epoll; nginx自动选择最高效的连接处理方法。这个不需要指定。</li>
+<li>worker_connections number; 每个 worker_process 可以同时打开的最大连接数。理论上每台nginx服务器的最大连接数为 worker_processes*worker_connections。
+还有 fastcgi , https 等等</li>
+</ol>
+
+<h2 id="toc_2">配置虚拟主机</h2>
+
+<p>先要安装php和mysql吧。方便使用。</p>
+
+<h2 id="toc_3">nginx的高性能指标</h2>
+
+<p>每秒处理请求数1000以上。（SAE每秒处理请求数是5000）<br/>
+每个请求的处理时间：100毫秒以下。</p>
+
+<h2 id="toc_4">如何评测</h2>
+
+<pre><code>ab -n 10000 -c 100 http://www.yourdomain.com/
+</code></pre>
+
+<h2 id="toc_5">问题排查</h2>
+
+<p>多看日志</p>
+
+
+		</div>
+
+		
+
+	</article>
+  
+	<div class="pagination">
+	
+<a href="archives.html">Blog Archives</a>
+	 <a class="next" href="nginx.html">Newer &rarr;</a>  
+	    
+	</div>
+</div>
+ <aside class="sidebar"> 
+
+	<section>
+	  <h1>分类</h1>
+	  <ul id="recent_posts">
+	  
+	      <li class="post">
+	        <a href="translate.html"><strong>翻译文档&nbsp;(7)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="stetch.html">stetch&nbsp;(7)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	  
+	      <li class="post">
+	        <a href="history.html"><strong>历史&nbsp;(1)</strong></a>
+	        
+	        
+	        
+	      </li>
+	  
+	      <li class="post">
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
+	        
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	   
+	  </ul>
+	</section>
+	<section>
+	  <h1>最新发布</h1>
+	  <ul id="recent_posts">
+	  
+	      
+		      <li class="post">
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14809496478909.html">laravel 安装</a>
+		      </li>
+	     
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	   
+	  </ul>
+	</section>
+	
+</aside> </div></div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 -  -
+  <span class="credit">Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; Theme by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+
+  
+    
+
+<script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?831fc9a0be36b03335a3f24dda056e34";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</body>
+</html>

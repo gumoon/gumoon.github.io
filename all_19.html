@@ -73,7 +73,7 @@ $(document).ready(function(event) {
 
   <li id=""><a target="_self" href="archives.html">归档</a></li>
 
-  <li id=""><a target="_self" href="about.html">关于我</a></li>
+  <li id=""><a target="_self" href="about.html">关于</a></li>
 
 </ul>
 
@@ -84,21 +84,64 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14793813370586.html">Selector</a></h1>
-			<p class="meta"><time datetime="2016-11-17T19:15:37+08:00" 
-			pubdate data-updated="true">2016/11/17</time></p>
+		  	<h1 class="entry-title"><a href="14802645455291.html">laravel 使用 database</a></h1>
+			<p class="meta"><time datetime="2016-11-28T00:35:45+08:00" 
+			pubdate data-updated="true">2016/11/28</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<p>例子：<br/>
-<code>NotificationCenter.default.addObserver(self, selector: #selector(downloadImage), name: Notification.Name(&quot;BLDownloadImageNotification&quot;), object: nil)</code></p>
+		  	<h2 id="toc_0">支持的数据库</h2>
 
-<p>语法：<br/>
-<code>#selector(downloadImage)</code><br/>
-<code>#selector(self.downloadImage)</code></p>
+<ul>
+<li>MySQL</li>
+<li>Postgres</li>
+<li>SQLite</li>
+<li>SQL Server</li>
+</ul>
 
-<p>错误提示：<br/>
-<em>unrecognized selector sent to instance</em></p>
+<h2 id="toc_1">配置文件</h2>
+
+<ol>
+<li><code>config/database.php</code></li>
+<li><code>.env</code></li>
+<li>支持读写分离</li>
+</ol>
+
+<h2 id="toc_2">支持怎么拼接sql</h2>
+
+<ul>
+<li>raw queries </li>
+</ul>
+
+<pre><code>$users = DB::select(&#39;select * from users where active = ?&#39;, [1]);
+
+$results = DB::select(&#39;select * from users where id = :id&#39;, [&#39;id&#39; =&gt; 1]);
+
+DB::insert(&#39;insert into users (id, name) values (?, ?)&#39;, [1, &#39;Dayle&#39;]);
+
+$affected = DB::update(&#39;update users set votes = 100 where name = ?&#39;, [&#39;John&#39;]);
+
+$deleted = DB::delete(&#39;delete from users&#39;);
+
+DB::statement(&#39;drop table users&#39;);
+
+DB::transaction(function () {
+    DB::table(&#39;users&#39;)-&gt;update([&#39;votes&#39; =&gt; 1]);
+
+    DB::table(&#39;posts&#39;)-&gt;delete();
+});
+</code></pre>
+
+<ul>
+<li><p>the query builder</p></li>
+<li><p>the Eloquent ORM</p></li>
+</ul>
+
+<h2 id="toc_3">使用多个数据库连接</h2>
+
+<pre><code>$users = DB::connection(&#39;foo&#39;)-&gt;select(...);
+$pdo = DB::connection()-&gt;getPdo();
+</code></pre>
 
 
 		</div>
@@ -137,14 +180,26 @@ $(document).ready(function(event) {
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
 	        
-	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -157,31 +212,31 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
-		        <a href="14798983960110.html">saltstack实践</a>
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798980187717.html">浏览器缓存机制</a>
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="redis-safe.html">redis 安全</a>
+		        <a href="14809496478909.html">laravel 安装</a>
 		      </li>
 	     
 	  

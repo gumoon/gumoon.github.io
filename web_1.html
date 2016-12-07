@@ -73,7 +73,7 @@ $(document).ready(function(event) {
 
   <li id=""><a target="_self" href="archives.html">归档</a></li>
 
-  <li id=""><a target="_self" href="about.html">关于我</a></li>
+  <li id=""><a target="_self" href="about.html">关于</a></li>
 
 </ul>
 
@@ -84,35 +84,51 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14798974234237.html">YSlow性能优化指导</a></h1>
-			<p class="meta"><time datetime="2016-11-23T18:37:03+08:00" 
-			pubdate data-updated="true">2016/11/23</time></p>
+		  	<h1 class="entry-title"><a href="14802162428316.html">为管理后台选择bootstrap模板</a></h1>
+			<p class="meta"><time datetime="2016-11-27T11:10:42+08:00" 
+			pubdate data-updated="true">2016/11/27</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<ol>
-<li>favicon 的大小要小于2k。因为会从服务器根目录读，所以，要减小root下的 cookie 大小，并且让 favicon.ico 可缓存。</li>
-<li>不是使用html的标签属性来 scale 图片。这样你可以避免从服务器加载一个更大的图片。</li>
-<li>避免 AlphaImageLoader 过滤。它会增加内存消耗。</li>
-<li>加载静态资源的域，避免带 cookie.</li>
-<li>cookie 要尽量小。</li>
-<li>减少dom元素。增加浏览器解析速度。</li>
-<li>ajax 请求尽量使用get方式。因为 post 方式请求是，header和data分开发送，而get方式，header和data一起发送。但是，ie的最大url长度是2k，如果大于2k的数据，应该使用post。</li>
-<li>确保 ajax 请求回来的数据可以缓存。</li>
-<li>配置 etags ，增加缓存机会。</li>
-<li>避免重复的js和css文件，它非常消耗性能。重复的js文件，ie和firefox会请求多次。</li>
-<li>避免url重定向。</li>
-<li>最小化js和css。减少字节数，减少加载时间。</li>
-<li>别使用太多域名，减少 dns lookups 次数。</li>
-<li>别把js和css写在html里面。通过外部引用的方式加载js和css。</li>
-<li>避免css计算。</li>
-<li>把js引用放在页面底部。因为js加载的时候，会禁止并行加载，浏览器就不能加载其他内容了。</li>
-<li>把css引用放在页面顶部。css越早加载，页面越早展现。</li>
-<li>服务器使用gzip压缩。gzip能压缩70%。</li>
-<li>给 images , js ,css , flash  增加 expires 头。使它们变得<strong>可缓存</strong>。</li>
-<li>避免空 src 和 href 。因为不同浏览器会有不同的默认行为，针对空地址。</li>
-<li>使用cdn分发网络，提供静态自己加载速度。</li>
-<li>减少http请求。合并文件，合并多个脚本文件到一个脚本文件，合并多个css文件到一个css文件，使用 css sprites 和 image maps.</li>
+		  	<h2 id="toc_0">需求</h2>
+
+<p>需要一些可重用的组件。<br/>
+需要工程师花的时间越少越好。</p>
+
+<h2 id="toc_1">选择</h2>
+
+<p><a href="https://github.com/BlackrockDigital/startbootstrap">https://github.com/BlackrockDigital/startbootstrap</a><br/>
+<a href="https://github.com/BlackrockDigital/startbootstrap-sb-admin-2">https://github.com/BlackrockDigital/startbootstrap-sb-admin-2</a><br/>
+fork到了我自己github的目录下。</p>
+
+<h2 id="toc_2">使用</h2>
+
+<ul>
+<li><p>clone到本地<br/>
+<code>git clone https://github.com/BlackrockDigital/startbootstrap-sb-admin-2.git</code></p></li>
+<li><p>更新全局的 bower<br/>
+<code>npm install -g bower</code></p></li>
+<li><p>安装项目需要的bower组件<br/>
+<code>bower update</code></p></li>
+<li><p>安装项目编译需要的 gulp 组件<br/>
+<code>npm install</code></p></li>
+<li><p>gulp 编译<br/>
+<code>gulp</code> 在dist目录下生成js和css文件。<br/>
+<code>gulp copy</code> 复制依赖包到 vendor 目录。</p></li>
+</ul>
+
+<h2 id="toc_3">后续在生产项目中如何使用？</h2>
+
+<ol>
+<li>需要修改样式时，来这个项目里面修改源码。</li>
+<li>把编译好的文件（dist/ 和 vendor/ ）复制到生产项目中去用。</li>
+</ol>
+
+<h3 id="toc_4">好处</h3>
+
+<ol>
+<li>admin后台模板可以与时俱进更新</li>
+<li>不把生产项目搞得太复杂（前台和后台各种纠缠）</li>
 </ol>
 
 
@@ -123,7 +139,7 @@ $(document).ready(function(event) {
 	</article>
   
 	<div class="pagination">
-	
+	 <a class="prev" href="web_2.html">&larr; Older</a> 
 <a href="archives.html">Blog Archives</a>
 	 <a class="next" href="web.html">Newer &rarr;</a>  
 	    
@@ -152,14 +168,26 @@ $(document).ready(function(event) {
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
 	        
-	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -172,31 +200,31 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
-		        <a href="14798983960110.html">saltstack实践</a>
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798980187717.html">浏览器缓存机制</a>
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="redis-safe.html">redis 安全</a>
+		        <a href="14809496478909.html">laravel 安装</a>
 		      </li>
 	     
 	  

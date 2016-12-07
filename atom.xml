@@ -4,7 +4,7 @@
   <title><![CDATA[自由学习网]]></title>
   <link href="http://www.free-abc.com.cn/atom.xml" rel="self"/>
   <link href="http://www.free-abc.com.cn/"/>
-  <updated>2016-11-23T18:10:02+08:00</updated>
+  <updated>2016-12-08T02:10:55+08:00</updated>
   <id>http://www.free-abc.com.cn/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -14,571 +14,225 @@
 
   
   <entry>
-    <title type="html"><![CDATA[saltstack实践]]></title>
-    <link href="http://www.free-abc.com.cn/14798983960110.html"/>
-    <updated>2016-11-23T18:53:16+08:00</updated>
-    <id>http://www.free-abc.com.cn/14798983960110.html</id>
+    <title type="html"><![CDATA[centos7.2 安装mysql]]></title>
+    <link href="http://www.free-abc.com.cn/14811282557869.html"/>
+    <updated>2016-12-08T00:30:55+08:00</updated>
+    <id>http://www.free-abc.com.cn/14811282557869.html</id>
     <content type="html"><![CDATA[
-<ul>
-<li>
-<a href="#toc_0">解决什么需求？</a>
-</li>
-<li>
-<a href="#toc_1">解决方案</a>
-</li>
-<li>
-<a href="#toc_2">介绍</a>
-</li>
-<li>
-<a href="#toc_3">安装</a>
-</li>
-<li>
-<a href="#toc_4">master配置</a>
-</li>
-<li>
-<a href="#toc_5">minion配置</a>
-</li>
-<li>
-<a href="#toc_6">salt常用命令</a>
-<ul>
-<li>
-<a href="#toc_7">命令帮助文档</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_8">普通用户执行salt</a>
-</li>
-<li>
-<a href="#toc_9">target</a>
-</li>
-<li>
-<a href="#toc_10">pkg</a>
-</li>
-<li>
-<a href="#toc_11">service</a>
-</li>
-<li>
-<a href="#toc_12">使用状态文件同步状态</a>
-</li>
-</ul>
-
-
-<h2 id="toc_0">解决什么需求？</h2>
-
-<ul>
-<li>配置文件可以统一通过版本管理平台进行管理</li>
-<li>配置文件可以迅速统一对所有机器进行一致性配置</li>
-<li>配置管理和远程执行</li>
-</ul>
-
-<h2 id="toc_1">解决方案</h2>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: left">需求</th>
-<th style="text-align: right">解决方案</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: left">操作系统和软件的安装、配置、初始化等；</td>
-<td style="text-align: right">Puppet, Chef, CFEngine, AnsibleWorks, SaltStack</td>
-</tr>
-<tr>
-<td style="text-align: left">自动执行任务，比如定期备份、清除日志等；</td>
-<td style="text-align: right">Fabric, AnsibleWorks, SaltStack</td>
-</tr>
-<tr>
-<td style="text-align: left">手动执行任务，比如部署应用、升级、重启、检查和校验文件系统、增加用户等。</td>
-<td style="text-align: right">Fabric, Rake, AnsibleWorks, SaltStack</td>
-</tr>
-</tbody>
-</table>
-
-<h2 id="toc_2">介绍</h2>
-
-<ul>
-<li><a href="http://www.saltstack.cn">http://www.saltstack.cn</a> </li>
-<li><a href="http://saltstack.com">http://saltstack.com</a></li>
-<li>saltstack 采用 zeromq 消息队列进行通信，和 Puppet/Chef 比起来，saltstack 速度快得多。minion与master之间通过ZeroMQ消息队列通信。</li>
-<li>saltstack 是用 python 语言编写的批量管理工具，完全开源，遵守Apache2协议。</li>
-<li>saltstack 需要在一台机器（主控）上安装服务器软件（SaltStack 称之为 salt master），在多台机器（受控）上安装客户端软件（SaltStack 称之为 salt minion）。在主控机器上给下属（受控）发命令，在受控机器上接受和执行上级（主控）的命令。</li>
-</ul>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: left">名称</th>
-<th style="text-align: center">功能</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: left">Master</td>
-<td style="text-align: center">控制中心，salt命令运行和资源状态管理端</td>
-</tr>
-<tr>
-<td style="text-align: left">Minion</td>
-<td style="text-align: center">需要管理的客户端机器，会主动去连接master端，并从master端得到资源状态信息，同步资源管理信息</td>
-</tr>
-<tr>
-<td style="text-align: left">State</td>
-<td style="text-align: center">配置管理的指令集</td>
-</tr>
-<tr>
-<td style="text-align: left">Module</td>
-<td style="text-align: center">包含命令行下运行的命令和在配置文件里面使用的命令；模块的函数可以在命令行下运行</td>
-</tr>
-<tr>
-<td style="text-align: left">Grains</td>
-<td style="text-align: center">Minion端的变量，静态的</td>
-</tr>
-<tr>
-<td style="text-align: left">Pillar</td>
-<td style="text-align: center">Minion端的变量，动态的</td>
-</tr>
-<tr>
-<td style="text-align: left">highstate</td>
-<td style="text-align: center">给 minion 永久添加状态，从sls配置文件读取到的，即同步状态配置</td>
-</tr>
-<tr>
-<td style="text-align: left">salt schedule</td>
-<td style="text-align: center">自动保持客户端配置</td>
-</tr>
-</tbody>
-</table>
-
-<p>命令执行具体步骤：<br/>
-1. Salt stack的Master与Minion之间通过ZeroMQ进行消息传递，使用了ZeroMQ的发布-订阅模式，连接方式包括tcp、ipc<br/>
-2. salt命令，将 <code>cmd.run ls</code> 命令从 <code>salt.client.LocalClient.cmd_cli</code> 发布到master，获取一个 Jobid，根据jobid获取命令执行结果。<br/>
-3. master接收到命令后，将要执行的命令发送到客户端minion。<br/>
-4. minion从消息总线上接收到要处理的命令，交给 <code>minion._handle_aes</code> 处理。<br/>
-5. <code>minion._handle_aes</code> 发起一个本地线程调用cmd mod 执行ls命令。线程执行完ls后，调用 <code>minion._return_pub</code> 方法，将执行结果通过消息总线返回给master<br/>
-6. master接收到客户端返回的结果，调用 <code>master._handle_aes</code> 方法，将结果写到文件中<br/>
-7. <code>salt.client.LocalClient.cmd_cli</code> 通过轮询获取job执行结果，将结果输出到终端。</p>
-
-<h2 id="toc_3">安装</h2>
-
-<p>需要先安装 epel 库。</p>
-
-<p><code>yun install salt-master.noarch salt-minion.noarch</code></p>
-
-<p>配置开机启动&amp;并且启动：</p>
-
-<pre><code>systemctl enable salt-master.service 
-systemctl start salt-master.service
-systemctl enable salt-minion.service
-systemctl start salt-minion.service
+<pre><code>yum install mariadb.x86_64 mariadb-server.x86_64
 </code></pre>
 
-<p>打开防火墙：</p>
+<h2 id="toc_0">启动服务</h2>
 
-<pre><code>firewall-cmd --zone=public --add-port=4505/tcp --permanent
-firewall-cmd --zone=public --add-port=4506/tcp --permanent
-firewall-cmd --reload
+<pre><code>systemctl enable mariadb.service 
+systemctl start mariadb.service
 </code></pre>
 
-<pre><code>➜  salt  yum list installed |grep salt
-salt.noarch                           2015.5.5-1.el7                   @epel
-salt-master.noarch                    2015.5.5-1.el7                   @epel
-salt-minion.noarch                    2015.5.5-1.el7                   @epel
+<h2 id="toc_1">设置root密码</h2>
+
+<pre><code>mysql -u root
+mysql&gt; SET PASSWORD FOR ‘root’@’localhost’ = PASSWORD(‘newpass’);
 </code></pre>
-
-<h2 id="toc_4">master配置</h2>
-
-<p>将日志配置得更详细点，以便日后排除故障。</p>
-
-<pre><code>log_level: debug
-log_level_logfile: debug
-</code></pre>
-
-<p>和 puppet 一样， salt 的 master 和 minions 是通过证书通信的，故存在证书的信任颁发问题。<br/>
-认证 minion:</p>
-
-<pre><code>salt-key -L   （在master上执行，查看当前需要接受的 keys ，master 和 minions 都需要把服务开启）
-salt-key -a 1st-salt-minion（minionID）（请求加入受控的minion id）
-</code></pre>
-
-<p>master下发任务匹配到的minion上去，minion执行模块函数，并返回结果。master监听4505和4506端口，4505对应的是ZMQ的PUB system，用来发送消息，4506对应的是REP system是来接受消息的。</p>
-
-<p>若 master 启动失败，请运行 salt-master 来排错。</p>
-
-<p>这两个端口的监听是python程序。</p>
-
-<h2 id="toc_5">minion配置</h2>
-
-<p><code>vim /etc/salt/minion</code><br/>
-配置master: 127.0.0.1 、id: 1st-salt-minion</p>
-
-<p>原理：<br/>
-在启动时，下属客户机会生成一个密钥和一个id。然后，它会连接到salt领主服务器并验证自己的身份。salt领主服务器在允许下属客户机下载配置前，必须接受下属的密钥。</p>
-
-<p>master可以发送任何指令让minion执行。salt有很多可执行模块，比如 cmd模块，在安装minion的时候已经自带了。它们通常位于你的python库中，<code>locate salt | grep /usr/</code> 可以看到salt自带的所有东西。</p>
-
-<p>若minion启动失败，请运行：salt-minion 命令来排错。<br/>
-更改 master 后，重启 minion h</p>
-
-<p>不需要监听特殊的端口。但是有tcp连接。可以通过 netstat -t 来，原因是：minion主动连接master</p>
-
-<h2 id="toc_6">salt常用命令</h2>
-
-<ul>
-<li>salt 该命令执行salt的执行模块，通常在master端执行。也是我们最常用到的命令</li>
-</ul>
-
-<pre><code>salt [options] &#39;&lt;target&gt;&#39; &lt;function&gt; [arguments] 
-salt &#39;*&#39; test.ping
-salt &#39;*&#39; cmd.run &quot;uptime&quot;
-salt &#39;*&#39; cmd.run &#39;ls -l&#39;
-salt -G &#39;os:Centos&#39; test.ping  ##salt使用一个名为颗粒（Grains）的界面来获取系统信息。你可以使用颗粒在指定属性的系统上运行命令。
-</code></pre>
-
-<ul>
-<li>salt-run 该命令执行runner(salt带的或者自定义的，runner以后会讲)，通常在master端执行，比如经常用到的manage</li>
-</ul>
-
-<pre><code>salt-run [options] [runner.func]
-salt-run manage.status   ##查看所有minion状态
-salt-run manage.down   ##查看所有没在线的minion
-salt-run manage.up     ##查看所有在线的minion
-</code></pre>
-
-<ul>
-<li>salt-key 密钥管理，通常在master端执行</li>
-</ul>
-
-<pre><code>salt-key [options]
-salt-key -L ##查看所有minion-key
-salt-key -a &lt;key-name&gt; ##接受某个minion-key
-salt-key -d &lt;key-name&gt; ##删除某个minion-key
-salt-key -A ##接受所有的minion-key
-salt-key -D ##删除所有的minon-key
-</code></pre>
-
-<ul>
-<li>salt-call 该命令通常在minion上执行，minion自己执行可执行模块，不是通过master下发job</li>
-</ul>
-
-<pre><code>salt-call [options] &lt;function&gt; [arguments]
-salt-call test.ping ##自己执行test.ping命令
-salt-call cmd.run &#39;ifconfig&#39; ##自己执行cmd.run函数
-salt-call state.sls production/default/vim
-</code></pre>
-
-<ul>
-<li>salt-cp 分发文件到minion上，不支持目录分发，通常在master运行</li>
-</ul>
-
-<pre><code>salt-cp [options] &#39;&lt;target&gt;&#39; SOURCE DEST
-salt-cp &#39;*&#39; testfile.html /tmp
-salt-cp &#39;test&#39; index.html /tmp/a.html 
-</code></pre>
-
-<ul>
-<li>salt-ssh</li>
-<li>salt-master master运行命令</li>
-</ul>
-
-<pre><code>salt-master [options]
-salt-master ##前台运行master
-salt-master -d ## 后台运行master
-salt-master -i debug ##前台debug输出
-</code></pre>
-
-<ul>
-<li>salt-minion minion运行命令</li>
-</ul>
-
-<pre><code>salt-minion [options]
-salt-minion ##前台运行minion
-salt-minion -d ## 后台运行minion
-salt-minion -i debug ##前台debug输出
-</code></pre>
-
-<ul>
-<li>salt-syndic syndic是salt的代理。</li>
-</ul>
-
-<h3 id="toc_7">命令帮助文档</h3>
-
-<pre><code>salt &#39;*&#39; sys.doc ##查看所有执行模块的帮助
-salt &#39;*&#39; sys.doc test ##查看test模块的帮助
-salt &#39;*&#39; sys.doc test.ping ##查看test模块ping函数的帮助
-</code></pre>
-
-<h2 id="toc_8">普通用户执行salt</h2>
-
-<p>默认root用户具有执行salt权限。<br/>
-普通用户执行salt两种方案：</p>
-
-<ul>
-<li>salt ACL </li>
-<li>salt external_auth</li>
-</ul>
-
-<h2 id="toc_9">target</h2>
-
-<p>指定你的命令或者模块应用在哪个minion上。</p>
-
-<ul>
-<li>globbing 默认</li>
-</ul>
-
-<pre><code>salt &#39;test*&#39; test.ping
-</code></pre>
-
-<ul>
-<li>RE 正则</li>
-</ul>
-
-<pre><code>salt -E &#39;web1-(pro|devel)&#39; test.ping
-</code></pre>
-
-<ul>
-<li>List列表</li>
-</ul>
-
-<pre><code>salt -L &#39;127.0.0.1, test*&#39; test.ping 
-</code></pre>
-
-<ul>
-<li>grains（谷物）
-<a href="http://docs.saltstack.cn/zh_CN/latest/topics/targeting/grains.html">http://docs.saltstack.cn/zh_CN/latest/topics/targeting/grains.html</a>
-<strong>grains是minion启动时加载的，在运行过程中不会发生变化，所以是静态数据。grains中包含诸如运行的内核版本，操作系统等信息。</strong>
-grains这个跟puppet的facter功能一样。主要负责采集客户端一些基本信息，这个也完全可以自定义，可以在客户端自定义，然后自动汇报上来；也可以从服务器端定义然后推下去，采集完后，再汇报上来。pillar 跟 grains 比较的话，他的灵活性强点，想怎么定义就怎么定义，然后取值就行。</li>
-</ul>
-
-<pre><code>salt -G &#39;os:CentOS&#39; test.ping
-salt &#39;test*&#39; grains.items #查看所有grains键值
-salt &#39;test*&#39; grains.ls #查看所有grains项
-salt &#39;test*&#39; grains.item num_cpus #查看某个grains的值
-</code></pre>
-
-<p>可以给每个 minion 配置自定义的 grains ，方便系统管理员管理。</p>
-
-<ul>
-<li>组
-编辑配置文件 /etc/salt/master </li>
-</ul>
-
-<pre><code>nodegroups:
-  webserver: &#39;L@bj_123.56.204.140,hk_58.96.169.47&#39;
-  testserver: &#39;bj_182.92.101.72&#39;
-</code></pre>
-
-<p>之后重启 master 。<br/>
-测试：</p>
-
-<pre><code> salt -N webserver test.ping
- salt -N testserver test.ping
-</code></pre>
-
-<p>关于组的混合匹配：(Compound matchers)</p>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: left">Letter</th>
-<th style="text-align: center">含义</th>
-<th style="text-align: right">例子</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: left">G</td>
-<td style="text-align: center">Grains glob匹配</td>
-<td style="text-align: right">G@os:Ubuntu</td>
-</tr>
-<tr>
-<td style="text-align: left">E</td>
-<td style="text-align: center">PCRE Minon id匹配</td>
-<td style="text-align: right">E@web\d+.(dev|qa|prod).loc</td>
-</tr>
-<tr>
-<td style="text-align: left">P</td>
-<td style="text-align: center">Grains PCRE匹配</td>
-<td style="text-align: right">P@os:(Redhat|Fedora|CentOS)</td>
-</tr>
-<tr>
-<td style="text-align: left">L</td>
-<td style="text-align: center">minions列表</td>
-<td style="text-align: right"><a href="mailto:L@minion1.example.com">L@minion1.example.com</a>,minion3.domain.com or bl*.domain.com</td>
-</tr>
-<tr>
-<td style="text-align: left">I</td>
-<td style="text-align: center">Pillar glob匹配</td>
-<td style="text-align: right">I@pdata:foobar</td>
-</tr>
-<tr>
-<td style="text-align: left">S</td>
-<td style="text-align: center">子网、IP地址匹配</td>
-<td style="text-align: right">S@192.168.1.0/24 or S@192.168.1.100</td>
-</tr>
-<tr>
-<td style="text-align: left">R</td>
-<td style="text-align: center">Range cluster匹配</td>
-<td style="text-align: right">R@%foo.bar</td>
-</tr>
-<tr>
-<td style="text-align: left">D</td>
-<td style="text-align: center">Minion Data匹配</td>
-<td style="text-align: right">D@key:value</td>
-</tr>
-</tbody>
-</table>
-
-<ul>
-<li>pillar
-Pillar 是 Salt 非常重要的一个组件，它用于给特定的 minion 定义任何你需要的数据， 这些数据可以被 Salt 的其他组件使用。Salt 在 0.9.8 版本中引入了 Pillar。Pillar 在解析完成 后，是一个嵌套的 dict 结构；最上层的 key 是 minion ID，其 value 是该 minion 所拥有的 Pillar 数据；每一个 value 也都是 key/value。这里可以看出 Pillar 的一个特点，Pillar 数据是与特定 minion 关联的，也就是说每一个minion 都只能看到自己的数据， 所以 Pillar 可以用来传递敏感数据 （在 Salt 的设计中， Pillar 使用独立的加密 session，也是为了保证敏感数据的安全性）</li>
-</ul>
-
-<p>Pillar 可以用在哪些地方？</p>
-
-<p><strong>敏感数据</strong><br/>
-例如 ssh key，加密证书等，由于 Pillar 使用独立的加密 session，可以确保这些敏感数据不被其他 minion 看到。</p>
-
-<p><strong>变量</strong><br/>
-可以在 Pillar 中处理平台差异性，比如针对不同的操作系统设置软件包的名字，然后在State 中引用。 </p>
-
-<p><strong>其他任何数据</strong><br/>
-可以在 Pillar 中添加任何需要用到的数据。比如定义用户和 UID 的对应关系，mnion 的角色等。 </p>
-
-<p><strong>用在 Targetting 中</strong><br/>
-Pillar 可以用来选择 minion，使用-I 选项<br/>
-默认情况下，master 配置文件中的所有数据都添加到 Pillar 中，且对所有 minion 可用。如果要禁用这一默认值，可以在 master 配置文件中添加如下数据，重启服务后生效<strong>？？？此处存疑。好像默认没有添加master配置文件中的数据到 pillar 中。</strong></p>
-
-<h2 id="toc_10">pkg</h2>
-
-<p>saltstack安装包管理。<br/>
-<code>salt &#39;*&#39; pkg.install tree</code></p>
-
-<h2 id="toc_11">service</h2>
-
-<p>saltstack服务管理。</p>
-
-<h2 id="toc_12">使用状态文件同步状态</h2>
-
-<p>类似于puppet的pp文件功能，salt的state文件扩展名为.sls，采用的和puppet一样的设计思路，即服务器最终应该具有的一些状态，比如应该安装有什么软件包？哪些服务应该保持运行或者开机自启动？哪些配置文件需要保持同步？等等。这样用户无需关心这个过程究竟是怎样的，只需要描述最终状态即可，即使运行失败，saltstack也会返回一个友好的错误信息，提示用户应该如何处理。<br/>
-* salt默认的根目录在 /srv/salt 中，没有这个目录需要建立一个。<br/>
-* saltstack的sls状态文件采用的是yaml模板和jinja2模板，编写的时候注意格式，注意缩排和空格。<br/>
-* <code>salt &#39;*&#39; state.sls production/default/vim</code><br/>
-* 执行完上面的命令，salt帮我们成功的安装好了vim-enhanced这个软件包，接下来我们只需要同步一下vim的配置文件，那么每台新部署的服务器都会有一个友好的vim可供使用。今后发现有更好的vim配置，也无需一个个scp到服务器上，仅仅只需要执行一下状态同步就可以了。<br/>
-* top.sls：这个文件类似于puppet的site.pp文件，作为“最高同步”操作的入口文件，执行”最高同步”操作时，将从此sls文件中获取状态对minion进行同步。</p>
-
-<p>salt state 主要用来描述系统、软件、服务、配置文件应该处于的状态，常常被称为配置管理！！！</p>
-
-<p>sls 遵从 YAML 规范，它使用两个空格代替tab，：或 - 后面要有空格。</p>
 
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[浏览器缓存机制]]></title>
-    <link href="http://www.free-abc.com.cn/14798980187717.html"/>
-    <updated>2016-11-23T18:46:58+08:00</updated>
-    <id>http://www.free-abc.com.cn/14798980187717.html</id>
+    <title type="html"><![CDATA[服务器配置lavavel项目]]></title>
+    <link href="http://www.free-abc.com.cn/14811266558336.html"/>
+    <updated>2016-12-08T00:04:15+08:00</updated>
+    <id>http://www.free-abc.com.cn/14811266558336.html</id>
     <content type="html"><![CDATA[
-<h2 id="toc_0">Expires和Last-Modified的区别</h2>
+<p>系统环境：centos7.2 </p>
 
-<p>资源在浏览器端的本地缓存可以通过Expires和Last-Modified返回头信息进行有效控制。</p>
+<p>安装好：nginx , php, mysql</p>
 
-<ol>
-<li><p>Expires告诉浏览器在该指定过期时间前再次访问同一URL时，直接从本地缓存读取，无需再向服务器发起http请求；<br/>
-优点是：浏览器直接读取缓存信息无需发起http请求。<br/>
-缺点是：当用户按F5或Ctl+F5刷新页面时浏览器会再次发起http请求。</p></li>
-<li><p>当服务器返回设置了Last-Modified头，下次发起同一URL的请求时，请求头会自动包含If-Modified-Since头信息，服务器对静态内容会根据该信息跟文件的最后修改时间做比较，如果最后修改时间不大于If-Modified-Since头信息，则返回304。告诉浏览器请求内容未更新可直接使用本地缓存。（注意：只对静态内容有效，如js/css/image/html等，不包括动态内容，如PHP）<br/>
-优点：无论用户行为如何都有效；<br/>
-缺点：仍需向服务器发起一次http请求；<br/>
-现在webserver默认都会响应 Last-Modified 头。</p></li>
-</ol>
+<p>项目代码存储目录：/opt/projects</p>
 
-<h2 id="toc_1">safari浏览器行为</h2>
+<p>把代码从 github 上 clone 到项目代码目录。</p>
 
-<ol>
-<li>地址栏回车（使用本地缓存，没有请求）</li>
-<li>地址栏边上的刷新按钮（等价于F5）</li>
-<li>command-R （等价于F5)</li>
-<li>command-Shift-R 强制刷新（等价于 Ctrl-F5)</li>
-</ol>
+<p>配置nginx的虚拟主机：</p>
 
-<h2 id="toc_2">ctrl-f5 与 f5 与 enter 刷新的区别</h2>
+<pre><code>server{
+    listen 80;
+    server_name w.xxx.com.cn 
 
-<p><strong>url地址栏里敲击enter：</strong><br/>
-这样的刷新，大家可以在firebug里看一下，只有少数的请求会发送出去，而且几乎没有图片的请求，这是因为请求时会先检查本地是不是缓存了请求的图片，如果有缓存而且没有过期（过期可以通过该图片请求的header查看），他就不会发出这个图片request。_如果本地的图片已经过期，会带上If-Modified-Since请求头，去webserver请求，会产生访问日志。_</p>
+    root /opt/projects/yiduo/public;
+    error_log  /var/log/nginx/wx_yiduo_error.log;
+    access_log  /var/log/nginx/wx_yiduo_access.log  main;
+    index index.php index.html index.htm;
 
-<p><strong>f5：</strong><br/>
-f5刷新比enter略慢，为什么呢，因为他还是把所有请求都发给了server，只是在request里的header里有信息<br/>
-Expires Fri, 28 Jun 2013 07:29:55 GMT<br/>
-Last-Modified   Mon, 21 Mar 2011 09:26:23 GMT<br/>
-服务器判断还没有过期，就直接返回304not modified，在firebug里看就是这些304的请求都为灰色。因为直接返回304这样的信息，而不是图片等内容，他比ctrl+f5快，但是比enter慢，因为他还是把所有请求都发了一遍，比enter的不发请求自然是慢的。</p>
+    location / {
+        root /opt/projects/yiduo/public;
+        try_files $uri $uri/ /index.php?$query_string;
+    }
 
-<p><strong>ctrl+f5：</strong><br/>
-这个就要慢了，因为所有的请求都是重新发送，重新从server读取内容，一点cache都没有读。为了防止在server的cache里读取，在ctrl+f5刷新时，request的header里还加了特殊字段，这个大家可以用firebug看一下，还挺有意思的。在request header 里会加pragma：no-cache（_Pragma行是为了兼容HTTP1.0，作用与 Cache-Control: no-cache是一样的_）   cache control：no-cache。这两个就是告诉服务器到浏览器中间的所有节点，没有cache，看到这个中间节点也不查自己的cache，保证请求都是从server获得的。</p>
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html{
+        root /opt/projects/yiduo/public;
+    }
 
-<h2 id="toc_3">注意事项</h2>
+ location ~ \.php$ {
+        root /opt/projects/yiduo/public; ## 此处很重要，不然报 FIle NOT Found
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+</code></pre>
 
-<ol>
-<li>对于cdn的资源，即使强制刷新，也不过是读取到cdn的最新资源。</li>
-<li>如果本地要更新到源站的资料，只能通过修改版本号，从而改变请求url，造成本地和cdn都没有，从而，去源站获取最新的。</li>
-<li>静态资源务必都弄到cdn上去。</li>
-</ol>
+<p>重启nginx：<code>systemctl restart nginx</code></p>
+
+<p>权限方面：让 storage/， bootstrap/cache 这两个目录及其子目录nginx用户可读写。</p>
 
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[YSlow性能优化指导]]></title>
-    <link href="http://www.free-abc.com.cn/14798974234237.html"/>
-    <updated>2016-11-23T18:37:03+08:00</updated>
-    <id>http://www.free-abc.com.cn/14798974234237.html</id>
+    <title type="html"><![CDATA[centos7.2 编译安装php7.1.0]]></title>
+    <link href="http://www.free-abc.com.cn/14811252163506.html"/>
+    <updated>2016-12-07T23:40:16+08:00</updated>
+    <id>http://www.free-abc.com.cn/14811252163506.html</id>
     <content type="html"><![CDATA[
-<ol>
-<li>favicon 的大小要小于2k。因为会从服务器根目录读，所以，要减小root下的 cookie 大小，并且让 favicon.ico 可缓存。</li>
-<li>不是使用html的标签属性来 scale 图片。这样你可以避免从服务器加载一个更大的图片。</li>
-<li>避免 AlphaImageLoader 过滤。它会增加内存消耗。</li>
-<li>加载静态资源的域，避免带 cookie.</li>
-<li>cookie 要尽量小。</li>
-<li>减少dom元素。增加浏览器解析速度。</li>
-<li>ajax 请求尽量使用get方式。因为 post 方式请求是，header和data分开发送，而get方式，header和data一起发送。但是，ie的最大url长度是2k，如果大于2k的数据，应该使用post。</li>
-<li>确保 ajax 请求回来的数据可以缓存。</li>
-<li>配置 etags ，增加缓存机会。</li>
-<li>避免重复的js和css文件，它非常消耗性能。重复的js文件，ie和firefox会请求多次。</li>
-<li>避免url重定向。</li>
-<li>最小化js和css。减少字节数，减少加载时间。</li>
-<li>别使用太多域名，减少 dns lookups 次数。</li>
-<li>别把js和css写在html里面。通过外部引用的方式加载js和css。</li>
-<li>避免css计算。</li>
-<li>把js引用放在页面底部。因为js加载的时候，会禁止并行加载，浏览器就不能加载其他内容了。</li>
-<li>把css引用放在页面顶部。css越早加载，页面越早展现。</li>
-<li>服务器使用gzip压缩。gzip能压缩70%。</li>
-<li>给 images , js ,css , flash  增加 expires 头。使它们变得<strong>可缓存</strong>。</li>
-<li>避免空 src 和 href 。因为不同浏览器会有不同的默认行为，针对空地址。</li>
-<li>使用cdn分发网络，提供静态自己加载速度。</li>
-<li>减少http请求。合并文件，合并多个脚本文件到一个脚本文件，合并多个css文件到一个css文件，使用 css sprites 和 image maps.</li>
-</ol>
+<p>centos7.2 源里的php版本才5.4。根本不满足现代web应用需求。</p>
+
+<p>从 php.net 的下载页面，下载：</p>
+
+<pre><code>wget http://cn2.php.net/get/php-7.1.0.tar.gz/from/this/mirror
+mv mirror php-7.1.0.tar.gz
+tar zxvf php-7.1.0.tar.gz 
+</code></pre>
+
+<h2 id="toc_0">准备工作</h2>
+
+<ul>
+<li>更新系统 </li>
+</ul>
+
+<pre><code>yum update
+</code></pre>
+
+<ul>
+<li>安装 xml2, 确保有 xml2-config 命令</li>
+</ul>
+
+<pre><code>yum install libxml2-devel.x86_64 libxml2.x86_64  
+rpm -ql libxml2-devel.x86_64
+</code></pre>
+
+<ul>
+<li>安装 openssl</li>
+</ul>
+
+<pre><code>yum install openssl-devel.x86_64 openssl.x86_64
+</code></pre>
+
+<ul>
+<li>安装 curl</li>
+</ul>
+
+<pre><code>yum install libcurl.x86_64 libcurl-devel.x86_64
+</code></pre>
+
+<ul>
+<li>安装 libmcrypt</li>
+</ul>
+
+<pre><code>yum install libmcrypt.x86_64 libmcrypt-devel.x86_64
+</code></pre>
+
+<ul>
+<li>安装 gd 需要的lib
+<a href="php-gd.html">gd扩展（验证码用的到）</a></li>
+</ul>
+
+<h2 id="toc_1">编译</h2>
+
+<pre><code>./configure --prefix=/usr/local/php710 --exec-prefix=/usr/local/php710 --bindir=/usr/local/php710/bin --sbindir=/usr/local/php710/sbin --includedir=/usr/local/php710/include --libdir=/usr/local/php710/lib/php --mandir=/usr/local/php710/php/man --with-config-file-path=/usr/local/php710/etc --with-mcrypt=/usr/include --with-mhash --with-openssl --with-mysqli=shared,mysqlnd --with-pdo-mysql=shared,mysqlnd --with-iconv --with-zlib --enable-zip --enable-inline-optimization --disable-debug --disable-rpath --enable-shared --enable-xml --enable-bcmath --enable-shmop --enable-sysvsem --enable-mbregex --enable-mbstring --enable-gd-native-ttf --enable-pcntl --enable-sockets --with-xmlrpc --enable-soap --without-pear --with-gettext --enable-session --with-curl --enable-opcache --enable-fpm --with-fpm-user=nginx --with-fpm-group=nginx --without-gdbm --disable-fileinfo --with-freetype-dir=/usr/lib64 --with-jpeg-dir=/usr/lib64 --with-gd
+</code></pre>
+
+<pre><code>make &amp;&amp; make install
+make clean
+</code></pre>
+
+<h2 id="toc_2">配置文件</h2>
+
+<pre><code>cp php.ini-production /usr/local/php710/etc/php.ini
+cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+cp /usr/local/php710/etc/php-fpm.conf.default /usr/local/php710/etc/php-fpm.conf
+cp /usr/local/php710/etc/php-fpm.d/www.conf.default /usr/local/php710/etc/php-fpm.d/www.conf
+</code></pre>
+
+<h2 id="toc_3">设置path</h2>
+
+<pre><code>vim .zshrc
+</code></pre>
+
+<p>修改用户跟目录下的 .zshrc 文件，把 /usr/local/php710/bin 加在path项的前面。</p>
+
+<pre><code>source .zshrc
+</code></pre>
+
+<h2 id="toc_4">创建php日志文件目录</h2>
+
+<pre><code>mkdir -p /var/log/php-fpm/ &amp;&amp; mkdir -p /var/run/php-fpm &amp;&amp; cd /var/run/ &amp;&amp; chown -R nginx:nginx php-fpm
+
+mkdir -p /var/lib/php/session
+
+chown -R nginx:nginx /var/lib/php
+</code></pre>
+
+<h2 id="toc_5">检查扩展是否都安装了，安装并开启</h2>
+
+<pre><code>cd /usr/local/php710/lib/php/extensions/no-debug-non-zts-20160303
+</code></pre>
+
+<h2 id="toc_6">配置 php.ini 的 extension及其它</h2>
+
+<pre><code>zend_extension=opcache.so
+extension=mysqli.so
+extension=pdo_mysql.so
+</code></pre>
+
+<p>或者，使用 slat 同步php.ini &amp; php-fpm.conf 文件</p>
+
+<p>启动php-fpm：<br/>
+先给 /etc/init.d/php-fpm 增加可执行权限。</p>
+
+<pre><code>/etc/init.d/php-fpm start
+</code></pre>
+
+<h2 id="toc_7">配置 memcached 扩展</h2>
+
+<p><a href="php-memcached.html">php5.6 安装 memcached扩展</a></p>
+
+<h2 id="toc_8">配置gd扩展</h2>
+
+<p><a href="php-gd.html">gd扩展（验证码用的到）</a></p>
+
+<h2 id="toc_9">查看phpinfo</h2>
+
+<p>检查扩展安装情况。<br/>
+<a href="php-phpinfo.html">配置访问 phpinfo 的域名</a></p>
 
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[从零开始配置阿里云ECS]]></title>
-    <link href="http://www.free-abc.com.cn/14798739132293.html"/>
-    <updated>2016-11-23T12:05:13+08:00</updated>
-    <id>http://www.free-abc.com.cn/14798739132293.html</id>
+    <title type="html"><![CDATA[从零开始配置阿里云ECS,centos7.2]]></title>
+    <link href="http://www.free-abc.com.cn/14811215019104.html"/>
+    <updated>2016-12-07T22:38:21+08:00</updated>
+    <id>http://www.free-abc.com.cn/14811215019104.html</id>
     <content type="html"><![CDATA[
-<h2 id="toc_0">装完centos7.0 64位系统后的状态</h2>
+<h2 id="toc_0">装完centos7.2 64位系统后的状态</h2>
 
 <ol>
 <li>默认操作系统情况</li>
 </ol>
 
 <pre><code>[root@iZ25gxj8d82Z etc]# uname -a
-Linux iZ25gxj8d82Z 3.10.0-123.9.3.el7.x86_64 #1 SMP Thu Nov 6 15:06:03 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
+Linux iZm5ee4pfq8op61udbacmoZ 3.10.0-327.22.2.el7.x86_64 #1 SMP Thu Jun 23 17:05:11 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
 </code></pre>
 
 <ol>
@@ -597,26 +251,21 @@ LISTEN     0      128                                                           
 </ol>
 
 <pre><code>[root@iZ25gxj8d82Z ~]# systemctl list-unit-files |grep enable
-crond.service                          enabled
-cups.service                           enabled
-dmraid-activation.service              enabled
-getty@.service                         enabled
-lvm2-monitor.service                   enabled
-microcode.service                      enabled
-nscd.service                           enabled
-ntpd.service                           enabled
-rsyslog.service                        enabled
-sshd.service                           enabled
-sysstat.service                        enabled
-systemd-readahead-collect.service      enabled
-systemd-readahead-drop.service         enabled
-systemd-readahead-replay.service       enabled
-cups.socket                            enabled
-dm-event.socket                        enabled
-lvm2-lvmetad.socket                    enabled
-nscd.socket                            enabled
-default.target                         enabled
-multi-user.target                      enabled
+aliyun-util.service                       enabled
+aliyun.service                            enabled
+crond.service                             enabled
+dbus-org.fedoraproject.FirewallD1.service enabled
+firewalld.service                         enabled
+getty@.service                            enabled
+microcode.service                         enabled
+ntpd.service                              enabled
+rsyslog.service                           enabled
+sshd.service                              enabled
+systemd-readahead-collect.service         enabled
+systemd-readahead-drop.service            enabled
+systemd-readahead-replay.service          enabled
+default.target                            enabled
+multi-user.target                         enabled
 </code></pre>
 
 <ol>
@@ -624,7 +273,7 @@ multi-user.target                      enabled
 </ol>
 
 <pre><code>[root@iZ25gxj8d82Z ~]# cat /etc/passwd
-root:x:0:0:root:/root:/bin/bash
+root:x:0:0:root:/root:/usr/bin/zsh
 bin:x:1:1:bin:/bin:/sbin/nologin
 daemon:x:2:2:daemon:/sbin:/sbin/nologin
 adm:x:3:4:adm:/var/adm:/sbin/nologin
@@ -637,18 +286,15 @@ operator:x:11:0:operator:/root:/sbin/nologin
 games:x:12:100:games:/usr/games:/sbin/nologin
 ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
 nobody:x:99:99:Nobody:/:/sbin/nologin
-dbus:x:81:81:System message bus:/:/sbin/nologin
-polkitd:x:999:998:User for polkitd:/:/sbin/nologin
-avahi:x:70:70:Avahi mDNS/DNS-SD Stack:/var/run/avahi-daemon:/sbin/nologin
 avahi-autoipd:x:170:170:Avahi IPv4LL Stack:/var/lib/avahi-autoipd:/sbin/nologin
-libstoragemgmt:x:998:997:daemon account for libstoragemgmt:/var/run/lsm:/sbin/nologin
-ntp:x:38:38::/etc/ntp:/sbin/nologin
-abrt:x:173:173::/etc/abrt:/sbin/nologin
+systemd-bus-proxy:x:999:997:systemd Bus Proxy:/:/sbin/nologin
+systemd-network:x:998:996:systemd Network Management:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+polkitd:x:997:995:User for polkitd:/:/sbin/nologin
+tss:x:59:59:Account used by the trousers package to sandbox the tcsd daemon:/dev/null:/sbin/nologin
 postfix:x:89:89::/var/spool/postfix:/sbin/nologin
 sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
-chrony:x:997:996::/var/lib/chrony:/sbin/nologin
-nscd:x:28:28:NSCD Daemon:/:/sbin/nologin
-tcpdump:x:72:72::/:/sbin/nologin
+ntp:x:38:38::/etc/ntp:/sbin/nologin
 </code></pre>
 
 <p>以下都可以通过 saltstack 这个工具来实现：</p>
@@ -696,7 +342,31 @@ tcpdump:x:72:72::/:/sbin/nologin
 systemctl start firewalld.service
 </code></pre>
 
-<h2 id="toc_3">安装 zsh , oh-my-zsh</h2>
+<h2 id="toc_3">确认git，svn安装情况</h2>
+
+<pre><code>yum install git.x86_64
+git --version
+
+yum install subversion.x86_64
+svn --version
+</code></pre>
+
+<h2 id="toc_4">确认 gcc 安装情况，centos7.2居然没有</h2>
+
+<pre><code>yum install gcc.x86_64
+</code></pre>
+
+<p>源码安装php的时候需要用到c编译器。</p>
+
+<h2 id="toc_5">配置VIM</h2>
+
+<pre><code>默认没有安装vim。
+yum install vim-enhanced.x86_64
+
+配置文件：/etc/vimrc
+</code></pre>
+
+<h2 id="toc_6">安装 zsh , oh-my-zsh</h2>
 
 <ul>
 <li>安装 zsh，配置 zsh 为root用户默认shell。 </li>
@@ -705,7 +375,7 @@ systemctl start firewalld.service
 <pre><code>yum install zsh 
 which zsh (/usr/bin/zsh) 
 vim /etc/shells 在文件末尾增加一行 /usr/bin/zsh 
-chsh -s SHELL
+chsh -s /usr/bin/zsh
 </code></pre>
 
 <ul>
@@ -729,780 +399,1328 @@ chsh -s SHELL
 <pre><code>plugins=(git history autojump)
 </code></pre>
 
-<h2 id="toc_4">确认git，svn安装情况</h2>
+<h2 id="toc_7">安装云监控插件</h2>
 
-<pre><code>git --version
-svn --version
+<pre><code>
 </code></pre>
 
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[redis 安全]]></title>
-    <link href="http://www.free-abc.com.cn/redis-safe.html"/>
-    <updated>2016-11-23T11:44:23+08:00</updated>
-    <id>http://www.free-abc.com.cn/redis-safe.html</id>
+    <title type="html"><![CDATA[laravel 安装]]></title>
+    <link href="http://www.free-abc.com.cn/14809496478909.html"/>
+    <updated>2016-12-05T22:54:07+08:00</updated>
+    <id>http://www.free-abc.com.cn/14809496478909.html</id>
     <content type="html"><![CDATA[
-<h2 id="toc_0">权限控制</h2>
+<p>开启一个新项目的时候，就需要了。</p>
 
-<ul>
-<li><p>指定监听ip（127.0.0.1 或者 某个网段）<br/>
-在redis.conf 文件中找到<code>bind 192.168.3.112 127.0.0.1</code>。修改。</p></li>
-<li><p>绑定 0.0.0.0 ，用 iptables 来控制访问权限<br/>
-如果正常业务中redis服务需要被其他服务器来访问，可以设置iptables策略仅允许指定的ip来访问redis服务。</p></li>
-<li><p>设置 redis 访问密码来保证数据安全<br/>
-在redis.conf 中找到“requirepass”字段，在后面填上你需要的密码，redis客户端也需要使用密码来访问redis服务。</p></li>
-</ul>
+<pre><code>composer selfupdate
 
-<blockquote>
-<p>通过设置配置文件中 requirepass 项的值(使用命令 CONFIG SET requirepass password )，可以使用密码来保护 Redis 服务器。</p>
+laravel new project-name
+创建完项目后，把它用github管理起来。
 
-<p>如果开启了密码保护的话，在每次连接 Redis 服务器之后，就要使用 AUTH 命令解锁，解锁之后才能使用其他 Redis 命令。</p>
+cd 到 project-name 目录
+valet link
 
-<p>如果 AUTH 命令给定的密码 password 和配置文件中的密码相符的话，服务器会返回 OK 并开始接受命令输入。</p>
-
-<p>另一方面，假如密码不匹配的话，服务器将返回一个错误，并要求客户端需重新输入密码。<br/>
-因为 Redis 高性能的特点，在很短时间内尝试猜测非常多个密码是有可能的，因此请确保使用的密码足够复杂和足够长，以免遭受密码猜测攻击。</p>
-</blockquote>
-
-<ul>
-<li>修改redis服务运行账号
-请以较低权限账号运行redis服务，且禁用该账号的登录权限。可以限制攻击者往磁盘写入文件，但是redis数据还是能被黑客访问到，或者被黑客恶意删除。</li>
-</ul>
-
-<pre><code>groupadd -r redis &amp;&amp; useradd -r -g redis -s /bin/nologin -d /var/lib/redis -M redis
-
-XEC=/usr/local/bin/redis-server
-CLIEXEC=/usr/local/bin/redis-cli
-PIDFILE=/var/run/redis_6379.pid
-CONF=&quot;/etc/redis/6379.conf&quot;
-REDISPORT=&quot;6379&quot;
+访问：http://project-name.dev 即可访问
 </code></pre>
-
-<h3 id="toc_1">漏洞描述与危害</h3>
-
-<p>对公网开放，且未启用认证的redis服务器。</p>
-
-<p>攻击者无需认证访问到内部数据，可能导致敏感信息泄露，黑客也可以恶意执行 flushall 来清空所有数据。</p>
-
-<p>攻击者可通过 eval 执行 lua 代码，或通过数据备份功能往磁盘写入后门文件，如果 redis  以 root 身份运行，黑客可以给 root 账户写入 ssh 公钥文件，直接通过ssh登录受害服务器。</p>
 
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[redis配置安装最佳实践]]></title>
-    <link href="http://www.free-abc.com.cn/14798724609507.html"/>
-    <updated>2016-11-23T11:41:00+08:00</updated>
-    <id>http://www.free-abc.com.cn/14798724609507.html</id>
+    <title type="html"><![CDATA[laravel task scheduling]]></title>
+    <link href="http://www.free-abc.com.cn/14808262704807.html"/>
+    <updated>2016-12-04T12:37:50+08:00</updated>
+    <id>http://www.free-abc.com.cn/14808262704807.html</id>
     <content type="html"><![CDATA[
-<h2 id="toc_0">介绍</h2>
+<h2 id="toc_0">计划任务</h2>
 
-<p>略</p>
+<p>概念：<br/>
+1. 它跟系统的计划任务如何结合<br/>
+2. 可执行什么任务<br/>
+3. 计划任务如何编写<br/>
+4. 如何精细化控制任务执行<br/>
+5. 输出如何控制<br/>
+6. 钩子</p>
 
-<h2 id="toc_1">安装</h2>
-
-<p>在官网下载的redis3.04源码。</p>
-
-<p>安装参数见：README</p>
-
-<p>源码放在了：/home/gumoon 目录</p>
-
-<p>使用 gumoon 这个账户进行安装的。</p>
-
-<pre><code>tar zxvf redis-3.0.4.tar.gz
-cd redis-3.0.4
-make
-make install  （安装到 /usr/local/bin)
-./utils/install_server.sh
-</code></pre>
-
-<p>配置：<br/>
-Port           : 6379<br/>
-Config file    : /etc/redis/6379.conf<br/>
-Log file       : /var/log/redis_6379.log<br/>
-Data dir       : /var/lib/redis/6379<br/>
-Executable     : /usr/local/bin/redis-server<br/>
-Cli Executable : /usr/local/bin/redis-cli</p>
-
-<p>启动 redis 服务：<br/>
-<code>/etc/init.d/redis_6379 start</code>  </p>
-
-<h2 id="toc_2">配置</h2>
-
-<h3 id="toc_3">创建redis用户</h3>
-
-<pre><code>groupadd -r redis &amp;&amp; useradd -r -g redis -s /sbin/nologin -d /var/lib/redis -M redis
-</code></pre>
-
-<h3 id="toc_4">开机启动脚本</h3>
-
-<p>位置：/lib/systemd/system/redis.service</p>
-
-<pre><code>[Unit]
-Description=Redis Server
-Before=httpd.service
-After=network.target
-
-[Service]
-Type=simple
-EnvironmentFile=-/etc/sysconfig/redis
-User=redis
-Group=redis
-ExecStart=/usr/local/bin/redis-server /etc/redis/6379.conf
-
-[Install]
-WantedBy=multi-user.target
-</code></pre>
-
-<p>EnvironmentFile 可以配置一些参数，但是，路径不能配置，必须写绝对路径。</p>
-
-<h2 id="toc_5">redis安全</h2>
-
-<p><a href="redis-safe.html">redis安全</a></p>
-
-<h2 id="toc_6">集群</h2>
-
-<ul>
-<li>twemproxy代理 （<a href="https://github.com/twitter/twemproxy">https://github.com/twitter/twemproxy</a> ）</li>
-</ul>
-
-<h2 id="toc_7">常用命令</h2>
-
-<p>略</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[配置访问 phpinfo 的域名]]></title>
-    <link href="http://www.free-abc.com.cn/php-phpinfo.html"/>
-    <updated>2016-11-23T11:33:06+08:00</updated>
-    <id>http://www.free-abc.com.cn/php-phpinfo.html</id>
-    <content type="html"><![CDATA[
-<h2 id="toc_0">修改 default.conf</h2>
-
-<p>取消注释掉关于php fastcgi那一段。<br/>
-修改 root /usr/share/nginx/html 下的<br/>
-     <code>fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;</code><br/>
-重启 nginx 。</p>
-
-<h2 id="toc_1">增加phpinfo.php 文件</h2>
-
-<p>在 /usr/share/nginx/html 文件夹下，增加 phpinfo.php</p>
-
-<h2 id="toc_2">访问验证</h2>
-
-<p><code>http://{IP}/phpinfo.php</code></p>
-
-<h2 id="toc_3">配置关闭访问，防止信息泄露</h2>
-
-<h3 id="toc_4">防止恶意解析</h3>
-
-<p>配置 默认站点指向某个文件夹，设置该文件夹对nginx用户无任何权限。<br/>
-然后就会报：403 Forbidden 错误。从而无法访问。</p>
-
-<p>默认 /usr/share/nginx/html 的文件夹权限是 755,改为 chmod 700 html即可。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[php7回滚到php5.6]]></title>
-    <link href="http://www.free-abc.com.cn/php7-php56.html"/>
-    <updated>2016-11-23T11:29:08+08:00</updated>
-    <id>http://www.free-abc.com.cn/php7-php56.html</id>
-    <content type="html"><![CDATA[
-<h2 id="toc_0">为什么回滚到php5.6，而不是用最新的php7</h2>
+<h3 id="toc_1">它跟系统的计划任务有什么关系</h3>
 
 <ol>
-<li>memcached的扩展，源码编译安装的时候，php7不提供合适的头文件。</li>
-<li>php7还是不稳定版本，生产环境下，暂缓</li>
+<li>计划任务不可以版本控制</li>
+<li>需要登录服务器修改和添加</li>
 </ol>
 
-<h2 id="toc_1">如何切换回php5.6</h2>
+<p>laravel 的解决方案是：<br/>
+只需要在系统计划任务中添加一条记录，永久不变。<br/>
+<code>* * * * * php /path/to/artisan schedule:run &gt;&gt; /dev/null 2&gt;&amp;1</code></p>
 
-<ol>
-<li>按照文档<a href="php56-install.html">安装好 php5.6</a></li>
-<li>修改 /etc/init.d/php-fpm 脚本</li>
-<li>修改 /etc/profile 的PATH（可能不需要改）</li>
-<li>修改 ~/.zshrc 的PATH</li>
-<li>修改 /etc/passwd 的php用户目录（可能不需要改）</li>
-<li>编译php扩展，并添加到php.ini 文件中的相应位置开启</li>
-<li>kill php-fpm进程</li>
-<li>重启 php-fpm 进程</li>
-</ol>
+<p>应用的其它计划任务，写在代码里即可。</p>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[php 安装 gd 扩展]]></title>
-    <link href="http://www.free-abc.com.cn/php-gd.html"/>
-    <updated>2016-11-23T11:15:13+08:00</updated>
-    <id>http://www.free-abc.com.cn/php-gd.html</id>
-    <content type="html"><![CDATA[
-<pre><code>yum install libwebp.x86_64 libwebp-devel.x86_64 libwebp-tools.x86_64
-yum install libjpeg-turbo-devel.x86_64 libjpeg-turbo-static.x86_64 libjpeg-turbo.x86_64 libjpeg-turbo-utils.x86_64
-yum install libpng.x86_64 libpng-devel.x86_64 libpng-static.x86_64
-yum install libXpm.x86_64 libXpm-devel.x86_64
-yum install freetype-devel.x86_64 freetype.x86_64
+<h3 id="toc_2">任务如何编写？可执行什么任务？</h3>
 
-./configure --with-freetype-dir=/usr/lib64 --with-jpeg-dir=/usr/lib64
-make
-make install
-</code></pre>
+<p>任务都写到这里：<code>App\Console\Kernel</code>类中的 <code>schedule()</code> 方法。</p>
 
-<p>gd扩展应该在编译php的时候编译进去。当然，得先安装图片类库。<br/>
-如果gd扩展在编译php的时候就编译进去了，那么，就不需要增加 extension=gd.so 了。</p>
-
-<p>make clean</p>
-
-<p>./configure 后面的选项非常重要，如果没加，就没有那几种图片文件生成支持。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[源码编译安装php5.6.22最佳实践]]></title>
-    <link href="http://www.free-abc.com.cn/php56-install.html"/>
-    <updated>2016-11-23T11:11:39+08:00</updated>
-    <id>http://www.free-abc.com.cn/php56-install.html</id>
-    <content type="html"><![CDATA[
-<h2 id="toc_0">准备工作</h2>
-
-<ul>
-<li>更新系统 </li>
-</ul>
-
-<pre><code>yum update
-</code></pre>
-
-<ul>
-<li>安装 xml2, 确保有 xml2-config 命令</li>
-</ul>
-
-<pre><code>yum install libxml2-devel.x86_64 libxml2.x86_64  
-rpm -ql libxml2-devel.x86_64
-</code></pre>
-
-<ul>
-<li>安装 openssl</li>
-</ul>
-
-<pre><code>yum install openssl-devel.x86_64 openssl.x86_64
-</code></pre>
-
-<ul>
-<li>安装 curl</li>
-</ul>
-
-<pre><code>yum install libcurl.x86_64 libcurl-devel.x86_64
-</code></pre>
-
-<ul>
-<li>安装 libmcrypt</li>
-</ul>
-
-<pre><code>yum install libmcrypt.x86_64 libmcrypt-devel.x86_64
-</code></pre>
-
-<ul>
-<li>安装 gd 需要的lib
-<a href="php-gd.html">gd扩展（验证码用的到）</a></li>
-</ul>
-
-<h2 id="toc_1">编译</h2>
-
-<ul>
-<li>没有 <code>--with-mysql</code> 这种选项了</li>
-<li>编译了gd扩展 </li>
-</ul>
-
-<pre><code>./configure 
---prefix=/usr/local/php56 
---exec-prefix=/usr/local/php56 
---bindir=/usr/local/php56/bin 
---sbindir=/usr/local/php56/sbin 
---includedir=/usr/local/php56/include 
---libdir=/usr/local/php56/lib/php 
---mandir=/usr/local/php56/php/man 
---with-config-file-path=/usr/local/php56/etc 
---with-mcrypt=/usr/include 
---with-mhash 
---with-openssl 
---with-mysqli=shared,mysqlnd 
---with-pdo-mysql=shared,mysqlnd 
---with-iconv 
---with-zlib 
---enable-zip 
---enable-inline-optimization 
---disable-debug 
---disable-rpath 
---enable-shared 
---enable-xml 
---enable-bcmath 
---enable-shmop 
---enable-sysvsem 
---enable-mbregex 
---enable-mbstring 
---enable-gd-native-ttf 
---enable-pcntl 
---enable-sockets 
---with-xmlrpc 
---enable-soap 
---without-pear 
---with-gettext 
---enable-session 
---with-curl 
---enable-opcache 
---enable-fpm 
---with-fpm-user=nginx 
---with-fpm-group=nginx 
---without-gdbm 
---disable-fileinfo 
---with-freetype-dir=/usr/lib64 
---with-jpeg-dir=/usr/lib64 
---with-gd
-</code></pre>
-
-<p>(复制到命令行执行之前，需要去掉换行符）</p>
-
-<pre><code>make &amp;&amp; make install
-make clean
-</code></pre>
-
-<h2 id="toc_2">php7回滚到php56</h2>
-
-<p><a href="php7-php56.html">php7回滚到php56</a><br/>
-如果走这一步的话，下面的步骤有些就不需要再执行了。</p>
-
-<pre><code>cp php.ini-production /usr/local/php56/etc/php.ini
-cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
-cp /usr/local/php56/etc/php-fpm.conf.default /usr/local/php56/etc/php-fpm.conf
-</code></pre>
-
-<h2 id="toc_3">设置path</h2>
-
-<pre><code>vim .zshrc
-</code></pre>
-
-<p>修改用户跟目录下的 .zshrc 文件，把 /usr/local/php56/bin 加在path项的前面。</p>
-
-<pre><code>source .zshrc
-</code></pre>
-
-<h2 id="toc_4">创建php日志文件目录</h2>
-
-<pre><code>mkdir -p /var/log/php-fpm/ &amp;&amp; mkdir -p /var/run/php-fpm &amp;&amp; cd /var/run/ &amp;&amp; chown -R nginx:nginx php-fpm
-
-mkdir -p /var/lib/php/session
-
-chown -R nginx:nginx /var/lib/php
-</code></pre>
-
-<h2 id="toc_5">检查扩展是否都安装了，安装并开启</h2>
-
-<pre><code>cd /usr/local/php56/lib/php/extensions/no-debug-non-zts-20131226
-</code></pre>
-
-<h2 id="toc_6">配置 php.ini 的 extension及其它</h2>
-
-<pre><code>zend_extension=opcache.so
-extension=mysqli.so
-extension=pdo_mysql.so
-</code></pre>
-
-<p>或者，使用 slat 同步php.ini &amp; php-fpm.conf 文件</p>
-
-<p>启动php-fpm：<br/>
-先给 /etc/init.d/php-fpm 增加可执行权限。</p>
-
-<pre><code>/etc/init.d/php-fpm start
-</code></pre>
-
-<h2 id="toc_7">配置 memcached 扩展</h2>
-
-<p><a href="php-memcached.html">php5.6 安装 memcached扩展</a></p>
-
-<h2 id="toc_8">配置gd扩展</h2>
-
-<p><a href="php-gd.html">gd扩展（验证码用的到）</a></p>
-
-<h2 id="toc_9">查看phpinfo</h2>
-
-<p>检查扩展安装情况。<br/>
-<a href="php-phpinfo.html">配置访问 phpinfo 的域名</a></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[memcached 最佳实践]]></title>
-    <link href="http://www.free-abc.com.cn/14798699605642.html"/>
-    <updated>2016-11-23T10:59:20+08:00</updated>
-    <id>http://www.free-abc.com.cn/14798699605642.html</id>
-    <content type="html"><![CDATA[
-<h2 id="toc_0">介绍</h2>
-
-<ul>
-<li>它比memcache好，有加锁机制等</li>
-<li>它比redis性能更高</li>
-<li>它特别适合于缓存小数据片</li>
-<li>在阿里云上使用yum安装memcached。</li>
-</ul>
-
-<h2 id="toc_1">与php配合</h2>
-
-<ul>
-<li>安装php的memcached扩展后，就可以通过php语言来编写访问memcached服务的脚本了</li>
-<li>php的memcached扩展，通过 libmemcached 库来跟memcached服务器交互</li>
-<li>php7无法编译memcached扩展。提示头文件找不到。</li>
-<li>最后改成使用<a href="php-memcached.html">php5.6 安装 memcached 扩展</a></li>
-</ul>
-
-<h2 id="toc_2">安装</h2>
-
-<p>执行：</p>
-
-<pre><code>yum search memcached
-</code></pre>
-
-<p>找到合适的版本的memcached，在这之前，需要先配置好更新及时的 yum源（没有专门的源，配置好 epel 源即可）。 </p>
-
-<p>执行：</p>
-
-<pre><code>yum install memcached.x86_64 libmemcached.x86_64 libmemcached-devel.x86_64
-</code></pre>
-
-<p>选择：libmemcached.x86_64（php扩展连接memcached服务器时会用到）、 libmemcached-devel.x86_64（php扩展编译时会用到）、 memcached.x86_64、libevent-devel(memcached编译的时候需要，会默认安装)这三个软件包进行安装。 </p>
-
-<h2 id="toc_3">进程挂掉自动重启</h2>
-
-<p>待补充</p>
-
-<h2 id="toc_4">测试memcached</h2>
-
-<pre><code>telnet 127.0.0.1 11211
-</code></pre>
-
-<h2 id="toc_5">开机自动启动</h2>
-
-<p>自从centos7以来，系统服务的管理通过 systemd 来管理。 通过yum安装的memcached，默认已经安装了 memcached.service 脚本。 开机自动启动配置： </p>
-
-<pre><code>systemctl enable memcached.service
-</code></pre>
-
-<h2 id="toc_6">权限控制</h2>
-
-<p>修改 <code>/lib/systemd/system/memcached.service</code> 增加 <code>-l 127.0.0.1</code> 参数，然后重启即可。 </p>
-
-<pre><code>systemctl daemon-reload
- systemctl restart memcached 
-</code></pre>
-
-<p>增加 -l 127.0.0.1 后，ipv6地址的监听就没有了。(ss -ntlp) </p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[php 安装 memcached 扩展]]></title>
-    <link href="http://www.free-abc.com.cn/php-memcached.html"/>
-    <updated>2016-11-23T10:55:08+08:00</updated>
-    <id>http://www.free-abc.com.cn/php-memcached.html</id>
-    <content type="html"><![CDATA[
-<ol>
-<li>先要安装 memcached 库：</li>
-</ol>
-
-<pre><code>yum install libmemcached-devel.x86_64 libmemcached.x86_64
-</code></pre>
-
-<ol>
-<li>下载</li>
-</ol>
-
-<pre><code>wget http://pecl.php.net/get/memcached-2.2.0.tgz
-</code></pre>
-
-<ol>
-<li>解压缩</li>
-</ol>
-
-<pre><code>tar zxvf memcached-2.2.0.tgz
-</code></pre>
-
-<ol>
-<li>编译</li>
-</ol>
-
-<pre><code>/usr/local/php56/bin/phpize (或者 phpize)
-
-./configure --enable-memcached-sasl
-
-make
-
-make install
-</code></pre>
-
-<ol>
-<li>确认是否更新：</li>
-</ol>
-
-<pre><code>stat memcached.so
-</code></pre>
-
-<p>6.添加进php.ini</p>
-
-<pre><code>extension=memcached.so
-</code></pre>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[nginx最佳实践]]></title>
-    <link href="http://www.free-abc.com.cn/14798693795226.html"/>
-    <updated>2016-11-23T10:49:39+08:00</updated>
-    <id>http://www.free-abc.com.cn/14798693795226.html</id>
-    <content type="html"><![CDATA[
-<h2 id="toc_0">安装</h2>
-
-<p>从 <code>http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm</code> 下载最新源更新包。</p>
-
-<pre><code>rpm -ivh nginx-release-centos-7-0.el7.ngx.noarch.rpm (这个文件从nginx官网下载的) 
-yum install nginx （一定先下载上面那个rpm，确保安装最新的nginx稳定版并且进行了包校验）
-</code></pre>
-
-<p>检查安装的版本：</p>
-
-<pre><code>nginx -V 
-</code></pre>
-
-<p>打开80端口：</p>
-
-<pre><code>firewall-cmd --add-service=http --permanent 
-firewall-cmd —reload 
-</code></pre>
-
-<p>启动服务：</p>
-
-<pre><code>systemctl enable nginx.service
-systemctl start nginx.service
-systemctl restart nginx.service
-
-nginx 启动nginx
-nginx -s reload 重启nginx
-</code></pre>
-
-<p>然后检测是否安装成功。</p>
-
-<h2 id="toc_1">配置</h2>
-
-<ol>
-<li>worker_processes auto nginx进程数，建议按照cpu核数来指定。2个4核cpu时计为8. auto 将自动检测cpu核数。</li>
-<li>worker_rlimit_nofile 65535; 这个指令是指一个nginx进程打开的最多文件描述符数目，理论值应该是最多打开文件数（ulimit -n)与nginx进程数相除，但是nginx分配请求并不是那么均匀，所以最好与 ulimit -n 的值保持一致。 现在在 linux2.6内核下进程最大打开文件数为65535，所以 worker_rlimit_nofile 就相应应该填写65535. 这是因为 nginx 调度时分配请求到进程并不是那么均衡，所以加入填写10240，总并发量达到3-4万时就有进程可能超过10240，这是就会返回502错误。</li>
-<li>use epoll; nginx自动选择最高效的连接处理方法。这个不需要指定。</li>
-<li>worker_connections number; 每个 worker_process 可以同时打开的最大连接数。理论上每台nginx服务器的最大连接数为 worker_processes*worker_connections。
-还有 fastcgi , https 等等</li>
-</ol>
-
-<h2 id="toc_2">nginx的高性能指标</h2>
-
-<p>每秒处理请求数1000以上。（SAE每秒处理请求数是5000）<br/>
-每个请求的处理时间：100毫秒以下。</p>
-
-<h2 id="toc_3">如何评测</h2>
-
-<pre><code>ab -n 10000 -c 100 http://www.yourdomain.com/
-</code></pre>
-
-<h2 id="toc_4">问题排查</h2>
-
-<p>多看日志</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Notification.Name]]></title>
-    <link href="http://www.free-abc.com.cn/14798309909156.html"/>
-    <updated>2016-11-23T00:09:50+08:00</updated>
-    <id>http://www.free-abc.com.cn/14798309909156.html</id>
-    <content type="html"><![CDATA[
-<hr/>
-
-<p>表达的意义：通知名称。</p>
-
-<p>是一个嵌套类型。</p>
-
-<p>该类型是一个结构体。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Key-paths 作为字符串]]></title>
-    <link href="http://www.free-abc.com.cn/14794651181650.html"/>
-    <updated>2016-11-18T18:31:58+08:00</updated>
-    <id>http://www.free-abc.com.cn/14794651181650.html</id>
-    <content type="html"><![CDATA[
-<p>用 #keyPath() 代替。<br/>
-如下：</p>
-
-<pre><code>class Person: NSObject {
-  var name: String = &quot;&quot;
-
-  init(name: String) {
-    self.name = name
-  }
+<pre><code>protected function schedule(Schedule $schedule)
+{
+   $schedule-&gt;call(function () {
+       DB::table(&#39;recent_users&#39;)-&gt;delete();
+   })-&gt;daily();
 }
-let me = Person(name: &quot;Cosmin&quot;)
-me.value(forKeyPath: #keyPath(Person.name))
+
+$schedule-&gt;command(&#39;emails:send --force&#39;)-&gt;daily();
+
+$schedule-&gt;command(EmailsCommand::class, [&#39;--force&#39;])-&gt;daily();
+
+$schedule-&gt;exec(&#39;node /home/forge/script.js&#39;)-&gt;daily();
+</code></pre>
+
+<h3 id="toc_3">如何精细化控制任务执行</h3>
+
+<pre><code>-&gt;cron(&#39;* * * * * *&#39;);  Run the task on a custom Cron schedule
+-&gt;everyMinute();    Run the task every minute
+-&gt;everyFiveMinutes();   Run the task every five minutes
+-&gt;everyTenMinutes();    Run the task every ten minutes
+-&gt;everyThirtyMinutes(); Run the task every thirty minutes
+-&gt;hourly(); Run the task every hour
+-&gt;daily();  Run the task every day at midnight
+-&gt;dailyAt(&#39;13:00&#39;); Run the task every day at 13:00
+-&gt;twiceDaily(1, 13);    Run the task daily at 1:00 &amp; 13:00
+-&gt;weekly(); Run the task every week
+-&gt;monthly();    Run the task every month
+-&gt;monthlyOn(4, &#39;15:00&#39;);    Run the task every month on the 4th at 15:00
+-&gt;quarterly();  Run the task every quarter
+-&gt;yearly(); Run the task every year
+-&gt;timezone(&#39;America/New_York&#39;);Set the timezone
+
+-&gt;weekdays();   Limit the task to weekdays
+-&gt;sundays();    Limit the task to Sunday
+-&gt;mondays();    Limit the task to Monday
+-&gt;tuesdays();   Limit the task to Tuesday
+-&gt;wednesdays(); Limit the task to Wednesday
+-&gt;thursdays();  Limit the task to Thursday
+-&gt;fridays();    Limit the task to Friday
+-&gt;saturdays();  Limit the task to Saturday
+-&gt;between($start, $end);    Limit the task to run between start and end times
+-&gt;when(Closure);    Limit the task based on a truth test
+
+// Run once per week on Monday at 1 PM...
+$schedule-&gt;call(function () {
+    //
+})-&gt;weekly()-&gt;mondays()-&gt;at(&#39;13:00&#39;);
+
+// Run hourly from 8 AM to 5 PM on weekdays...
+$schedule-&gt;command(&#39;foo&#39;)
+          -&gt;weekdays()
+          -&gt;hourly()
+          -&gt;timezone(&#39;America/Chicago&#39;)
+          -&gt;between(&#39;8:00&#39;, &#39;17:00&#39;);
+          
+$schedule-&gt;command(&#39;reminders:send&#39;)
+                    -&gt;hourly()
+                    -&gt;unlessBetween(&#39;23:00&#39;, &#39;4:00&#39;);
+
+$schedule-&gt;command(&#39;emails:send&#39;)-&gt;daily()-&gt;skip(function () {
+    return true;
+}); //跳过某个条件
+
+$schedule-&gt;command(&#39;emails:send&#39;)-&gt;withoutOverlapping(); //前一个计划在执行时，不执行下一个任务
+
+$schedule-&gt;command(&#39;emails:send&#39;)-&gt;evenInMaintenanceMode(); //维护状态也执行
+</code></pre>
+
+<h3 id="toc_4">计划任务执行输出</h3>
+
+<pre><code>$schedule-&gt;command(&#39;emails:send&#39;)
+         -&gt;daily()
+         -&gt;sendOutputTo($filePath);
+         
+$schedule-&gt;command(&#39;emails:send&#39;)
+         -&gt;daily()
+         -&gt;appendOutputTo($filePath);
+         
+$schedule-&gt;command(&#39;foo&#39;)
+         -&gt;daily()
+         -&gt;sendOutputTo($filePath)
+         -&gt;emailOutputTo(&#39;foo@example.com&#39;);
+
+
+</code></pre>
+
+<h3 id="toc_5">钩子</h3>
+
+<pre><code>$schedule-&gt;command(&#39;emails:send&#39;)
+         -&gt;daily()
+         -&gt;before(function () {
+             // Task is about to start...
+         })
+         -&gt;after(function () {
+             // Task is complete...
+         });
+         
+$schedule-&gt;command(&#39;emails:send&#39;)
+         -&gt;daily()
+         -&gt;pingBefore($url)
+         -&gt;thenPing($url);
+         
 </code></pre>
 
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[DispatchQueue（异步）]]></title>
-    <link href="http://www.free-abc.com.cn/14794647079536.html"/>
-    <updated>2016-11-18T18:25:07+08:00</updated>
-    <id>http://www.free-abc.com.cn/14794647079536.html</id>
+    <title type="html"><![CDATA[laravel console command]]></title>
+    <link href="http://www.free-abc.com.cn/14808216901864.html"/>
+    <updated>2016-12-04T11:21:30+08:00</updated>
+    <id>http://www.free-abc.com.cn/14808216901864.html</id>
     <content type="html"><![CDATA[
-<blockquote>
-<p>DispatchQueue manages the execution of work items. Each work item submitted to a queue is processed on a pool of threads managed by the system.</p>
-</blockquote>
+<h2 id="toc_0">控制台命令</h2>
 
-<p>例子：</p>
+<p>原则：功能单一化，有利于被重用。</p>
 
-<pre><code>let queue = DispatchQueue(label: &quot;Swift 3&quot;)
-queue.async {
-  print(&quot;Swift 3 queue&quot;)
+<p>一个控制台命令，包含哪些属性呢？</p>
+
+<ul>
+<li><p>管理所有命令的管理器</p>
+
+<ul>
+<li>可用命令列表</li>
+<li>查看命令帮助文档</li>
+<li>创建单个命令脚手架的命令</li>
+<li>命令代码（可执行文件）存放在哪个目录</li>
+<li>注册一个新的命令到管理器</li>
+<li>命令如何互相调用，如何控制互相调用引发的输出</li>
+<li>命令如何被非CLI程序调用</li>
+<li>系统命令和用户自定义命令区分</li>
+<li>如何修改系统命令</li>
+</ul></li>
+<li><p>单个命令</p>
+
+<ul>
+<li>创建方法</li>
+<li>命令代码结构</li>
+<li>如何定义命令名</li>
+<li>如何定义帮助文档</li>
+<li>如何定义参数名</li>
+<li>如何定义多个参数</li>
+<li>如何为参数指定默认值</li>
+<li>如何定义选项名</li>
+<li>如何定义多个选项</li>
+<li>如何定义选项默认值</li>
+<li>代码里如何获取参数值</li>
+<li>代码里如何获取选项值</li>
+<li>如何输出信息</li>
+</ul></li>
+</ul>
+
+<h2 id="toc_1">下面来看看，laravel是如何支持控制台命令的：</h2>
+
+<h3 id="toc_2">laravel的命令行管理器是: artisan.</h3>
+
+<ul>
+<li>查看有哪些可用的命令：<code>php artisan list</code></li>
+<li>查看命令的帮助：<code>php artisan help migrate</code></li>
+<li>创建单个命令的脚手架：<code>php artisan make:command SendEmails</code></li>
+<li>命令代码存放目录：<code>app/Console/Commands</code></li>
+<li>注册一个新的命令到管理器：设置<code>app/Console/Kernel.php</code> 文件的 <code>commands</code>属性</li>
+<li>命令之间互相调用：</li>
+</ul>
+
+<pre><code>public function handle()
+{
+    $this-&gt;call(&#39;email:send&#39;, [
+        &#39;user&#39; =&gt; 1, &#39;--queue&#39; =&gt; &#39;default&#39;
+    ]);
+
+    //
+}
+
+//屏蔽该输出
+$this-&gt;callSilent(&#39;email:send&#39;, [
+    &#39;user&#39; =&gt; 1, &#39;--queue&#39; =&gt; &#39;default&#39;
+]);
+</code></pre>
+
+<ul>
+<li>命令如何被其他非CLI调用：</li>
+</ul>
+
+<pre><code>Route::get(&#39;/foo&#39;, function () {
+    $exitCode = Artisan::call(&#39;email:send&#39;, [
+        &#39;user&#39; =&gt; 1, &#39;--queue&#39; =&gt; &#39;default&#39;
+    ]);
+
+    //
+});
+
+//后台执行
+Route::get(&#39;/foo&#39;, function () {
+    Artisan::queue(&#39;email:send&#39;, [
+        &#39;user&#39; =&gt; 1, &#39;--queue&#39; =&gt; &#39;default&#39;
+    ]);
+
+    //
+});
+
+//不接受值的选项设置
+$exitCode = Artisan::call(&#39;migrate:refresh&#39;, [
+    &#39;--force&#39; =&gt; true,
+]);
+</code></pre>
+
+<ul>
+<li>系统命令和用户自定义命令，如何修改？
+系统命令定义在：<code>Illuminate\Foundation\Console</code> 目录下。（通过搜索 <code>make:model</code>关键词找到的。</li>
+</ul>
+
+<p>各个包可以遵循 laravel command规则写的命令。<br/>
+要修改他们的话，就去对应的包的相应目录下修改即可。</p>
+
+<h3 id="toc_3">单个命令</h3>
+
+<ul>
+<li><p>命令创建方法：</p>
+
+<ol>
+<li>脚手架命令（或者自己按照约定写脚手架）</li>
+<li>闭包</li>
+</ol></li>
+<li><p>命令代码结构:<br/>
+<code>signature</code>, <code>description</code>, <code>handle()</code><br/>
+支持在构造器注入依赖。</p></li>
+<li><p>如何定义命令名？</p></li>
+<li><p>使用 <code>signature</code> 参数</p></li>
+<li><p>在路由中直接使用 <code>Artisan::command()</code>方法。第一个参数就是命令名。</p></li>
+<li><p>如何定义参数，选项？<br/>
+使用 <code>signature</code> 属性定义参数和选项。<br/>
+使用 <code>description</code> 属性定义帮助文档。</p></li>
+</ul>
+
+<pre><code>protected $signature = &#39;email:send&#39;; //命令
+protected $signature = &#39;email:send {user}&#39;; //命令带必须的参数
+protected $signature = &#39;email:send {user?}&#39;; //命令带可选参数
+protected $signature = &#39;email:send {user=foo}&#39;; //命令带必须的参数，但有默认值
+protected $signature = &#39;email:send {user} {--queue}&#39;; //命令带必须的参数，可选选项
+protected $signature = &#39;email:send {user} {--queue=}&#39;; //命令带必须的参数，可选选项，若带选项，必须指定值
+protected $signature = &#39;email:send {user} {--queue=default}&#39;; //命令带必须的参数，可选选项，如果传递了选项，但没有指定值，则使用默认值
+protected $signature = &#39;email:send {user} {--Q|queue}&#39;; //命令带必须的参数，可选选项, 支持简写形式的选项
+email:send {user*} //参数数组
+email:send {user} {--id=*} //选项数组
+protected $signature = &#39;email:send
+                        {user : The ID of the user}
+                        {--queue= : Whether the job should be queued}&#39;;
+                        //参数和选项描述
+</code></pre>
+
+<ul>
+<li>获取参数和选项：</li>
+</ul>
+
+<pre><code>$userId = $this-&gt;argument(&#39;user&#39;); //检索单个参数值
+$arguments = $this-&gt;arguments(); //所有参数值
+$queueName = $this-&gt;option(&#39;queue&#39;); //单个选项值
+$options = $this-&gt;options(); //所有选项值
+当参数或者选项不存在时，返回 null.
+$name = $this-&gt;ask(&#39;What is your name?&#39;); //提示用户输入
+$password = $this-&gt;secret(&#39;What is the password?&#39;); //提示用户输入密码
+if ($this-&gt;confirm(&#39;Do you wish to continue?&#39;)) {
+    //
+} // 提示用户确认
+$name = $this-&gt;anticipate(&#39;What is your name?&#39;, [&#39;Taylor&#39;, &#39;Dayle&#39;]); //自动完成
+$name = $this-&gt;choice(&#39;What is your name?&#39;, [&#39;Taylor&#39;, &#39;Dayle&#39;], $default); //提示用户选择，并且给出默认值
+</code></pre>
+
+<ul>
+<li>如何输出命令信息：</li>
+</ul>
+
+<p><strong>单行文本</strong></p>
+
+<pre><code>public function handle()
+{
+    $this-&gt;info(&#39;Display this on the screen&#39;);
+}
+
+$this-&gt;error(&#39;Something went wrong!&#39;);
+$this-&gt;line(&#39;Display this on the screen&#39;);
+
+还有  comment() , question() 方法输出。
+</code></pre>
+
+<p><strong>表格</strong></p>
+
+<pre><code>$headers = [&#39;Name&#39;, &#39;Email&#39;];
+
+$users = App\User::all([&#39;name&#39;, &#39;email&#39;])-&gt;toArray();
+
+$this-&gt;table($headers, $users);
+</code></pre>
+
+<p><strong>进度条</strong></p>
+
+<pre><code>$users = App\User::all();
+
+$bar = $this-&gt;output-&gt;createProgressBar(count($users));
+
+foreach ($users as $user) {
+    $this-&gt;performTask($user);
+
+    $bar-&gt;advance();
+}
+
+$bar-&gt;finish();
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel validation]]></title>
+    <link href="http://www.free-abc.com.cn/14807819904721.html"/>
+    <updated>2016-12-04T00:19:50+08:00</updated>
+    <id>http://www.free-abc.com.cn/14807819904721.html</id>
+    <content type="html"><![CDATA[
+<p>验证输入参数</p>
+
+<ul>
+<li>在哪个环节验证？怎么验证？</li>
+<li>各种验证需求是否能满足？</li>
+<li>验证不通过的情况下怎么处理？</li>
+<li>验证钩子</li>
+<li>错误信息如何定义</li>
+</ul>
+
+<h2 id="toc_0">在哪个环节验证？</h2>
+
+<ol>
+<li>控制器里使用中间件验证
+在控制器中，使用  <code>ValidatesRequests</code> trait 。
+控制器基类中use了它，子类中可以直接用。</li>
+</ol>
+
+<pre><code> $this-&gt;validate($request, [
+        &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,
+        &#39;body&#39; =&gt; &#39;required&#39;,
+    ]);
+</code></pre>
+
+<ol>
+<li>创建Form Requests来处理</li>
+</ol>
+
+<pre><code>php artisan make:request StoreProgramPost
+</code></pre>
+
+<p>然后在控制器中 use 这个 requests.</p>
+
+<p>关于这个request的编码，请见文档。</p>
+
+<pre><code>public function rules()
+{
+    return [
+        &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,
+        &#39;body&#39; =&gt; &#39;required&#39;,
+    ];
+}
+
+public function authorize()
+{
+    $comment = Comment::find($this-&gt;route(&#39;comment&#39;));
+
+    return $comment &amp;&amp; $this-&gt;user()-&gt;can(&#39;update&#39;, $comment);
+}
+
+public function authorize()
+{
+    return true;
+}
+
+public function messages()
+{
+    return [
+        &#39;title.required&#39; =&gt; &#39;A title is required&#39;,
+        &#39;body.required&#39;  =&gt; &#39;A message is required&#39;,
+    ];
 }
 </code></pre>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[UserDefaults]]></title>
-    <link href="http://www.free-abc.com.cn/14794370507786.html"/>
-    <updated>2016-11-18T10:44:10+08:00</updated>
-    <id>http://www.free-abc.com.cn/14794370507786.html</id>
-    <content type="html"><![CDATA[
-<h2 id="toc_0">是什么？</h2>
+<ol>
+<li>在控制器中，手动创建验证器来验证</li>
+</ol>
 
-<p>NSUserDefaults 类的连接。<br/>
-提供了一个对接默认系统的编程接口。<br/>
-数据存储在 user defaults database。<br/>
-数据先存储在内存中，通过周期性的自动调用<code>synchronize()</code>来刷新数据。</p>
+<pre><code>$validator = Validator::make($request-&gt;all(), [
+  &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,
+  &#39;body&#39; =&gt; &#39;required&#39;,
+]);
 
-<h2 id="toc_1">作用</h2>
+if ($validator-&gt;fails()) {
+  return redirect(&#39;post/create&#39;)
+              -&gt;withErrors($validator)
+              -&gt;withInput();
+}
 
-<p>存储用户的自定义数据<br/>
-如：界面显示哪些部分、文档自动存储策略、默认的启动状态、默认行为</p>
+//自动重定向
+Validator::make($request-&gt;all(), [
+    &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,
+    &#39;body&#39; =&gt; &#39;required&#39;,
+])-&gt;validate();
 
-<h2 id="toc_2">可以存储哪些数据</h2>
 
-<p>floats, doubles, integers, Booleans, and URLs.<br/>
-支持的对象类型：NSData, NSString, NSNumber, NSDate, NSArray, or NSDictionary. </p>
+</code></pre>
 
-<p>如果你要存储其他类型的对象，你需要把它归档为 NSData 实例。</p>
+<h2 id="toc_1">各种验证需求怎么满足？</h2>
 
-<h2 id="toc_3">返回值</h2>
+<ul>
+<li>属性的第一条验证规则失败后，停止当前属性的验证。</li>
+</ul>
 
-<p>返回值是常量。不可改变。<br/>
-即使你存的是一个变量。</p>
+<pre><code>$this-&gt;validate($request, [
+    &#39;title&#39; =&gt; &#39;bail|required|unique:posts|max:255&#39;,
+    &#39;body&#39; =&gt; &#39;required&#39;,
+]);
+</code></pre>
 
-<h2 id="toc_4">存储</h2>
+<ul>
+<li>嵌套属性如何验证？</li>
+</ul>
 
-<p>默认为每个用户创建自动创建一个数据库。<br/>
-目前不支持分 domain 存储数据。需要的话，请使用 <code>CFPreferences</code><br/>
-但是，<code>UserDefaults</code> 可以分 domain 读数据。</p>
+<pre><code>$this-&gt;validate($request, [
+    &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,
+    &#39;author.name&#39; =&gt; &#39;required&#39;,
+    &#39;author.description&#39; =&gt; &#39;required&#39;,
+]);
+</code></pre>
 
-<p>If you want to track a file by reference but you require explicit control over when resolution occurs, you should take care to write out bookmark data to NSUserDefaults rather than rely on -[NSUserDefaults setURL:forKey:]. This allows you to call +[NSURL URLByResolvingBookmarkData:options:relativeToURL:bookmarkDataIsStale:error:] at a time when you know your application will be able to handle the potential I/O or required user interface interactions.</p>
+<p>Below is a list of all available validation rules and their function:</p>
 
-<h2 id="toc_5">沙盒</h2>
+<p>Accepted<br/>
+Active URL<br/>
+After (Date)<br/>
+Alpha<br/>
+Alpha Dash<br/>
+Alpha Numeric<br/>
+Array<br/>
+Before (Date)<br/>
+Between<br/>
+Boolean<br/>
+Confirmed<br/>
+Date<br/>
+Date Format<br/>
+Different<br/>
+Digits<br/>
+Digits Between<br/>
+Dimensions (Image Files)<br/>
+Distinct<br/>
+E-Mail<br/>
+Exists (Database)<br/>
+File<br/>
+Filled<br/>
+Image (File)<br/>
+In<br/>
+In Array<br/>
+Integer<br/>
+IP Address<br/>
+JSON<br/>
+Max<br/>
+MIME Types<br/>
+MIME Type By File Extension<br/>
+Min<br/>
+Nullable<br/>
+Not In<br/>
+Numeric<br/>
+Present<br/>
+Regular Expression<br/>
+Required<br/>
+Required If<br/>
+Required Unless<br/>
+Required With<br/>
+Required With All<br/>
+Required Without<br/>
+Required Without All<br/>
+Same<br/>
+Size<br/>
+String<br/>
+Timezone<br/>
+Unique (Database)<br/>
+URL</p>
 
-<p>不支持访问其它应用的 <code>UserDefaults</code></p>
+<h2 id="toc_2">验证不通过的情况下如何处理？</h2>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[模拟器]]></title>
-    <link href="http://www.free-abc.com.cn/14794017400084.html"/>
-    <updated>2016-11-18T00:55:40+08:00</updated>
-    <id>http://www.free-abc.com.cn/14794017400084.html</id>
-    <content type="html"><![CDATA[
-<h2 id="toc_0">目录：</h2>
+<ol>
+<li>传统的http请求，重定向到原来请求验证的页面。
+所有的错误信息自动存储到sesson中，通过 <code>ShareErrorsFromSession</code> 中间件， view中可以直接使用。
+<code>$errors</code> 变量是一个<code>MessageBag</code>实例。</li>
+</ol>
 
-<p>打印它：<code>print(NSHomeDirectory())</code></p>
+<pre><code>&lt;div class=&quot;form-group{{ $errors-&gt;has(&#39;name&#39;) ? &#39; has-error&#39; : &#39;&#39; }}&quot;&gt;
+   &lt;label for=&quot;name&quot; class=&quot;col-md-4 control-label&quot;&gt;Name&lt;/label&gt;
 
-<h2 id="toc_1">旋转屏幕报错：</h2>
+   &lt;div class=&quot;col-md-6&quot;&gt;
+       &lt;input id=&quot;name&quot; type=&quot;text&quot; class=&quot;form-control&quot; name=&quot;name&quot; value=&quot;{{ old(&#39;name&#39;) }}&quot; required autofocus&gt;
 
-<blockquote>
-<p>if we&#39;re in the real pre-commit handler we can&#39;t actually add any new fences due to CA restriction</p>
-</blockquote>
+       @if ($errors-&gt;has(&#39;name&#39;))
+           &lt;span class=&quot;help-block&quot;&gt;
+               &lt;strong&gt;{{ $errors-&gt;first(&#39;name&#39;) }}&lt;/strong&gt;
+           &lt;/span&gt;
+       @endif
+   &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
 
-<p>解决办法：</p>
+<ol>
+<li>ajax请求，返回一个json响应
+包含所有的验证错误信息。
+并且发送一个 422 的 http 状态码。</li>
+</ol>
 
-<pre><code>in your Xcode:
+<pre><code>.fail(function(data){
+    console.log(data.responseJSON);
+    //此处使用js来验证值，我还需要精进下。
+    if( data.responseJSON.name[0] != &#39;&#39;){
+        $(&quot;#namediv&quot;).addClass(&#39;has-error&#39;);
+        $(&quot;#namediv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.name[0]+&quot;&lt;/strong&gt;&quot;);
+    }
+    if( data.responseJSON.intro[0] != &#39;&#39;){
+        $(&quot;#introdiv&quot;).addClass(&#39;has-error&#39;);
+        $(&quot;#introdiv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.intro[0]+&quot;&lt;/strong&gt;&quot;);
+    }
+    if( data.responseJSON.type[0] != &#39;&#39;){
+        $(&quot;#typediv&quot;).addClass(&#39;has-error&#39;);
+        $(&quot;#typediv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.type[0]+&quot;&lt;/strong&gt;&quot;);
+    }
+    if( data.responseJSON.status[0] != &#39;&#39;){
+        $(&quot;#statusdiv&quot;).addClass(&#39;has-error&#39;);
+        $(&quot;#statusdiv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.status[0]+&quot;&lt;/strong&gt;&quot;);
+    }
+    
+});
+</code></pre>
 
-Click on your active scheme name right next to the Stop button
-Click on Edit Scheme....
-in Run (Debug) select the Arguments tab
-in Environment Variables click +
-add variable: OS_ACTIVITY_MODE = disable
+<ol>
+<li>单页面多个form，如何检索错误信息</li>
+</ol>
+
+<pre><code>return redirect(&#39;register&#39;)
+            -&gt;withErrors($validator, &#39;login&#39;);
+            
+{{ $errors-&gt;login-&gt;first(&#39;email&#39;) }}
+</code></pre>
+
+<ol>
+<li>检索错误信息</li>
+</ol>
+
+<pre><code>$errors = $validator-&gt;errors();
+
+echo $errors-&gt;first(&#39;email&#39;);
+
+foreach ($errors-&gt;get(&#39;email&#39;) as $message) {
+    //
+}
+
+foreach ($errors-&gt;get(&#39;attachments.*&#39;) as $message) {
+    //
+}
+
+foreach ($errors-&gt;all() as $message) {
+    //
+}
+
+if ($errors-&gt;has(&#39;email&#39;)) {
+    //
+}
+</code></pre>
+
+<h2 id="toc_3">验证钩子</h2>
+
+<p>做进一步的验证或者添加更多的错误信息。</p>
+
+<pre><code>$validator = Validator::make(...);
+
+$validator-&gt;after(function ($validator) {
+    if ($this-&gt;somethingElseIsInvalid()) {
+        $validator-&gt;errors()-&gt;add(&#39;field&#39;, &#39;Something is wrong with this field!&#39;);
+    }
+});
+
+if ($validator-&gt;fails()) {
+    //
+}
+</code></pre>
+
+<h2 id="toc_4">自定义错误信息</h2>
+
+<ul>
+<li>方法传值</li>
+</ul>
+
+<pre><code>$messages = [
+    &#39;required&#39; =&gt; &#39;The :attribute field is required.&#39;,
+];
+
+$messages = [
+    &#39;same&#39;    =&gt; &#39;The :attribute and :other must match.&#39;,
+    &#39;size&#39;    =&gt; &#39;The :attribute must be exactly :size.&#39;,
+    &#39;between&#39; =&gt; &#39;The :attribute must be between :min - :max.&#39;,
+    &#39;in&#39;      =&gt; &#39;The :attribute must be one of the following types: :values&#39;,
+];
+
+$messages = [
+    &#39;email.required&#39; =&gt; &#39;We need to know your e-mail address!&#39;,
+];
+
+$validator = Validator::make($input, $rules, $messages);
+
+</code></pre>
+
+<ul>
+<li>在语言文件中定义
+add your messages to <code>custom</code> array in the <code>resources/lang/xx/validation.php</code> language file.</li>
+</ul>
+
+<pre><code>&#39;custom&#39; =&gt; [
+    &#39;email&#39; =&gt; [
+        &#39;required&#39; =&gt; &#39;We need to know your e-mail address!&#39;,
+    ],
+],
+
+&#39;attributes&#39; =&gt; [
+    &#39;email&#39; =&gt; &#39;email address&#39;,
+],
 </code></pre>
 
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[网络访问]]></title>
-    <link href="http://www.free-abc.com.cn/14793884482613.html"/>
-    <updated>2016-11-17T21:14:08+08:00</updated>
-    <id>http://www.free-abc.com.cn/14793884482613.html</id>
+    <title type="html"><![CDATA[laravel Eloquent ORM]]></title>
+    <link href="http://www.free-abc.com.cn/14807776698633.html"/>
+    <updated>2016-12-03T23:07:49+08:00</updated>
+    <id>http://www.free-abc.com.cn/14807776698633.html</id>
     <content type="html"><![CDATA[
-<h2 id="toc_0">错误信息</h2>
+<p>ORM<br/>
+跟数据库表对应起来的ORM。跟业务逻辑还没有什么关系。在它之上可以再封装一下业务逻辑给controller用。<br/>
+文件都存放到 <code>app/Model</code> 目录下吧。</p>
 
-<blockquote>
-<p>App Transport Security has blocked a cleartext HTTP (http://) resource load since it is insecure. Temporary exceptions can be configured via your app&#39;s Info.plist file.</p>
-</blockquote>
+<p>创建 Model， 只是创建到了 app 目录下，如果能直接创建到 Model 目录下就好了。</p>
 
-<p>解决办法：<br/>
-在Info.plist文件中添加&quot;App Transport SecuritySettings&quot;, Type为&quot;Dictionary&quot;,再添加&quot;Allow Arbitray Loads&quot;, Type 为&quot;Boolean&quot;，“Value”为“YES”即可。</p>
+<pre><code>php artisan make:model User
+php artisan make:model User -m
+php artisan make:model User --migration
+</code></pre>
 
-<blockquote>
-<p><a href="http://img3.imgtn.bdimg.com/it/u=2489051743,1646771720&amp;fm=21&amp;gp=0.jpg">http://img3.imgtn.bdimg.com/it/u=2489051743,1646771720&amp;fm=21&amp;gp=0.jpg</a><br/>
-下载不了。</p>
-</blockquote>
+<p>假设默认的表名是 model类名的复数。除非显示指定。<br/>
+假设默认的主键是<code>id</code>,除非显示指定。<br/>
+假设主键是自增的整数。如果不是，请设置 \(incrementing 属性为 false。<br/>
+假设表存在 ``created_at`` 和 ``updated_at`` 列。如果没有，设置 \)timestamps 属性为false。<br/>
+需要自定义时间戳格式，请使用 \(dataFormat 属性。<br/>
+默认使用默认的数据库连接，除非设置了 \)connection 属性。</p>
 
-<p>解决办法：<br/>
-文件名含有特殊字符: &amp; </p>
+<pre><code>protected $table = &#39;xxx&#39;;
+protected $primaryKey = &#39;xx&#39;;
+protected $incrementing = false;
+protected $timestamps = false;
+protected $connection = &#39;connection-name&#39;;
+</code></pre>
 
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Selector]]></title>
-    <link href="http://www.free-abc.com.cn/14793813370586.html"/>
-    <updated>2016-11-17T19:15:37+08:00</updated>
-    <id>http://www.free-abc.com.cn/14793813370586.html</id>
+    <title type="html"><![CDATA[laravel passport （API验证）]]></title>
+    <link href="http://www.free-abc.com.cn/14807554134214.html"/>
+    <updated>2016-12-03T16:56:53+08:00</updated>
+    <id>http://www.free-abc.com.cn/14807554134214.html</id>
     <content type="html"><![CDATA[
-<p>例子：<br/>
-<code>NotificationCenter.default.addObserver(self, selector: #selector(downloadImage), name: Notification.Name(&quot;BLDownloadImageNotification&quot;), object: nil)</code></p>
+<p>API 使用 token 来验证用户。<br/>
+传统的登录，使用 session来验证。</p>
 
-<p>语法：<br/>
-<code>#selector(downloadImage)</code><br/>
-<code>#selector(self.downloadImage)</code></p>
+<p>Laravel Passport 提供OAuth2 实现。</p>
 
-<p>错误提示：<br/>
-<em>unrecognized selector sent to instance</em></p>
+<h2 id="toc_0">安装流程</h2>
+
+<ol>
+<li>安装相应的passport包</li>
+<li>注册到 app.php 的 Provider 中</li>
+<li>使用 migrate 创建相关的表</li>
+<li>往数据库插入几条记录</li>
+<li>配置 UserModel, AuthServiceProvider, config/auth.php</li>
+</ol>
+
+<p>详情见：<a href="https://laravel.com/docs/5.3/passport#installation">https://laravel.com/docs/5.3/passport#installation</a></p>
+
+<h2 id="toc_1">概念及原理</h2>
+
+<p>第三方开发者，如果需要调用你的接口的话，需要注册他们的应用为你的 client。<br/>
+第三方开发者需要提供应用名和回调链接。<br/>
+回调链接用于，在普通用户批准授权后，回调。</p>
+
+<p>可以通过 <code>php artisan passport:clint</code> 命令来创建client。<br/>
+第三方开发者获取到：clientId, Secret 。这些信息在请求 access_token 和 授权码 的时候会用到。</p>
+
+<p>要请求token：<br/>
+第三方app，带上必要的参数，发起重定向请求到平台的 oauth/authorize 路由。</p>
+
+<blockquote>
+<p>oauth/authorize 这个路由怎么需要验证用户登录呢？<br/>
+是的，需要用户已登录，然后再选择是否授权。如果未登录，得先登录。</p>
+</blockquote>
+
+<p>平台自动显示一个授权界面，让用户批准或者拒绝授权请求。<br/>
+如果用户批准授权，平台会根据申请client的时配置的重定向url，重定向回第三方。<br/>
+此时，第三方会获得授权码参数。<br/>
+接着，第三方app，再发起post请求到 oauth/token 请求获取 access_token ，refresh_token ，expires_in 的值。</p>
+
+<h2 id="toc_2">第一方应用</h2>
+
+<p>像自己平台开发的 移动应用。不希望走完整的流程，那么，如何获取 access_token 呢？</p>
+
+<p>使用 username 和 password 来获得。</p>
+
+<p>使用前，需要为自家的应用创建一个 client。</p>
+
+<p>然后通过post调用 oauth/token 来获取 access_token。<br/>
+这个接口，是通过 Passport::route 注册的。<br/>
+scope 参数，设置为“*”</p>
+
+<h2 id="toc_3">当第三方不方便保管 secret 时，使用隐式准许token</h2>
+
+<p>如：第三方app是javascript程序。<br/>
+类似于 第三方oAuth2实现。</p>
+
+<h2 id="toc_4">对于API测试的情况，用户希望自己获得access_token ，不走重定向循环</h2>
+
+<h2 id="toc_5">API如何验证access_token？</h2>
+
+<p>使用中间件 <code>auth:api</code></p>
+
+<p>接口调用者，通过 header 来传递 access_token 。<br/>
+<code>&#39;Authorization&#39; =&gt; &#39;Bearer &#39;.$accessToken,</code></p>
+
+<h2 id="toc_6">token 范围</h2>
+
+<p>考虑到我现在的app是自己的app，不需要控制范围。<br/>
+暂略。</p>
+
+<h2 id="toc_7">从js来调用api</h2>
+
+<p>api的调用者包括：web application, mobile application, third-party applications, any sdk,javascript application.</p>
+
+<p>在web中间件组中，使用 CreateFreshApiToken 中间件。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel authentication(用户验证）]]></title>
+    <link href="http://www.free-abc.com.cn/14807401998111.html"/>
+    <updated>2016-12-03T12:43:19+08:00</updated>
+    <id>http://www.free-abc.com.cn/14807401998111.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">创建验证体系脚手架</h2>
+
+<pre><code>php artisan make:auth  （scaffold all of the routes and views you need for authentication)
+php artisan migrate
+</code></pre>
+
+<p>验证的配置文件：<code>config/auth.php</code></p>
+
+<p>laravel的验证系统由：guards（警卫）和 provider 组成。<br/>
+guards 定义了怎么验证用户。例如： session guard 维护session 和 cookies 来验证。<br/>
+provider 定义了用户在存储中怎么被检索。例如：Eloquent、database query builder.</p>
+
+<p>管理后台的用户验证方式和用户信息存储方式，可以自定义。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel query builder]]></title>
+    <link href="http://www.free-abc.com.cn/14806523394907.html"/>
+    <updated>2016-12-02T12:18:59+08:00</updated>
+    <id>http://www.free-abc.com.cn/14806523394907.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">它是什么？能做什么？不能做什么？</h2>
+
+<ol>
+<li>数据库查询语句的构造器。</li>
+<li>执行数据库查询。</li>
+<li>不提供数据缓存功能。</li>
+</ol>
+
+<h2 id="toc_1">它有哪些功能</h2>
+
+<h3 id="toc_2">构造查询语句</h3>
+
+<ul>
+<li>支持链式</li>
+<li></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[mysql技术选型]]></title>
+    <link href="http://www.free-abc.com.cn/14805676445589.html"/>
+    <updated>2016-12-01T12:47:24+08:00</updated>
+    <id>http://www.free-abc.com.cn/14805676445589.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">因素</h2>
+
+<ol>
+<li>mysql5.7是最新版本，支持很多新的特性，如：json数据类型</li>
+<li>阿里云目前支持mysql5.6，mysql5.5语法。</li>
+<li>mysql创始人后来发行的 mariadb，还没有原生支持 json。</li>
+</ol>
+
+<h2 id="toc_1">选择</h2>
+
+<p>先选择兼容阿里云的mysql5.6吧。本机上选择 mariadb 吧。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[obs配置]]></title>
+    <link href="http://www.free-abc.com.cn/14805282358853.html"/>
+    <updated>2016-12-01T01:50:35+08:00</updated>
+    <id>http://www.free-abc.com.cn/14805282358853.html</id>
+    <content type="html"><![CDATA[
+<p><a href="https://www.livecoding.tv/obs-guide-mac/">https://www.livecoding.tv/obs-guide-mac/</a><br/>
+* 输出选项</p>
+
+<pre><code>Then navigate to &#39;Output&#39;. Here we will just make these changes:
+Video Bitrate: 2300kbps
+Audio Bitrate: 160kbps
+Check &quot;Enable Advanced Encoder Settings&quot;
+Set your custom buffer size to exactly your video birate
+Custom Encoder Settings: keyint=5
+</code></pre>
+
+<ul>
+<li>视频选项</li>
+</ul>
+
+<pre><code>Then navigate to &#39;Video&#39;. Here we will just make these changes:
+Resolution: 
+1. Set your base resolution in OBS exactly to your desktop native resolution. 
+2. Divide your first resolution size by the second one, e.g. 1920 divided by 1080 gives 1.7777 or 2560/1600 = 1.6 If you get 1.7777, set downscale resolution size to 1920 * 1080. If you get 1.6 set it 1280 * 800 
+3. Set your buffer size to the same value as your video bitrate 
+4. Advanced -&gt; Video -&gt; Keyframe interval = 5 
+5. Advanced -&gt; Video -&gt; Code profile = High (A good CPU can deal with Higher profile) 
+6. FPS: 20 (play with 15-30 if your screen is blurry)
+</code></pre>
+
+<ul>
+<li>问题</li>
+</ul>
+
+<pre><code>Problem: Frequent disconnections even the recommended video bit rate is used. OBS has 2 output modes simple and advanced which is the first option you see in the output tab. Sometimes the video bit rate entered in simple may be different from what you have when you change it to advanced. Please before you can switch between modes you need to stop streaming temporarily.
+Solution: Make sure the video bitrate, custom buffer size set in simple and advanced mode are the same.
+
+Problem: Screen is blurry?
+Solution: Go to video tab and Set your FPS to 10.
+
+Problem: Having Dropped frames.
+Solution: You need to do a speedtest using speedtest.net and compare the result of your upload speed with your video bitrate. The video bit rate should not be more than your upload speed.
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[jquery]]></title>
+    <link href="http://www.free-abc.com.cn/14803410429860.html"/>
+    <updated>2016-11-28T21:50:42+08:00</updated>
+    <id>http://www.free-abc.com.cn/14803410429860.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">介绍</h2>
+
+<p>jQuery是一个javascript函数库。<br/>
+可以通过一行简单的标记被添加到网页中。</p>
+
+<h2 id="toc_1">包含的功能</h2>
+
+<ul>
+<li>HTML 元素选取</li>
+<li>HTML 元素操作</li>
+<li>CSS 操作</li>
+<li>HTML 事件函数</li>
+<li>Javascript 特效和动画</li>
+<li>HTML DOM 遍历和修改</li>
+<li>AJAX</li>
+<li>Utilities</li>
+</ul>
+
+<h2 id="toc_2">原理</h2>
+
+<p>浏览器是从上往下执行代码，所以引入顺序特别重要。</p>
+
+<h2 id="toc_3">注意事项</h2>
+
+<ul>
+<li>this 表示上下文的当前元素</li>
+</ul>
+
+<pre><code>$(document).ready(function(){
+    $(&quot;p&quot;).click(function(){
+        $(this).hide();
+    })
+});
+</code></pre>
+
+<ul>
+<li>对象中，不要出现<code>;</code></li>
+</ul>
+
+<h2 id="toc_4">选择器</h2>
+
+<p>有很多种选择器，请看文档。<br/>
+常见的：</p>
+
+<pre><code>$(&#39;#id&#39;)
+$(&quot;.class&quot;)
+$(&quot;p&quot;)
+$(&quot;input[name=&#39;_token&#39;]&quot;)
+...
+</code></pre>
+
+<h2 id="toc_5">事件</h2>
+
+<h3 id="toc_6">事件类型</h3>
+
+<p>单击：click<br/>
+双击：dbclick<br/>
+鼠标移入：mouseenter<br/>
+鼠标移开：mouseleave</p>
+
+<h3 id="toc_7">绑定事件</h3>
+
+<pre><code>$(&quot;#id&quot;).bind(&quot;click&quot;, clickAction);
+$(&quot;#id&quot;).unbind(&quot;click&quot;, clickAction);
+$(&quot;#id&quot;).on(&quot;click&quot;, clickAction);
+$(&quot;#id&quot;).off(&quot;click&quot;, clickAction);
+
+$(&quot;#id&quot;).click(clickAction)
+他们效果一样，只是 bind 更有扩展性。
+
+function clickAction(event){
+    console.log(event); //event 可以打印。
+    event.isImmediatePropagationStopped(); //阻止事件冒泡
+    event.isPropagationStopped(); //阻止事件冒泡
+}
+</code></pre>
+
+<p>console.log() 函数在ie浏览器也可能不好使。</p>
+
+<h3 id="toc_8">自定义事件</h3>
+
+<p>略。</p>
+
+<h2 id="toc_9">AJAX</h2>
+
+<pre><code>&lt;script type=&quot;text/javascript&quot;&gt;
+    $(document).ready(function(){
+        var url = &quot;{{ url(&#39;houtai/ajax/programs/store&#39;) }}&quot;;
+        
+        // $(&quot;#submit&quot;).on(&#39;click&#39;, function(){
+        //  alert(&#39;ok&#39;);
+        //  // $.get(&quot;http://voa.dev&quot;,function(data){
+        //  //  alert(data);
+        //  // });
+        //  var name = $(&quot;#name&quot;).val();
+        //  var intro = $(&quot;#intro&quot;).val();
+        //  var type = $(&quot;#type&quot;).val();
+        //  var status = $(&quot;#status&quot;).val();
+        //  var token = $(&quot;input[name=&#39;_token&#39;]&quot;).val();
+        //  var postData = {name: name, intro: intro, type: type, status: status, _token: token};           
+        //  $.post(url, postData, function(data){
+        //      alert(data.id);
+        //      console.log(data);              
+        //  }); 
+        //  return false;       
+        // });
+        $(&#39;#programCreate&#39;).submit(function(){
+            var name = $(&quot;#name&quot;).val();
+            var intro = $(&quot;#intro&quot;).val();
+            var type = $(&quot;#type&quot;).val();
+            var status = $(&quot;#status&quot;).val();
+            var token = $(&quot;input[name=&#39;_token&#39;]&quot;).val();
+            var postData = {name: name, intro: intro, type: type, status: status, _token: token};
+            console.log(postData);
+
+            $.post(url, postData, function(data){
+                alert(data);
+                console.log(data);
+                //表单重置
+                document.getElementById(&#39;programCreate&#39;).reset();
+                //错误提示删除
+                $(&quot;#namediv&quot;).removeClass(&#39;has-error&#39;);
+                $(&quot;#introdiv&quot;).addClass(&#39;has-error&#39;);
+                $(&quot;#typediv&quot;).addClass(&#39;has-error&#39;);
+                $(&quot;#statusdiv&quot;).addClass(&#39;has-error&#39;);
+                $(&quot;#namediv .help-block&quot;).html(&quot;&quot;);
+                $(&quot;#introdiv .help-block&quot;).html(&quot;&quot;);
+                $(&quot;#typediv .help-block&quot;).html(&quot;&quot;);
+                $(&quot;#statusdiv .help-block&quot;).html(&quot;&quot;);
+            });
+            return false;
+        });
+    })
+    .fail(function(data){
+                console.log(data.responseJSON);
+                //此处使用js来验证值，我还需要精进下。
+                if( data.responseJSON.name[0] != &#39;&#39;){
+                    $(&quot;#namediv&quot;).addClass(&#39;has-error&#39;);
+                    $(&quot;#namediv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.name[0]+&quot;&lt;/strong&gt;&quot;);
+                }
+                if( data.responseJSON.intro[0] != &#39;&#39;){
+                    $(&quot;#introdiv&quot;).addClass(&#39;has-error&#39;);
+                    $(&quot;#introdiv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.intro[0]+&quot;&lt;/strong&gt;&quot;);
+                }
+                if( data.responseJSON.type[0] != &#39;&#39;){
+                    $(&quot;#typediv&quot;).addClass(&#39;has-error&#39;);
+                    $(&quot;#typediv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.type[0]+&quot;&lt;/strong&gt;&quot;);
+                }
+                if( data.responseJSON.status[0] != &#39;&#39;){
+                    $(&quot;#statusdiv&quot;).addClass(&#39;has-error&#39;);
+                    $(&quot;#statusdiv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.status[0]+&quot;&lt;/strong&gt;&quot;);
+                }
+                
+            });;
+
+&lt;/script&gt;
+</code></pre>
+
+<p><strong>特别注意</strong>： return false ！！！！不然，提交完会自动刷新当前页面。<br/>
+当ajax请求没有成功的时候，我采取一步一步跟踪的方法进行尝试。</p>
+
+<p>表单提交成功后，可能想重置表单。jquery 不提供方法。</p>
+
+<pre><code>&lt;input id=&quot;res&quot; name=&quot;res&quot; type=&quot;reset&quot; style=&quot;display:none;&quot; /&gt; 
+$(&quot;input[name=&#39;res&#39;]&quot;).click();  好像不好使。
+
+或
+document.getElementById(&quot;form1&quot;).reset();  可以。
+document.formName.reset(); 
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel 团队合作开发建议]]></title>
+    <link href="http://www.free-abc.com.cn/14803049595107.html"/>
+    <updated>2016-11-28T11:49:19+08:00</updated>
+    <id>http://www.free-abc.com.cn/14803049595107.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">使用默认文件夹组织方式</h2>
+
+<ol>
+<li>在controller 文件夹下的 Admin, Home, Api 目录下，建相应同事名的目录。</li>
+<li>在 Model 文件夹下，建相应同事名的目录。</li>
+<li>把同事每天需要频繁修改的文件放在以他自己的名字命名的文件夹下。</li>
+</ol>
+
+<h2 id="toc_1">重新组合app目录</h2>
+
+<ol>
+<li>把controller、model、view等都可以集合到单个同事名目录下。</li>
+</ol>
+
+<h2 id="toc_2">总结</h2>
+
+<p>应该第二种方式更合理吧，耦合度更小。<br/>
+先熟悉一下laravel，再改吧。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel 控制器的使用]]></title>
+    <link href="http://www.free-abc.com.cn/14803040439522.html"/>
+    <updated>2016-11-28T11:34:03+08:00</updated>
+    <id>http://www.free-abc.com.cn/14803040439522.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">作用</h2>
+
+<ol>
+<li>MVC设计模式</li>
+<li>替代在 route 文件中，定义所有的请求处理逻辑</li>
+</ol>
+
+<h2 id="toc_1">编写controller类</h2>
+
+<ol>
+<li>要继承基类，虽然框架不强制继承</li>
+<li>基类提供了一些必要的功能</li>
+<li>控制器的命名：单数资源名+Controller</li>
+</ol>
+
+<p>php artisan make:controller ProgramInfoController --resource</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel 路由使用]]></title>
+    <link href="http://www.free-abc.com.cn/14803022814023.html"/>
+    <updated>2016-11-28T11:04:41+08:00</updated>
+    <id>http://www.free-abc.com.cn/14803022814023.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">最简单的路由</h2>
+
+<h2 id="toc_1">跟控制器配合</h2>
+
+<pre><code>Route::get(&#39;user/{id}&#39;, &#39;UserController@show&#39;);
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel database migrations]]></title>
+    <link href="http://www.free-abc.com.cn/14802671854653.html"/>
+    <updated>2016-11-28T01:19:45+08:00</updated>
+    <id>http://www.free-abc.com.cn/14802671854653.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">介绍</h2>
+
+<p>版本控制你的数据库</p>
+
+<h2 id="toc_1">生成 Migrations</h2>
+
+<pre><code>php artisan make:migration create_users_table
+php artisan make:migration create_users_table --create=users
+php artisan make:migration add_votes_to_users_table --table=users
+</code></pre>
+
+<h2 id="toc_2">运行 Migrations</h2>
+
+<pre><code>php artisan migrate
+php artisan migrate:rollback #回滚最后执行的操作，可能包含多个 migration files
+php artisan migrate:rollback --step=5 #回滚最后5步操作。
+php artisan migrate:reset #回滚所有操作
+php artisan migrate:refresh #先回滚再重新执行
+// Refresh the database and run all database seeds...
+php artisan migrate:refresh --seed
+</code></pre>
+
+<h2 id="toc_3">管理表，使用 schema builder</h2>
+
+<ul>
+<li>数据库命名：复数资源名。</li>
+</ul>
+
+<pre><code>Schema::create(&#39;users&#39;, function (Blueprint $table) {
+    $table-&gt;increments(&#39;id&#39;);
+});
+
+Schema::connection(&#39;foo&#39;)-&gt;create(&#39;users&#39;, function ($table) {
+    $table-&gt;increments(&#39;id&#39;);
+});
+
+Schema::create(&#39;users&#39;, function ($table) {
+    $table-&gt;engine = &#39;InnoDB&#39;;
+
+    $table-&gt;increments(&#39;id&#39;);
+});
+
+Schema::rename($from, $to);
+
+Schema::drop(&#39;users&#39;);
+
+Schema::dropIfExists(&#39;users&#39;);
+
+</code></pre>
+
+<h2 id="toc_4">管理列和列修饰符</h2>
+
+<ul>
+<li>创建列</li>
+<li>列修饰符</li>
+<li>修改列</li>
+<li>删除列</li>
+</ul>
+
+<h2 id="toc_5">索引管理</h2>
+
+<ul>
+<li>创建索引</li>
+<li>删除索引</li>
+<li>外键约束</li>
+</ul>
+
+<h2 id="toc_6">PS</h2>
+
+<p>执行完：<code>php artisan migrate:refresh</code> 之后，还需要执行哪个命令：</p>
+
+<pre><code>php artisan passport:install //建用于oauth验证的平台clint。
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel 使用 database]]></title>
+    <link href="http://www.free-abc.com.cn/14802645455291.html"/>
+    <updated>2016-11-28T00:35:45+08:00</updated>
+    <id>http://www.free-abc.com.cn/14802645455291.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">支持的数据库</h2>
+
+<ul>
+<li>MySQL</li>
+<li>Postgres</li>
+<li>SQLite</li>
+<li>SQL Server</li>
+</ul>
+
+<h2 id="toc_1">配置文件</h2>
+
+<ol>
+<li><code>config/database.php</code></li>
+<li><code>.env</code></li>
+<li>支持读写分离</li>
+</ol>
+
+<h2 id="toc_2">支持怎么拼接sql</h2>
+
+<ul>
+<li>raw queries </li>
+</ul>
+
+<pre><code>$users = DB::select(&#39;select * from users where active = ?&#39;, [1]);
+
+$results = DB::select(&#39;select * from users where id = :id&#39;, [&#39;id&#39; =&gt; 1]);
+
+DB::insert(&#39;insert into users (id, name) values (?, ?)&#39;, [1, &#39;Dayle&#39;]);
+
+$affected = DB::update(&#39;update users set votes = 100 where name = ?&#39;, [&#39;John&#39;]);
+
+$deleted = DB::delete(&#39;delete from users&#39;);
+
+DB::statement(&#39;drop table users&#39;);
+
+DB::transaction(function () {
+    DB::table(&#39;users&#39;)-&gt;update([&#39;votes&#39; =&gt; 1]);
+
+    DB::table(&#39;posts&#39;)-&gt;delete();
+});
+</code></pre>
+
+<ul>
+<li><p>the query builder</p></li>
+<li><p>the Eloquent ORM</p></li>
+</ul>
+
+<h2 id="toc_3">使用多个数据库连接</h2>
+
+<pre><code>$users = DB::connection(&#39;foo&#39;)-&gt;select(...);
+$pdo = DB::connection()-&gt;getPdo();
+</code></pre>
 
 ]]></content>
   </entry>

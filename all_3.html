@@ -73,7 +73,7 @@ $(document).ready(function(event) {
 
   <li id=""><a target="_self" href="archives.html">归档</a></li>
 
-  <li id=""><a target="_self" href="about.html">关于我</a></li>
+  <li id=""><a target="_self" href="about.html">关于</a></li>
 
 </ul>
 
@@ -84,20 +84,20 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14798739132293.html">从零开始配置阿里云ECS</a></h1>
-			<p class="meta"><time datetime="2016-11-23T12:05:13+08:00" 
-			pubdate data-updated="true">2016/11/23</time></p>
+		  	<h1 class="entry-title"><a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a></h1>
+			<p class="meta"><time datetime="2016-12-07T22:38:21+08:00" 
+			pubdate data-updated="true">2016/12/7</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<h2 id="toc_0">装完centos7.0 64位系统后的状态</h2>
+		  	<h2 id="toc_0">装完centos7.2 64位系统后的状态</h2>
 
 <ol>
 <li>默认操作系统情况</li>
 </ol>
 
 <pre><code>[root@iZ25gxj8d82Z etc]# uname -a
-Linux iZ25gxj8d82Z 3.10.0-123.9.3.el7.x86_64 #1 SMP Thu Nov 6 15:06:03 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
+Linux iZm5ee4pfq8op61udbacmoZ 3.10.0-327.22.2.el7.x86_64 #1 SMP Thu Jun 23 17:05:11 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
 </code></pre>
 
 <ol>
@@ -116,26 +116,21 @@ LISTEN     0      128                                                           
 </ol>
 
 <pre><code>[root@iZ25gxj8d82Z ~]# systemctl list-unit-files |grep enable
-crond.service                          enabled
-cups.service                           enabled
-dmraid-activation.service              enabled
-getty@.service                         enabled
-lvm2-monitor.service                   enabled
-microcode.service                      enabled
-nscd.service                           enabled
-ntpd.service                           enabled
-rsyslog.service                        enabled
-sshd.service                           enabled
-sysstat.service                        enabled
-systemd-readahead-collect.service      enabled
-systemd-readahead-drop.service         enabled
-systemd-readahead-replay.service       enabled
-cups.socket                            enabled
-dm-event.socket                        enabled
-lvm2-lvmetad.socket                    enabled
-nscd.socket                            enabled
-default.target                         enabled
-multi-user.target                      enabled
+aliyun-util.service                       enabled
+aliyun.service                            enabled
+crond.service                             enabled
+dbus-org.fedoraproject.FirewallD1.service enabled
+firewalld.service                         enabled
+getty@.service                            enabled
+microcode.service                         enabled
+ntpd.service                              enabled
+rsyslog.service                           enabled
+sshd.service                              enabled
+systemd-readahead-collect.service         enabled
+systemd-readahead-drop.service            enabled
+systemd-readahead-replay.service          enabled
+default.target                            enabled
+multi-user.target                         enabled
 </code></pre>
 
 <ol>
@@ -143,7 +138,7 @@ multi-user.target                      enabled
 </ol>
 
 <pre><code>[root@iZ25gxj8d82Z ~]# cat /etc/passwd
-root:x:0:0:root:/root:/bin/bash
+root:x:0:0:root:/root:/usr/bin/zsh
 bin:x:1:1:bin:/bin:/sbin/nologin
 daemon:x:2:2:daemon:/sbin:/sbin/nologin
 adm:x:3:4:adm:/var/adm:/sbin/nologin
@@ -156,18 +151,15 @@ operator:x:11:0:operator:/root:/sbin/nologin
 games:x:12:100:games:/usr/games:/sbin/nologin
 ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
 nobody:x:99:99:Nobody:/:/sbin/nologin
-dbus:x:81:81:System message bus:/:/sbin/nologin
-polkitd:x:999:998:User for polkitd:/:/sbin/nologin
-avahi:x:70:70:Avahi mDNS/DNS-SD Stack:/var/run/avahi-daemon:/sbin/nologin
 avahi-autoipd:x:170:170:Avahi IPv4LL Stack:/var/lib/avahi-autoipd:/sbin/nologin
-libstoragemgmt:x:998:997:daemon account for libstoragemgmt:/var/run/lsm:/sbin/nologin
-ntp:x:38:38::/etc/ntp:/sbin/nologin
-abrt:x:173:173::/etc/abrt:/sbin/nologin
+systemd-bus-proxy:x:999:997:systemd Bus Proxy:/:/sbin/nologin
+systemd-network:x:998:996:systemd Network Management:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+polkitd:x:997:995:User for polkitd:/:/sbin/nologin
+tss:x:59:59:Account used by the trousers package to sandbox the tcsd daemon:/dev/null:/sbin/nologin
 postfix:x:89:89::/var/spool/postfix:/sbin/nologin
 sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
-chrony:x:997:996::/var/lib/chrony:/sbin/nologin
-nscd:x:28:28:NSCD Daemon:/:/sbin/nologin
-tcpdump:x:72:72::/:/sbin/nologin
+ntp:x:38:38::/etc/ntp:/sbin/nologin
 </code></pre>
 
 <p>以下都可以通过 saltstack 这个工具来实现：</p>
@@ -215,7 +207,31 @@ tcpdump:x:72:72::/:/sbin/nologin
 systemctl start firewalld.service
 </code></pre>
 
-<h2 id="toc_3">安装 zsh , oh-my-zsh</h2>
+<h2 id="toc_3">确认git，svn安装情况</h2>
+
+<pre><code>yum install git.x86_64
+git --version
+
+yum install subversion.x86_64
+svn --version
+</code></pre>
+
+<h2 id="toc_4">确认 gcc 安装情况，centos7.2居然没有</h2>
+
+<pre><code>yum install gcc.x86_64
+</code></pre>
+
+<p>源码安装php的时候需要用到c编译器。</p>
+
+<h2 id="toc_5">配置VIM</h2>
+
+<pre><code>默认没有安装vim。
+yum install vim-enhanced.x86_64
+
+配置文件：/etc/vimrc
+</code></pre>
+
+<h2 id="toc_6">安装 zsh , oh-my-zsh</h2>
 
 <ul>
 <li>安装 zsh，配置 zsh 为root用户默认shell。 </li>
@@ -224,7 +240,7 @@ systemctl start firewalld.service
 <pre><code>yum install zsh 
 which zsh (/usr/bin/zsh) 
 vim /etc/shells 在文件末尾增加一行 /usr/bin/zsh 
-chsh -s SHELL
+chsh -s /usr/bin/zsh
 </code></pre>
 
 <ul>
@@ -248,10 +264,9 @@ chsh -s SHELL
 <pre><code>plugins=(git history autojump)
 </code></pre>
 
-<h2 id="toc_4">确认git，svn安装情况</h2>
+<h2 id="toc_7">安装云监控插件</h2>
 
-<pre><code>git --version
-svn --version
+<pre><code>
 </code></pre>
 
 
@@ -291,14 +306,26 @@ svn --version
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
 	        
-	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -311,31 +338,31 @@ svn --version
 	  
 	      
 		      <li class="post">
-		        <a href="14798983960110.html">saltstack实践</a>
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798980187717.html">浏览器缓存机制</a>
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="redis-safe.html">redis 安全</a>
+		        <a href="14809496478909.html">laravel 安装</a>
 		      </li>
 	     
 	  

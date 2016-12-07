@@ -73,7 +73,7 @@ $(document).ready(function(event) {
 
   <li id=""><a target="_self" href="archives.html">归档</a></li>
 
-  <li id=""><a target="_self" href="about.html">关于我</a></li>
+  <li id=""><a target="_self" href="about.html">关于</a></li>
 
 </ul>
 
@@ -84,176 +84,87 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="php56-install.html">源码编译安装php5.6.22最佳实践</a></h1>
-			<p class="meta"><time datetime="2016-11-23T11:11:39+08:00" 
-			pubdate data-updated="true">2016/11/23</time></p>
+		  	<h1 class="entry-title"><a href="14807554134214.html">laravel passport （API验证）</a></h1>
+			<p class="meta"><time datetime="2016-12-03T16:56:53+08:00" 
+			pubdate data-updated="true">2016/12/3</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<h2 id="toc_0">准备工作</h2>
+		  	<p>API 使用 token 来验证用户。<br/>
+传统的登录，使用 session来验证。</p>
 
-<ul>
-<li>更新系统 </li>
-</ul>
+<p>Laravel Passport 提供OAuth2 实现。</p>
 
-<pre><code>yum update
-</code></pre>
+<h2 id="toc_0">安装流程</h2>
 
-<ul>
-<li>安装 xml2, 确保有 xml2-config 命令</li>
-</ul>
+<ol>
+<li>安装相应的passport包</li>
+<li>注册到 app.php 的 Provider 中</li>
+<li>使用 migrate 创建相关的表</li>
+<li>往数据库插入几条记录</li>
+<li>配置 UserModel, AuthServiceProvider, config/auth.php</li>
+</ol>
 
-<pre><code>yum install libxml2-devel.x86_64 libxml2.x86_64  
-rpm -ql libxml2-devel.x86_64
-</code></pre>
+<p>详情见：<a href="https://laravel.com/docs/5.3/passport#installation">https://laravel.com/docs/5.3/passport#installation</a></p>
 
-<ul>
-<li>安装 openssl</li>
-</ul>
+<h2 id="toc_1">概念及原理</h2>
 
-<pre><code>yum install openssl-devel.x86_64 openssl.x86_64
-</code></pre>
+<p>第三方开发者，如果需要调用你的接口的话，需要注册他们的应用为你的 client。<br/>
+第三方开发者需要提供应用名和回调链接。<br/>
+回调链接用于，在普通用户批准授权后，回调。</p>
 
-<ul>
-<li>安装 curl</li>
-</ul>
+<p>可以通过 <code>php artisan passport:clint</code> 命令来创建client。<br/>
+第三方开发者获取到：clientId, Secret 。这些信息在请求 access_token 和 授权码 的时候会用到。</p>
 
-<pre><code>yum install libcurl.x86_64 libcurl-devel.x86_64
-</code></pre>
+<p>要请求token：<br/>
+第三方app，带上必要的参数，发起重定向请求到平台的 oauth/authorize 路由。</p>
 
-<ul>
-<li>安装 libmcrypt</li>
-</ul>
+<blockquote>
+<p>oauth/authorize 这个路由怎么需要验证用户登录呢？<br/>
+是的，需要用户已登录，然后再选择是否授权。如果未登录，得先登录。</p>
+</blockquote>
 
-<pre><code>yum install libmcrypt.x86_64 libmcrypt-devel.x86_64
-</code></pre>
+<p>平台自动显示一个授权界面，让用户批准或者拒绝授权请求。<br/>
+如果用户批准授权，平台会根据申请client的时配置的重定向url，重定向回第三方。<br/>
+此时，第三方会获得授权码参数。<br/>
+接着，第三方app，再发起post请求到 oauth/token 请求获取 access_token ，refresh_token ，expires_in 的值。</p>
 
-<ul>
-<li>安装 gd 需要的lib
-<a href="php-gd.html">gd扩展（验证码用的到）</a></li>
-</ul>
+<h2 id="toc_2">第一方应用</h2>
 
-<h2 id="toc_1">编译</h2>
+<p>像自己平台开发的 移动应用。不希望走完整的流程，那么，如何获取 access_token 呢？</p>
 
-<ul>
-<li>没有 <code>--with-mysql</code> 这种选项了</li>
-<li>编译了gd扩展 </li>
-</ul>
+<p>使用 username 和 password 来获得。</p>
 
-<pre><code>./configure 
---prefix=/usr/local/php56 
---exec-prefix=/usr/local/php56 
---bindir=/usr/local/php56/bin 
---sbindir=/usr/local/php56/sbin 
---includedir=/usr/local/php56/include 
---libdir=/usr/local/php56/lib/php 
---mandir=/usr/local/php56/php/man 
---with-config-file-path=/usr/local/php56/etc 
---with-mcrypt=/usr/include 
---with-mhash 
---with-openssl 
---with-mysqli=shared,mysqlnd 
---with-pdo-mysql=shared,mysqlnd 
---with-iconv 
---with-zlib 
---enable-zip 
---enable-inline-optimization 
---disable-debug 
---disable-rpath 
---enable-shared 
---enable-xml 
---enable-bcmath 
---enable-shmop 
---enable-sysvsem 
---enable-mbregex 
---enable-mbstring 
---enable-gd-native-ttf 
---enable-pcntl 
---enable-sockets 
---with-xmlrpc 
---enable-soap 
---without-pear 
---with-gettext 
---enable-session 
---with-curl 
---enable-opcache 
---enable-fpm 
---with-fpm-user=nginx 
---with-fpm-group=nginx 
---without-gdbm 
---disable-fileinfo 
---with-freetype-dir=/usr/lib64 
---with-jpeg-dir=/usr/lib64 
---with-gd
-</code></pre>
+<p>使用前，需要为自家的应用创建一个 client。</p>
 
-<p>(复制到命令行执行之前，需要去掉换行符）</p>
+<p>然后通过post调用 oauth/token 来获取 access_token。<br/>
+这个接口，是通过 Passport::route 注册的。<br/>
+scope 参数，设置为“*”</p>
 
-<pre><code>make &amp;&amp; make install
-make clean
-</code></pre>
+<h2 id="toc_3">当第三方不方便保管 secret 时，使用隐式准许token</h2>
 
-<h2 id="toc_2">php7回滚到php56</h2>
+<p>如：第三方app是javascript程序。<br/>
+类似于 第三方oAuth2实现。</p>
 
-<p><a href="php7-php56.html">php7回滚到php56</a><br/>
-如果走这一步的话，下面的步骤有些就不需要再执行了。</p>
+<h2 id="toc_4">对于API测试的情况，用户希望自己获得access_token ，不走重定向循环</h2>
 
-<pre><code>cp php.ini-production /usr/local/php56/etc/php.ini
-cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
-cp /usr/local/php56/etc/php-fpm.conf.default /usr/local/php56/etc/php-fpm.conf
-</code></pre>
+<h2 id="toc_5">API如何验证access_token？</h2>
 
-<h2 id="toc_3">设置path</h2>
+<p>使用中间件 <code>auth:api</code></p>
 
-<pre><code>vim .zshrc
-</code></pre>
+<p>接口调用者，通过 header 来传递 access_token 。<br/>
+<code>&#39;Authorization&#39; =&gt; &#39;Bearer &#39;.$accessToken,</code></p>
 
-<p>修改用户跟目录下的 .zshrc 文件，把 /usr/local/php56/bin 加在path项的前面。</p>
+<h2 id="toc_6">token 范围</h2>
 
-<pre><code>source .zshrc
-</code></pre>
+<p>考虑到我现在的app是自己的app，不需要控制范围。<br/>
+暂略。</p>
 
-<h2 id="toc_4">创建php日志文件目录</h2>
+<h2 id="toc_7">从js来调用api</h2>
 
-<pre><code>mkdir -p /var/log/php-fpm/ &amp;&amp; mkdir -p /var/run/php-fpm &amp;&amp; cd /var/run/ &amp;&amp; chown -R nginx:nginx php-fpm
+<p>api的调用者包括：web application, mobile application, third-party applications, any sdk,javascript application.</p>
 
-mkdir -p /var/lib/php/session
-
-chown -R nginx:nginx /var/lib/php
-</code></pre>
-
-<h2 id="toc_5">检查扩展是否都安装了，安装并开启</h2>
-
-<pre><code>cd /usr/local/php56/lib/php/extensions/no-debug-non-zts-20131226
-</code></pre>
-
-<h2 id="toc_6">配置 php.ini 的 extension及其它</h2>
-
-<pre><code>zend_extension=opcache.so
-extension=mysqli.so
-extension=pdo_mysql.so
-</code></pre>
-
-<p>或者，使用 slat 同步php.ini &amp; php-fpm.conf 文件</p>
-
-<p>启动php-fpm：<br/>
-先给 /etc/init.d/php-fpm 增加可执行权限。</p>
-
-<pre><code>/etc/init.d/php-fpm start
-</code></pre>
-
-<h2 id="toc_7">配置 memcached 扩展</h2>
-
-<p><a href="php-memcached.html">php5.6 安装 memcached扩展</a></p>
-
-<h2 id="toc_8">配置gd扩展</h2>
-
-<p><a href="php-gd.html">gd扩展（验证码用的到）</a></p>
-
-<h2 id="toc_9">查看phpinfo</h2>
-
-<p>检查扩展安装情况。<br/>
-<a href="php-phpinfo.html">配置访问 phpinfo 的域名</a></p>
+<p>在web中间件组中，使用 CreateFreshApiToken 中间件。</p>
 
 
 		</div>
@@ -292,14 +203,26 @@ extension=pdo_mysql.so
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
 	        
-	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -312,31 +235,31 @@ extension=pdo_mysql.so
 	  
 	      
 		      <li class="post">
-		        <a href="14798983960110.html">saltstack实践</a>
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798980187717.html">浏览器缓存机制</a>
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="redis-safe.html">redis 安全</a>
+		        <a href="14809496478909.html">laravel 安装</a>
 		      </li>
 	     
 	  

@@ -73,7 +73,7 @@ $(document).ready(function(event) {
 
   <li id=""><a target="_self" href="archives.html">归档</a></li>
 
-  <li id=""><a target="_self" href="about.html">关于我</a></li>
+  <li id=""><a target="_self" href="about.html">关于</a></li>
 
 </ul>
 
@@ -84,86 +84,142 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14798724609507.html">redis配置安装最佳实践</a></h1>
-			<p class="meta"><time datetime="2016-11-23T11:41:00+08:00" 
-			pubdate data-updated="true">2016/11/23</time></p>
+		  	<h1 class="entry-title"><a href="14808262704807.html">laravel task scheduling</a></h1>
+			<p class="meta"><time datetime="2016-12-04T12:37:50+08:00" 
+			pubdate data-updated="true">2016/12/4</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<h2 id="toc_0">介绍</h2>
+		  	<h2 id="toc_0">计划任务</h2>
 
-<p>略</p>
+<p>概念：<br/>
+1. 它跟系统的计划任务如何结合<br/>
+2. 可执行什么任务<br/>
+3. 计划任务如何编写<br/>
+4. 如何精细化控制任务执行<br/>
+5. 输出如何控制<br/>
+6. 钩子</p>
 
-<h2 id="toc_1">安装</h2>
+<h3 id="toc_1">它跟系统的计划任务有什么关系</h3>
 
-<p>在官网下载的redis3.04源码。</p>
+<ol>
+<li>计划任务不可以版本控制</li>
+<li>需要登录服务器修改和添加</li>
+</ol>
 
-<p>安装参数见：README</p>
+<p>laravel 的解决方案是：<br/>
+只需要在系统计划任务中添加一条记录，永久不变。<br/>
+<code>* * * * * php /path/to/artisan schedule:run &gt;&gt; /dev/null 2&gt;&amp;1</code></p>
 
-<p>源码放在了：/home/gumoon 目录</p>
+<p>应用的其它计划任务，写在代码里即可。</p>
 
-<p>使用 gumoon 这个账户进行安装的。</p>
+<h3 id="toc_2">任务如何编写？可执行什么任务？</h3>
 
-<pre><code>tar zxvf redis-3.0.4.tar.gz
-cd redis-3.0.4
-make
-make install  （安装到 /usr/local/bin)
-./utils/install_server.sh
+<p>任务都写到这里：<code>App\Console\Kernel</code>类中的 <code>schedule()</code> 方法。</p>
+
+<pre><code>protected function schedule(Schedule $schedule)
+{
+   $schedule-&gt;call(function () {
+       DB::table(&#39;recent_users&#39;)-&gt;delete();
+   })-&gt;daily();
+}
+
+$schedule-&gt;command(&#39;emails:send --force&#39;)-&gt;daily();
+
+$schedule-&gt;command(EmailsCommand::class, [&#39;--force&#39;])-&gt;daily();
+
+$schedule-&gt;exec(&#39;node /home/forge/script.js&#39;)-&gt;daily();
 </code></pre>
 
-<p>配置：<br/>
-Port           : 6379<br/>
-Config file    : /etc/redis/6379.conf<br/>
-Log file       : /var/log/redis_6379.log<br/>
-Data dir       : /var/lib/redis/6379<br/>
-Executable     : /usr/local/bin/redis-server<br/>
-Cli Executable : /usr/local/bin/redis-cli</p>
+<h3 id="toc_3">如何精细化控制任务执行</h3>
 
-<p>启动 redis 服务：<br/>
-<code>/etc/init.d/redis_6379 start</code>  </p>
+<pre><code>-&gt;cron(&#39;* * * * * *&#39;);  Run the task on a custom Cron schedule
+-&gt;everyMinute();    Run the task every minute
+-&gt;everyFiveMinutes();   Run the task every five minutes
+-&gt;everyTenMinutes();    Run the task every ten minutes
+-&gt;everyThirtyMinutes(); Run the task every thirty minutes
+-&gt;hourly(); Run the task every hour
+-&gt;daily();  Run the task every day at midnight
+-&gt;dailyAt(&#39;13:00&#39;); Run the task every day at 13:00
+-&gt;twiceDaily(1, 13);    Run the task daily at 1:00 &amp; 13:00
+-&gt;weekly(); Run the task every week
+-&gt;monthly();    Run the task every month
+-&gt;monthlyOn(4, &#39;15:00&#39;);    Run the task every month on the 4th at 15:00
+-&gt;quarterly();  Run the task every quarter
+-&gt;yearly(); Run the task every year
+-&gt;timezone(&#39;America/New_York&#39;);Set the timezone
 
-<h2 id="toc_2">配置</h2>
+-&gt;weekdays();   Limit the task to weekdays
+-&gt;sundays();    Limit the task to Sunday
+-&gt;mondays();    Limit the task to Monday
+-&gt;tuesdays();   Limit the task to Tuesday
+-&gt;wednesdays(); Limit the task to Wednesday
+-&gt;thursdays();  Limit the task to Thursday
+-&gt;fridays();    Limit the task to Friday
+-&gt;saturdays();  Limit the task to Saturday
+-&gt;between($start, $end);    Limit the task to run between start and end times
+-&gt;when(Closure);    Limit the task based on a truth test
 
-<h3 id="toc_3">创建redis用户</h3>
+// Run once per week on Monday at 1 PM...
+$schedule-&gt;call(function () {
+    //
+})-&gt;weekly()-&gt;mondays()-&gt;at(&#39;13:00&#39;);
 
-<pre><code>groupadd -r redis &amp;&amp; useradd -r -g redis -s /sbin/nologin -d /var/lib/redis -M redis
+// Run hourly from 8 AM to 5 PM on weekdays...
+$schedule-&gt;command(&#39;foo&#39;)
+          -&gt;weekdays()
+          -&gt;hourly()
+          -&gt;timezone(&#39;America/Chicago&#39;)
+          -&gt;between(&#39;8:00&#39;, &#39;17:00&#39;);
+          
+$schedule-&gt;command(&#39;reminders:send&#39;)
+                    -&gt;hourly()
+                    -&gt;unlessBetween(&#39;23:00&#39;, &#39;4:00&#39;);
+
+$schedule-&gt;command(&#39;emails:send&#39;)-&gt;daily()-&gt;skip(function () {
+    return true;
+}); //跳过某个条件
+
+$schedule-&gt;command(&#39;emails:send&#39;)-&gt;withoutOverlapping(); //前一个计划在执行时，不执行下一个任务
+
+$schedule-&gt;command(&#39;emails:send&#39;)-&gt;evenInMaintenanceMode(); //维护状态也执行
 </code></pre>
 
-<h3 id="toc_4">开机启动脚本</h3>
+<h3 id="toc_4">计划任务执行输出</h3>
 
-<p>位置：/lib/systemd/system/redis.service</p>
+<pre><code>$schedule-&gt;command(&#39;emails:send&#39;)
+         -&gt;daily()
+         -&gt;sendOutputTo($filePath);
+         
+$schedule-&gt;command(&#39;emails:send&#39;)
+         -&gt;daily()
+         -&gt;appendOutputTo($filePath);
+         
+$schedule-&gt;command(&#39;foo&#39;)
+         -&gt;daily()
+         -&gt;sendOutputTo($filePath)
+         -&gt;emailOutputTo(&#39;foo@example.com&#39;);
 
-<pre><code>[Unit]
-Description=Redis Server
-Before=httpd.service
-After=network.target
 
-[Service]
-Type=simple
-EnvironmentFile=-/etc/sysconfig/redis
-User=redis
-Group=redis
-ExecStart=/usr/local/bin/redis-server /etc/redis/6379.conf
-
-[Install]
-WantedBy=multi-user.target
 </code></pre>
 
-<p>EnvironmentFile 可以配置一些参数，但是，路径不能配置，必须写绝对路径。</p>
+<h3 id="toc_5">钩子</h3>
 
-<h2 id="toc_5">redis安全</h2>
-
-<p><a href="redis-safe.html">redis安全</a></p>
-
-<h2 id="toc_6">集群</h2>
-
-<ul>
-<li>twemproxy代理 （<a href="https://github.com/twitter/twemproxy">https://github.com/twitter/twemproxy</a> ）</li>
-</ul>
-
-<h2 id="toc_7">常用命令</h2>
-
-<p>略</p>
+<pre><code>$schedule-&gt;command(&#39;emails:send&#39;)
+         -&gt;daily()
+         -&gt;before(function () {
+             // Task is about to start...
+         })
+         -&gt;after(function () {
+             // Task is complete...
+         });
+         
+$schedule-&gt;command(&#39;emails:send&#39;)
+         -&gt;daily()
+         -&gt;pingBefore($url)
+         -&gt;thenPing($url);
+         
+</code></pre>
 
 
 		</div>
@@ -202,14 +258,26 @@ WantedBy=multi-user.target
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
 	        
-	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -222,31 +290,31 @@ WantedBy=multi-user.target
 	  
 	      
 		      <li class="post">
-		        <a href="14798983960110.html">saltstack实践</a>
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798980187717.html">浏览器缓存机制</a>
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="redis-safe.html">redis 安全</a>
+		        <a href="14809496478909.html">laravel 安装</a>
 		      </li>
 	     
 	  

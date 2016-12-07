@@ -1,0 +1,555 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>
+    
+  php - 自由学习网
+  
+
+  </title>
+  <meta name="author" content="gumoon">
+  <meta name="description" content="积累、思考、成长、分享、厚积薄发、学以致用">
+
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link href="asset/css/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="atom.xml" rel="alternate" title="自由学习网" type="application/atom+xml">
+  <script src="asset/js/modernizr-2.0.js"></script>
+  <script src="asset/js/jquery.min.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/solarized_light.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <style type="text/css">
+  .cat-children-p{ padding: 6px 0px;}
+  .hljs{background: none;}
+  </style>
+  <script type="text/javascript">
+  var isAddSildbar = true;
+  </script>
+  <script src="asset/js/octopress.js" type="text/javascript"></script>
+</head>
+<script type="text/javascript">
+//链接新开窗口
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+$(document).ready(function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="index.html">自由学习网</a></h1>
+  
+    <h2>积累、思考、成长、分享、厚积薄发、学以致用</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="wd" value="site:www.free-abc.com.cn" />
+    <input class="search" type="text" name="wd" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+
+  <li id=""><a target="_self" href="index.html">首页</a></li>
+
+  <li id=""><a target="_self" href="archives.html">归档</a></li>
+
+  <li id=""><a target="_self" href="about.html">关于</a></li>
+
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content"> 
+<div class="blog-index">
+
+	<article>
+		 <header>
+		  	<h1 class="entry-title"><a href="14807819904721.html">laravel validation</a></h1>
+			<p class="meta"><time datetime="2016-12-04T00:19:50+08:00" 
+			pubdate data-updated="true">2016/12/4</time></p>
+		 </header>
+	  	<div class="entry-content">
+		  	
+		  	<p>验证输入参数</p>
+
+<ul>
+<li>在哪个环节验证？怎么验证？</li>
+<li>各种验证需求是否能满足？</li>
+<li>验证不通过的情况下怎么处理？</li>
+<li>验证钩子</li>
+<li>错误信息如何定义</li>
+</ul>
+
+<h2 id="toc_0">在哪个环节验证？</h2>
+
+<ol>
+<li>控制器里使用中间件验证
+在控制器中，使用  <code>ValidatesRequests</code> trait 。
+控制器基类中use了它，子类中可以直接用。</li>
+</ol>
+
+<pre><code> $this-&gt;validate($request, [
+        &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,
+        &#39;body&#39; =&gt; &#39;required&#39;,
+    ]);
+</code></pre>
+
+<ol>
+<li>创建Form Requests来处理</li>
+</ol>
+
+<pre><code>php artisan make:request StoreProgramPost
+</code></pre>
+
+<p>然后在控制器中 use 这个 requests.</p>
+
+<p>关于这个request的编码，请见文档。</p>
+
+<pre><code>public function rules()
+{
+    return [
+        &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,
+        &#39;body&#39; =&gt; &#39;required&#39;,
+    ];
+}
+
+public function authorize()
+{
+    $comment = Comment::find($this-&gt;route(&#39;comment&#39;));
+
+    return $comment &amp;&amp; $this-&gt;user()-&gt;can(&#39;update&#39;, $comment);
+}
+
+public function authorize()
+{
+    return true;
+}
+
+public function messages()
+{
+    return [
+        &#39;title.required&#39; =&gt; &#39;A title is required&#39;,
+        &#39;body.required&#39;  =&gt; &#39;A message is required&#39;,
+    ];
+}
+</code></pre>
+
+<ol>
+<li>在控制器中，手动创建验证器来验证</li>
+</ol>
+
+<pre><code>$validator = Validator::make($request-&gt;all(), [
+  &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,
+  &#39;body&#39; =&gt; &#39;required&#39;,
+]);
+
+if ($validator-&gt;fails()) {
+  return redirect(&#39;post/create&#39;)
+              -&gt;withErrors($validator)
+              -&gt;withInput();
+}
+
+//自动重定向
+Validator::make($request-&gt;all(), [
+    &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,
+    &#39;body&#39; =&gt; &#39;required&#39;,
+])-&gt;validate();
+
+
+</code></pre>
+
+<h2 id="toc_1">各种验证需求怎么满足？</h2>
+
+<ul>
+<li>属性的第一条验证规则失败后，停止当前属性的验证。</li>
+</ul>
+
+<pre><code>$this-&gt;validate($request, [
+    &#39;title&#39; =&gt; &#39;bail|required|unique:posts|max:255&#39;,
+    &#39;body&#39; =&gt; &#39;required&#39;,
+]);
+</code></pre>
+
+<ul>
+<li>嵌套属性如何验证？</li>
+</ul>
+
+<pre><code>$this-&gt;validate($request, [
+    &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,
+    &#39;author.name&#39; =&gt; &#39;required&#39;,
+    &#39;author.description&#39; =&gt; &#39;required&#39;,
+]);
+</code></pre>
+
+<p>Below is a list of all available validation rules and their function:</p>
+
+<p>Accepted<br/>
+Active URL<br/>
+After (Date)<br/>
+Alpha<br/>
+Alpha Dash<br/>
+Alpha Numeric<br/>
+Array<br/>
+Before (Date)<br/>
+Between<br/>
+Boolean<br/>
+Confirmed<br/>
+Date<br/>
+Date Format<br/>
+Different<br/>
+Digits<br/>
+Digits Between<br/>
+Dimensions (Image Files)<br/>
+Distinct<br/>
+E-Mail<br/>
+Exists (Database)<br/>
+File<br/>
+Filled<br/>
+Image (File)<br/>
+In<br/>
+In Array<br/>
+Integer<br/>
+IP Address<br/>
+JSON<br/>
+Max<br/>
+MIME Types<br/>
+MIME Type By File Extension<br/>
+Min<br/>
+Nullable<br/>
+Not In<br/>
+Numeric<br/>
+Present<br/>
+Regular Expression<br/>
+Required<br/>
+Required If<br/>
+Required Unless<br/>
+Required With<br/>
+Required With All<br/>
+Required Without<br/>
+Required Without All<br/>
+Same<br/>
+Size<br/>
+String<br/>
+Timezone<br/>
+Unique (Database)<br/>
+URL</p>
+
+<h2 id="toc_2">验证不通过的情况下如何处理？</h2>
+
+<ol>
+<li>传统的http请求，重定向到原来请求验证的页面。
+所有的错误信息自动存储到sesson中，通过 <code>ShareErrorsFromSession</code> 中间件， view中可以直接使用。
+<code>$errors</code> 变量是一个<code>MessageBag</code>实例。</li>
+</ol>
+
+<pre><code>&lt;div class=&quot;form-group{{ $errors-&gt;has(&#39;name&#39;) ? &#39; has-error&#39; : &#39;&#39; }}&quot;&gt;
+   &lt;label for=&quot;name&quot; class=&quot;col-md-4 control-label&quot;&gt;Name&lt;/label&gt;
+
+   &lt;div class=&quot;col-md-6&quot;&gt;
+       &lt;input id=&quot;name&quot; type=&quot;text&quot; class=&quot;form-control&quot; name=&quot;name&quot; value=&quot;{{ old(&#39;name&#39;) }}&quot; required autofocus&gt;
+
+       @if ($errors-&gt;has(&#39;name&#39;))
+           &lt;span class=&quot;help-block&quot;&gt;
+               &lt;strong&gt;{{ $errors-&gt;first(&#39;name&#39;) }}&lt;/strong&gt;
+           &lt;/span&gt;
+       @endif
+   &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<ol>
+<li>ajax请求，返回一个json响应
+包含所有的验证错误信息。
+并且发送一个 422 的 http 状态码。</li>
+</ol>
+
+<pre><code>.fail(function(data){
+    console.log(data.responseJSON);
+    //此处使用js来验证值，我还需要精进下。
+    if( data.responseJSON.name[0] != &#39;&#39;){
+        $(&quot;#namediv&quot;).addClass(&#39;has-error&#39;);
+        $(&quot;#namediv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.name[0]+&quot;&lt;/strong&gt;&quot;);
+    }
+    if( data.responseJSON.intro[0] != &#39;&#39;){
+        $(&quot;#introdiv&quot;).addClass(&#39;has-error&#39;);
+        $(&quot;#introdiv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.intro[0]+&quot;&lt;/strong&gt;&quot;);
+    }
+    if( data.responseJSON.type[0] != &#39;&#39;){
+        $(&quot;#typediv&quot;).addClass(&#39;has-error&#39;);
+        $(&quot;#typediv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.type[0]+&quot;&lt;/strong&gt;&quot;);
+    }
+    if( data.responseJSON.status[0] != &#39;&#39;){
+        $(&quot;#statusdiv&quot;).addClass(&#39;has-error&#39;);
+        $(&quot;#statusdiv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.status[0]+&quot;&lt;/strong&gt;&quot;);
+    }
+    
+});
+</code></pre>
+
+<ol>
+<li>单页面多个form，如何检索错误信息</li>
+</ol>
+
+<pre><code>return redirect(&#39;register&#39;)
+            -&gt;withErrors($validator, &#39;login&#39;);
+            
+{{ $errors-&gt;login-&gt;first(&#39;email&#39;) }}
+</code></pre>
+
+<ol>
+<li>检索错误信息</li>
+</ol>
+
+<pre><code>$errors = $validator-&gt;errors();
+
+echo $errors-&gt;first(&#39;email&#39;);
+
+foreach ($errors-&gt;get(&#39;email&#39;) as $message) {
+    //
+}
+
+foreach ($errors-&gt;get(&#39;attachments.*&#39;) as $message) {
+    //
+}
+
+foreach ($errors-&gt;all() as $message) {
+    //
+}
+
+if ($errors-&gt;has(&#39;email&#39;)) {
+    //
+}
+</code></pre>
+
+<h2 id="toc_3">验证钩子</h2>
+
+<p>做进一步的验证或者添加更多的错误信息。</p>
+
+<pre><code>$validator = Validator::make(...);
+
+$validator-&gt;after(function ($validator) {
+    if ($this-&gt;somethingElseIsInvalid()) {
+        $validator-&gt;errors()-&gt;add(&#39;field&#39;, &#39;Something is wrong with this field!&#39;);
+    }
+});
+
+if ($validator-&gt;fails()) {
+    //
+}
+</code></pre>
+
+<h2 id="toc_4">自定义错误信息</h2>
+
+<ul>
+<li>方法传值</li>
+</ul>
+
+<pre><code>$messages = [
+    &#39;required&#39; =&gt; &#39;The :attribute field is required.&#39;,
+];
+
+$messages = [
+    &#39;same&#39;    =&gt; &#39;The :attribute and :other must match.&#39;,
+    &#39;size&#39;    =&gt; &#39;The :attribute must be exactly :size.&#39;,
+    &#39;between&#39; =&gt; &#39;The :attribute must be between :min - :max.&#39;,
+    &#39;in&#39;      =&gt; &#39;The :attribute must be one of the following types: :values&#39;,
+];
+
+$messages = [
+    &#39;email.required&#39; =&gt; &#39;We need to know your e-mail address!&#39;,
+];
+
+$validator = Validator::make($input, $rules, $messages);
+
+</code></pre>
+
+<ul>
+<li>在语言文件中定义
+add your messages to <code>custom</code> array in the <code>resources/lang/xx/validation.php</code> language file.</li>
+</ul>
+
+<pre><code>&#39;custom&#39; =&gt; [
+    &#39;email&#39; =&gt; [
+        &#39;required&#39; =&gt; &#39;We need to know your e-mail address!&#39;,
+    ],
+],
+
+&#39;attributes&#39; =&gt; [
+    &#39;email&#39; =&gt; &#39;email address&#39;,
+],
+</code></pre>
+
+
+		</div>
+
+		
+
+	</article>
+  
+	<div class="pagination">
+	 <a class="prev" href="php_6.html">&larr; Older</a> 
+<a href="archives.html">Blog Archives</a>
+	 <a class="next" href="php_4.html">Newer &rarr;</a>  
+	    
+	</div>
+</div>
+ <aside class="sidebar"> 
+
+	<section>
+	  <h1>分类</h1>
+	  <ul id="recent_posts">
+	  
+	      <li class="post">
+	        <a href="translate.html"><strong>翻译文档&nbsp;(7)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="stetch.html">stetch&nbsp;(7)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	  
+	      <li class="post">
+	        <a href="history.html"><strong>历史&nbsp;(1)</strong></a>
+	        
+	        
+	        
+	      </li>
+	  
+	      <li class="post">
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
+	        
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	   
+	  </ul>
+	</section>
+	<section>
+	  <h1>最新发布</h1>
+	  <ul id="recent_posts">
+	  
+	      
+		      <li class="post">
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14809496478909.html">laravel 安装</a>
+		      </li>
+	     
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	   
+	  </ul>
+	</section>
+	
+</aside> </div></div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 -  -
+  <span class="credit">Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; Theme by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+
+  
+    
+
+<script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?831fc9a0be36b03335a3f24dda056e34";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</body>
+</html>

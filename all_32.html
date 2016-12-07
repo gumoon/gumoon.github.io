@@ -73,7 +73,7 @@ $(document).ready(function(event) {
 
   <li id=""><a target="_self" href="archives.html">归档</a></li>
 
-  <li id=""><a target="_self" href="about.html">关于我</a></li>
+  <li id=""><a target="_self" href="about.html">关于</a></li>
 
 </ul>
 
@@ -84,37 +84,56 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14787476590487.html">Canvas</a></h1>
-			<p class="meta"><time datetime="2016-11-10T11:14:19+08:00" 
-			pubdate data-updated="true">2016/11/10</time></p>
+		  	<h1 class="entry-title"><a href="14798980187717.html">浏览器缓存机制</a></h1>
+			<p class="meta"><time datetime="2016-11-23T18:46:58+08:00" 
+			pubdate data-updated="true">2016/11/23</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<p>Sketch’s Canvas is infinite in size; you can scroll as far as you want in any direction, so you have complete freedom on how you set up your drawing area.</p>
+		  	<h2 id="toc_0">Expires和Last-Modified的区别</h2>
 
-<blockquote>
-<p>Sketch 的画布是无穷大的。你可以在任意方向滚动，你有完全的自由来决定怎么建立你的绘画区域。</p>
-</blockquote>
+<p>资源在浏览器端的本地缓存可以通过Expires和Last-Modified返回头信息进行有效控制。</p>
 
-<p>If you’d like to define a fixed frame inside the infinite canvas, simply insert one or more Artboards. For example when designing mobile interfaces, many designers create an Artboard for each screen in the app and lay them out in order of appearance.</p>
+<ol>
+<li><p>Expires告诉浏览器在该指定过期时间前再次访问同一URL时，直接从本地缓存读取，无需再向服务器发起http请求；<br/>
+优点是：浏览器直接读取缓存信息无需发起http请求。<br/>
+缺点是：当用户按F5或Ctl+F5刷新页面时浏览器会再次发起http请求。</p></li>
+<li><p>当服务器返回设置了Last-Modified头，下次发起同一URL的请求时，请求头会自动包含If-Modified-Since头信息，服务器对静态内容会根据该信息跟文件的最后修改时间做比较，如果最后修改时间不大于If-Modified-Since头信息，则返回304。告诉浏览器请求内容未更新可直接使用本地缓存。（注意：只对静态内容有效，如js/css/image/html等，不包括动态内容，如PHP）<br/>
+优点：无论用户行为如何都有效；<br/>
+缺点：仍需向服务器发起一次http请求；<br/>
+现在webserver默认都会响应 Last-Modified 头。</p></li>
+</ol>
 
-<blockquote>
-<p>如果你想在画布上定义一个固定的框架，只要插入一个或多个画板。例如，当设计移动app界面时，很多设计师为app的每一个屏幕创建一个画板，并且把它们按顺序展示。</p>
-</blockquote>
+<h2 id="toc_1">safari浏览器行为</h2>
 
-<p>You can view the Canvas both in a resolution-independent view where you have infinite precision, or you can turn on pixel preview and you will know exactly how every pixel will look when it’s being exported to a bitmap format (such as JPG or PNG). You can learn more about these modes in <a href="pixel-zoom.md">Pixel Zoom</a>.</p>
+<ol>
+<li>地址栏回车（使用本地缓存，没有请求）</li>
+<li>地址栏边上的刷新按钮（等价于F5）</li>
+<li>command-R （等价于F5)</li>
+<li>command-Shift-R 强制刷新（等价于 Ctrl-F5)</li>
+</ol>
 
-<blockquote>
-<p>你能够用你拥有的任意精度的分辨率无关的屏幕来查看画布。或者你也可以开启像素预览，你将精确地看到导出的位图格式（像JPG或PNG）中的每一个像素。你能够学到更多这些模式在 <a href="pixel-zoom.md">像素放大</a></p>
-</blockquote>
+<h2 id="toc_2">ctrl-f5 与 f5 与 enter 刷新的区别</h2>
 
-<p><img src="media/14787476590487/vector-pixel-mode@2x.png" alt="vector-pixel-mode@2x"/></p>
+<p><strong>url地址栏里敲击enter：</strong><br/>
+这样的刷新，大家可以在firebug里看一下，只有少数的请求会发送出去，而且几乎没有图片的请求，这是因为请求时会先检查本地是不是缓存了请求的图片，如果有缓存而且没有过期（过期可以通过该图片请求的header查看），他就不会发出这个图片request。_如果本地的图片已经过期，会带上If-Modified-Since请求头，去webserver请求，会产生访问日志。_</p>
 
-<p>Note: Some effects such as blur will force parts of the Canvas to be displayed in pixel preview mode, as a blur is inherently a pixel-based effect.</p>
+<p><strong>f5：</strong><br/>
+f5刷新比enter略慢，为什么呢，因为他还是把所有请求都发给了server，只是在request里的header里有信息<br/>
+Expires Fri, 28 Jun 2013 07:29:55 GMT<br/>
+Last-Modified   Mon, 21 Mar 2011 09:26:23 GMT<br/>
+服务器判断还没有过期，就直接返回304not modified，在firebug里看就是这些304的请求都为灰色。因为直接返回304这样的信息，而不是图片等内容，他比ctrl+f5快，但是比enter慢，因为他还是把所有请求都发了一遍，比enter的不发请求自然是慢的。</p>
 
-<blockquote>
-<p>注释：一些特效，像模糊，在像素预览模式下，会强制显示部分画布。因为，模糊天生就有一个基于像素的特效。</p>
-</blockquote>
+<p><strong>ctrl+f5：</strong><br/>
+这个就要慢了，因为所有的请求都是重新发送，重新从server读取内容，一点cache都没有读。为了防止在server的cache里读取，在ctrl+f5刷新时，request的header里还加了特殊字段，这个大家可以用firebug看一下，还挺有意思的。在request header 里会加pragma：no-cache（_Pragma行是为了兼容HTTP1.0，作用与 Cache-Control: no-cache是一样的_）   cache control：no-cache。这两个就是告诉服务器到浏览器中间的所有节点，没有cache，看到这个中间节点也不查自己的cache，保证请求都是从server获得的。</p>
+
+<h2 id="toc_3">注意事项</h2>
+
+<ol>
+<li>对于cdn的资源，即使强制刷新，也不过是读取到cdn的最新资源。</li>
+<li>如果本地要更新到源站的资料，只能通过修改版本号，从而改变请求url，造成本地和cdn都没有，从而，去源站获取最新的。</li>
+<li>静态资源务必都弄到cdn上去。</li>
+</ol>
 
 
 		</div>
@@ -153,14 +172,26 @@ $(document).ready(function(event) {
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
 	        
-	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -173,31 +204,31 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
-		        <a href="14798983960110.html">saltstack实践</a>
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798980187717.html">浏览器缓存机制</a>
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="redis-safe.html">redis 安全</a>
+		        <a href="14809496478909.html">laravel 安装</a>
 		      </li>
 	     
 	  

@@ -73,7 +73,7 @@ $(document).ready(function(event) {
 
   <li id=""><a target="_self" href="archives.html">归档</a></li>
 
-  <li id=""><a target="_self" href="about.html">关于我</a></li>
+  <li id=""><a target="_self" href="about.html">关于</a></li>
 
 </ul>
 
@@ -84,16 +84,80 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14790456122865.html">未知错误</a></h1>
-			<p class="meta"><time datetime="2016-11-13T22:00:12+08:00" 
-			pubdate data-updated="true">2016/11/13</time></p>
+		  	<h1 class="entry-title"><a href="14800526722335.html">mac系统安装 mysql</a></h1>
+			<p class="meta"><time datetime="2016-11-25T13:44:32+08:00" 
+			pubdate data-updated="true">2016/11/25</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<ul>
-<li>swift stdlib tool error
-可能是硬盘不足，无法复制了。。。</li>
-</ul>
+		  	<h2 id="toc_0">通过brew 安装 mariadb</h2>
+
+<blockquote>
+<p>If you need a database, try MariaDB by running <code>brew install mariadb</code> on your command line. Once MariaDB has been installed, you may start it using the <code>brew services start mariadb</code> command. You can then connect to the database at <code>127.0.0.1</code> using the <code>root</code> username and an empty string for the password.</p>
+</blockquote>
+
+<pre><code>Updating Homebrew...
+==&gt; Downloading https://homebrew.bintray.com/bottles/mariadb-10.1.19.sierra.bottle.tar.gz
+######################################################################## 100.0%
+==&gt; Pouring mariadb-10.1.19.sierra.bottle.tar.gz
+==&gt; Using the sandbox
+==&gt; /usr/local/Cellar/mariadb/10.1.19/bin/mysql_install_db --verbose --user=gumoon --basedir=/usr/local/Cellar/mariadb/10.1.19 --datadir=/usr/local/var/mysql --tmpdir=/t
+==&gt; Caveats
+A &quot;/etc/my.cnf&quot; from another install may interfere with a Homebrew-built
+server starting up correctly.
+
+To connect:
+    mysql -uroot
+
+To have launchd start mariadb now and restart at login:
+  brew services start mariadb
+Or, if you don&#39;t want/need a background service you can just run:
+  mysql.server start
+==&gt; Summary
+🍺  /usr/local/Cellar/mariadb/10.1.19: 574 files, 136.6M
+</code></pre>
+
+<h2 id="toc_1">通过 dmg 安装 mysql5.7</h2>
+
+<h3 id="toc_2">下载最新的MySQL社区版</h3>
+
+<p>官方下载地址：<a href="http://dev.mysql.com/downloads/mysql/">http://dev.mysql.com/downloads/mysql/</a><br/>
+为了安装更方便，建议下载dmg安装包。<br/>
+最新的版本是5.7.9。</p>
+
+<h3 id="toc_3">安装mysql</h3>
+
+<p>双击mysql-5.7.9-osx10.10-x86_64.dmg文件，加载镜像<br/>
+双击mysql-5.7.9-osx10.9-x86_64.pkg，开始安装<br/>
+一路下一步，即可安装成功<br/>
+注意：安装完成之后会弹出一个对话框，告诉我们生成了一个root账户的临时密码。请注意保存，否则重设密码会比较麻烦。</p>
+
+<h3 id="toc_4">启动mysql</h3>
+
+<p>打开系统偏好设置，会发现多了一个MySQL图标，点击它，会进入MySQL的设置界面：<br/>
+安装之后，默认MySQL的状态是stopped，关闭的，需要点击“Start MySQL Server”按钮来启动它，启动之后，状态会变成running。<br/>
+下方还有一个复选框按钮，可以设置是否在系统启动的时候自动启动MySQL，默认是勾选的，建议取消，节省开机时间。</p>
+
+<h3 id="toc_5">通过终端连接mysql</h3>
+
+<p>打开终端，为Path路径附加MySQL的bin目录<br/>
+PATH=&quot;$PATH&quot;:/usr/local/mysql/bin<br/>
+然后通过以下命令登陆MySQL（密码就是前面自动生成的临时密码）<br/>
+mysql -u root -p<br/>
+登陆成功，但是运行命令的时候会报错，提示我们需要重设密码。<br/>
+mysql&gt; show databases;<br/>
+ERROR 1820 (HY000): You must reset your password using ALTER USER statement before executing this statement.<br/>
+mysql&gt; <br/>
+修改密码，新密码为123456<br/>
+set PASSWORD =PASSWORD(&#39;123456&#39;);<br/>
+再次执行show databases;就正常了。</p>
+
+<h3 id="toc_6">如何卸载？</h3>
+
+<p>删除那个文件夹就行吧。<br/>
+PATH也记得修改下。</p>
+
+<p>我先不删，留着研究下。</p>
 
 
 		</div>
@@ -132,14 +196,26 @@ $(document).ready(function(event) {
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
 	        
-	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -152,31 +228,31 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
-		        <a href="14798983960110.html">saltstack实践</a>
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798980187717.html">浏览器缓存机制</a>
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="redis-safe.html">redis 安全</a>
+		        <a href="14809496478909.html">laravel 安装</a>
 		      </li>
 	     
 	  

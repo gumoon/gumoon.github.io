@@ -73,7 +73,7 @@ $(document).ready(function(event) {
 
   <li id=""><a target="_self" href="archives.html">归档</a></li>
 
-  <li id=""><a target="_self" href="about.html">关于我</a></li>
+  <li id=""><a target="_self" href="about.html">关于</a></li>
 
 </ul>
 
@@ -84,24 +84,181 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14794651181650.html">Key-paths 作为字符串</a></h1>
-			<p class="meta"><time datetime="2016-11-18T18:31:58+08:00" 
-			pubdate data-updated="true">2016/11/18</time></p>
+		  	<h1 class="entry-title"><a href="14803410429860.html">jquery</a></h1>
+			<p class="meta"><time datetime="2016-11-28T21:50:42+08:00" 
+			pubdate data-updated="true">2016/11/28</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<p>用 #keyPath() 代替。<br/>
-如下：</p>
+		  	<h2 id="toc_0">介绍</h2>
 
-<pre><code>class Person: NSObject {
-  var name: String = &quot;&quot;
+<p>jQuery是一个javascript函数库。<br/>
+可以通过一行简单的标记被添加到网页中。</p>
 
-  init(name: String) {
-    self.name = name
-  }
+<h2 id="toc_1">包含的功能</h2>
+
+<ul>
+<li>HTML 元素选取</li>
+<li>HTML 元素操作</li>
+<li>CSS 操作</li>
+<li>HTML 事件函数</li>
+<li>Javascript 特效和动画</li>
+<li>HTML DOM 遍历和修改</li>
+<li>AJAX</li>
+<li>Utilities</li>
+</ul>
+
+<h2 id="toc_2">原理</h2>
+
+<p>浏览器是从上往下执行代码，所以引入顺序特别重要。</p>
+
+<h2 id="toc_3">注意事项</h2>
+
+<ul>
+<li>this 表示上下文的当前元素</li>
+</ul>
+
+<pre><code>$(document).ready(function(){
+    $(&quot;p&quot;).click(function(){
+        $(this).hide();
+    })
+});
+</code></pre>
+
+<ul>
+<li>对象中，不要出现<code>;</code></li>
+</ul>
+
+<h2 id="toc_4">选择器</h2>
+
+<p>有很多种选择器，请看文档。<br/>
+常见的：</p>
+
+<pre><code>$(&#39;#id&#39;)
+$(&quot;.class&quot;)
+$(&quot;p&quot;)
+$(&quot;input[name=&#39;_token&#39;]&quot;)
+...
+</code></pre>
+
+<h2 id="toc_5">事件</h2>
+
+<h3 id="toc_6">事件类型</h3>
+
+<p>单击：click<br/>
+双击：dbclick<br/>
+鼠标移入：mouseenter<br/>
+鼠标移开：mouseleave</p>
+
+<h3 id="toc_7">绑定事件</h3>
+
+<pre><code>$(&quot;#id&quot;).bind(&quot;click&quot;, clickAction);
+$(&quot;#id&quot;).unbind(&quot;click&quot;, clickAction);
+$(&quot;#id&quot;).on(&quot;click&quot;, clickAction);
+$(&quot;#id&quot;).off(&quot;click&quot;, clickAction);
+
+$(&quot;#id&quot;).click(clickAction)
+他们效果一样，只是 bind 更有扩展性。
+
+function clickAction(event){
+    console.log(event); //event 可以打印。
+    event.isImmediatePropagationStopped(); //阻止事件冒泡
+    event.isPropagationStopped(); //阻止事件冒泡
 }
-let me = Person(name: &quot;Cosmin&quot;)
-me.value(forKeyPath: #keyPath(Person.name))
+</code></pre>
+
+<p>console.log() 函数在ie浏览器也可能不好使。</p>
+
+<h3 id="toc_8">自定义事件</h3>
+
+<p>略。</p>
+
+<h2 id="toc_9">AJAX</h2>
+
+<pre><code>&lt;script type=&quot;text/javascript&quot;&gt;
+    $(document).ready(function(){
+        var url = &quot;{{ url(&#39;houtai/ajax/programs/store&#39;) }}&quot;;
+        
+        // $(&quot;#submit&quot;).on(&#39;click&#39;, function(){
+        //  alert(&#39;ok&#39;);
+        //  // $.get(&quot;http://voa.dev&quot;,function(data){
+        //  //  alert(data);
+        //  // });
+        //  var name = $(&quot;#name&quot;).val();
+        //  var intro = $(&quot;#intro&quot;).val();
+        //  var type = $(&quot;#type&quot;).val();
+        //  var status = $(&quot;#status&quot;).val();
+        //  var token = $(&quot;input[name=&#39;_token&#39;]&quot;).val();
+        //  var postData = {name: name, intro: intro, type: type, status: status, _token: token};           
+        //  $.post(url, postData, function(data){
+        //      alert(data.id);
+        //      console.log(data);              
+        //  }); 
+        //  return false;       
+        // });
+        $(&#39;#programCreate&#39;).submit(function(){
+            var name = $(&quot;#name&quot;).val();
+            var intro = $(&quot;#intro&quot;).val();
+            var type = $(&quot;#type&quot;).val();
+            var status = $(&quot;#status&quot;).val();
+            var token = $(&quot;input[name=&#39;_token&#39;]&quot;).val();
+            var postData = {name: name, intro: intro, type: type, status: status, _token: token};
+            console.log(postData);
+
+            $.post(url, postData, function(data){
+                alert(data);
+                console.log(data);
+                //表单重置
+                document.getElementById(&#39;programCreate&#39;).reset();
+                //错误提示删除
+                $(&quot;#namediv&quot;).removeClass(&#39;has-error&#39;);
+                $(&quot;#introdiv&quot;).addClass(&#39;has-error&#39;);
+                $(&quot;#typediv&quot;).addClass(&#39;has-error&#39;);
+                $(&quot;#statusdiv&quot;).addClass(&#39;has-error&#39;);
+                $(&quot;#namediv .help-block&quot;).html(&quot;&quot;);
+                $(&quot;#introdiv .help-block&quot;).html(&quot;&quot;);
+                $(&quot;#typediv .help-block&quot;).html(&quot;&quot;);
+                $(&quot;#statusdiv .help-block&quot;).html(&quot;&quot;);
+            });
+            return false;
+        });
+    })
+    .fail(function(data){
+                console.log(data.responseJSON);
+                //此处使用js来验证值，我还需要精进下。
+                if( data.responseJSON.name[0] != &#39;&#39;){
+                    $(&quot;#namediv&quot;).addClass(&#39;has-error&#39;);
+                    $(&quot;#namediv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.name[0]+&quot;&lt;/strong&gt;&quot;);
+                }
+                if( data.responseJSON.intro[0] != &#39;&#39;){
+                    $(&quot;#introdiv&quot;).addClass(&#39;has-error&#39;);
+                    $(&quot;#introdiv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.intro[0]+&quot;&lt;/strong&gt;&quot;);
+                }
+                if( data.responseJSON.type[0] != &#39;&#39;){
+                    $(&quot;#typediv&quot;).addClass(&#39;has-error&#39;);
+                    $(&quot;#typediv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.type[0]+&quot;&lt;/strong&gt;&quot;);
+                }
+                if( data.responseJSON.status[0] != &#39;&#39;){
+                    $(&quot;#statusdiv&quot;).addClass(&#39;has-error&#39;);
+                    $(&quot;#statusdiv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.status[0]+&quot;&lt;/strong&gt;&quot;);
+                }
+                
+            });;
+
+&lt;/script&gt;
+</code></pre>
+
+<p><strong>特别注意</strong>： return false ！！！！不然，提交完会自动刷新当前页面。<br/>
+当ajax请求没有成功的时候，我采取一步一步跟踪的方法进行尝试。</p>
+
+<p>表单提交成功后，可能想重置表单。jquery 不提供方法。</p>
+
+<pre><code>&lt;input id=&quot;res&quot; name=&quot;res&quot; type=&quot;reset&quot; style=&quot;display:none;&quot; /&gt; 
+$(&quot;input[name=&#39;res&#39;]&quot;).click();  好像不好使。
+
+或
+document.getElementById(&quot;form1&quot;).reset();  可以。
+document.formName.reset(); 
 </code></pre>
 
 
@@ -141,14 +298,26 @@ me.value(forKeyPath: #keyPath(Person.name))
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
 	        
-	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -161,31 +330,31 @@ me.value(forKeyPath: #keyPath(Person.name))
 	  
 	      
 		      <li class="post">
-		        <a href="14798983960110.html">saltstack实践</a>
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798980187717.html">浏览器缓存机制</a>
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="redis-safe.html">redis 安全</a>
+		        <a href="14809496478909.html">laravel 安装</a>
 		      </li>
 	     
 	  

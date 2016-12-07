@@ -1,0 +1,291 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>
+    
+  技术文档 - 自由学习网
+  
+
+  </title>
+  <meta name="author" content="gumoon">
+  <meta name="description" content="积累、思考、成长、分享、厚积薄发、学以致用">
+
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link href="asset/css/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="atom.xml" rel="alternate" title="自由学习网" type="application/atom+xml">
+  <script src="asset/js/modernizr-2.0.js"></script>
+  <script src="asset/js/jquery.min.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/solarized_light.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <style type="text/css">
+  .cat-children-p{ padding: 6px 0px;}
+  .hljs{background: none;}
+  </style>
+  <script type="text/javascript">
+  var isAddSildbar = true;
+  </script>
+  <script src="asset/js/octopress.js" type="text/javascript"></script>
+</head>
+<script type="text/javascript">
+//链接新开窗口
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+$(document).ready(function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="index.html">自由学习网</a></h1>
+  
+    <h2>积累、思考、成长、分享、厚积薄发、学以致用</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="wd" value="site:www.free-abc.com.cn" />
+    <input class="search" type="text" name="wd" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+
+  <li id=""><a target="_self" href="index.html">首页</a></li>
+
+  <li id=""><a target="_self" href="archives.html">归档</a></li>
+
+  <li id=""><a target="_self" href="about.html">关于</a></li>
+
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content"> 
+<div class="blog-index">
+
+	<article>
+		 <header>
+		  	<h1 class="entry-title"><a href="14798980187717.html">浏览器缓存机制</a></h1>
+			<p class="meta"><time datetime="2016-11-23T18:46:58+08:00" 
+			pubdate data-updated="true">2016/11/23</time></p>
+		 </header>
+	  	<div class="entry-content">
+		  	
+		  	<h2 id="toc_0">Expires和Last-Modified的区别</h2>
+
+<p>资源在浏览器端的本地缓存可以通过Expires和Last-Modified返回头信息进行有效控制。</p>
+
+<ol>
+<li><p>Expires告诉浏览器在该指定过期时间前再次访问同一URL时，直接从本地缓存读取，无需再向服务器发起http请求；<br/>
+优点是：浏览器直接读取缓存信息无需发起http请求。<br/>
+缺点是：当用户按F5或Ctl+F5刷新页面时浏览器会再次发起http请求。</p></li>
+<li><p>当服务器返回设置了Last-Modified头，下次发起同一URL的请求时，请求头会自动包含If-Modified-Since头信息，服务器对静态内容会根据该信息跟文件的最后修改时间做比较，如果最后修改时间不大于If-Modified-Since头信息，则返回304。告诉浏览器请求内容未更新可直接使用本地缓存。（注意：只对静态内容有效，如js/css/image/html等，不包括动态内容，如PHP）<br/>
+优点：无论用户行为如何都有效；<br/>
+缺点：仍需向服务器发起一次http请求；<br/>
+现在webserver默认都会响应 Last-Modified 头。</p></li>
+</ol>
+
+<h2 id="toc_1">safari浏览器行为</h2>
+
+<ol>
+<li>地址栏回车（使用本地缓存，没有请求）</li>
+<li>地址栏边上的刷新按钮（等价于F5）</li>
+<li>command-R （等价于F5)</li>
+<li>command-Shift-R 强制刷新（等价于 Ctrl-F5)</li>
+</ol>
+
+<h2 id="toc_2">ctrl-f5 与 f5 与 enter 刷新的区别</h2>
+
+<p><strong>url地址栏里敲击enter：</strong><br/>
+这样的刷新，大家可以在firebug里看一下，只有少数的请求会发送出去，而且几乎没有图片的请求，这是因为请求时会先检查本地是不是缓存了请求的图片，如果有缓存而且没有过期（过期可以通过该图片请求的header查看），他就不会发出这个图片request。_如果本地的图片已经过期，会带上If-Modified-Since请求头，去webserver请求，会产生访问日志。_</p>
+
+<p><strong>f5：</strong><br/>
+f5刷新比enter略慢，为什么呢，因为他还是把所有请求都发给了server，只是在request里的header里有信息<br/>
+Expires Fri, 28 Jun 2013 07:29:55 GMT<br/>
+Last-Modified   Mon, 21 Mar 2011 09:26:23 GMT<br/>
+服务器判断还没有过期，就直接返回304not modified，在firebug里看就是这些304的请求都为灰色。因为直接返回304这样的信息，而不是图片等内容，他比ctrl+f5快，但是比enter慢，因为他还是把所有请求都发了一遍，比enter的不发请求自然是慢的。</p>
+
+<p><strong>ctrl+f5：</strong><br/>
+这个就要慢了，因为所有的请求都是重新发送，重新从server读取内容，一点cache都没有读。为了防止在server的cache里读取，在ctrl+f5刷新时，request的header里还加了特殊字段，这个大家可以用firebug看一下，还挺有意思的。在request header 里会加pragma：no-cache（_Pragma行是为了兼容HTTP1.0，作用与 Cache-Control: no-cache是一样的_）   cache control：no-cache。这两个就是告诉服务器到浏览器中间的所有节点，没有cache，看到这个中间节点也不查自己的cache，保证请求都是从server获得的。</p>
+
+<h2 id="toc_3">注意事项</h2>
+
+<ol>
+<li>对于cdn的资源，即使强制刷新，也不过是读取到cdn的最新资源。</li>
+<li>如果本地要更新到源站的资料，只能通过修改版本号，从而改变请求url，造成本地和cdn都没有，从而，去源站获取最新的。</li>
+<li>静态资源务必都弄到cdn上去。</li>
+</ol>
+
+
+		</div>
+
+		
+
+	</article>
+  
+	<div class="pagination">
+	 <a class="prev" href="technology_33.html">&larr; Older</a> 
+<a href="archives.html">Blog Archives</a>
+	 <a class="next" href="technology_31.html">Newer &rarr;</a>  
+	    
+	</div>
+</div>
+ <aside class="sidebar"> 
+
+	<section>
+	  <h1>分类</h1>
+	  <ul id="recent_posts">
+	  
+	      <li class="post">
+	        <a href="translate.html"><strong>翻译文档&nbsp;(7)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="stetch.html">stetch&nbsp;(7)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	  
+	      <li class="post">
+	        <a href="history.html"><strong>历史&nbsp;(1)</strong></a>
+	        
+	        
+	        
+	      </li>
+	  
+	      <li class="post">
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
+	        
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	   
+	  </ul>
+	</section>
+	<section>
+	  <h1>最新发布</h1>
+	  <ul id="recent_posts">
+	  
+	      
+		      <li class="post">
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14809496478909.html">laravel 安装</a>
+		      </li>
+	     
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	   
+	  </ul>
+	</section>
+	
+</aside> </div></div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 -  -
+  <span class="credit">Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; Theme by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+
+  
+    
+
+<script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?831fc9a0be36b03335a3f24dda056e34";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</body>
+</html>

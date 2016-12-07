@@ -73,7 +73,7 @@ $(document).ready(function(event) {
 
   <li id=""><a target="_self" href="archives.html">归档</a></li>
 
-  <li id=""><a target="_self" href="about.html">关于我</a></li>
+  <li id=""><a target="_self" href="about.html">关于</a></li>
 
 </ul>
 
@@ -84,55 +84,199 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14787476787496.html">宇宙简史</a></h1>
-			<p class="meta"><time datetime="2016-11-10T11:14:38+08:00" 
-			pubdate data-updated="true">2016/11/10</time></p>
+		  	<h1 class="entry-title"><a href="14799853328864.html">Bootstrap 实践</a></h1>
+			<p class="meta"><time datetime="2016-11-24T19:02:12+08:00" 
+			pubdate data-updated="true">2016/11/24</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<p>宇宙起源于大爆炸。</p>
+		  	<h2 id="toc_0">介绍</h2>
 
-<p>地球大约形成于45.4亿年前。</p>
+<ul>
+<li>getbootstrap.com</li>
+</ul>
 
-<p>少量重元素集聚在一起，坍塌、自旋，形成了地球。</p>
+<h2 id="toc_1">在 laravel 中使用 bootstrap</h2>
 
-<p>几亿年后（距今约38/42亿年），大量液态水逐步汇聚，形成海洋。</p>
+<p>在根目录的 package.json 文件中增加：<code>&quot;bootstrap&quot;: &quot;^3&quot;</code><br/>
+然后执行：<code>npm update</code> 命令。</p>
 
-<p>RNA出现于距今约40亿年前。</p>
+<p>更多信息，请查看：<br/>
+<a href="http://www.golaravel.com/laravel/docs/5.1/elixir/">Elixir</a></p>
 
-<p>又过了两亿年，地球上出现了最早的单细胞生物，它提供化合作用获得能量生存。</p>
+<h2 id="toc_2">使用</h2>
 
-<p>距今36亿年前，出现了能够进行光合作用的单细胞微生物。</p>
+<p><a href="http://www.bootcss.com">http://www.bootcss.com</a></p>
 
-<p>距今18亿年，出现了有细胞核的单细胞原生生物。</p>
+<p>html5文档类型：<br/>
+Bootstrap 使用到的某些html元素和css属性需要将页面设置为html5文档类型。在你的项目中的每个页面都需要参照下面的格式进行设置。</p>
 
-<p>距今10亿年，才出现多细胞生物。</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;zh-CN&quot;&gt;
+  ...
+&lt;/html&gt;
+</code></pre>
 
-<p>距今6亿年，古生代。</p>
+<p>Bootstrap 是移动设备优先的。为了确保适当的绘制和触屏缩放，需要在 <code>&lt;head&gt;</code> 之中添加 viewport 元数据标签。</p>
 
-<p>约5.4-4.9亿年前，地球进入寒武纪。</p>
+<pre><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no&quot;&gt; //禁用缩放功能，让你的网站看上去更像原生应用的感觉。
+</code></pre>
 
-<p>随着地球大气中的越来越丰富，形成了臭氧层、它可以保护地球陆地免受紫外线直接照射。</p>
+<p>Bootstrap 排版、链接样式设置了基本的全局样式。在 scaffolding.less 中可以找到对应的源码。</p>
 
-<p>到4亿年前的志留纪，植物才出现在陆地。</p>
+<p>为了增强跨浏览器表现的一致性，使用了 Normalize.css。</p>
 
-<p>距今4.2-3.7亿年的泥盆纪，地球上出现了昆虫和早期鱼类。</p>
+<p>Bootstrap需要为页面内容和栅格系统包裹一个 <code>.container</code> 容器。我们提供了两个作此用处的类。由于 padding 等属性的原因，这两种容器类不能互相嵌套。</p>
 
-<p>距今2.5亿年的二叠纪和三叠纪初期，一场大灾难降临地球，95%以上的物种都灭绝了。</p>
+<p><code>.container</code> 类用于固定宽度并支持响应式布局的容器。</p>
 
-<p>距今2-1.5亿年，侏罗纪，恐龙和其他爬行动物成为地球的主人。恐龙统治地球长达1.6亿年。</p>
+<pre><code>&lt;div class=&quot;container&quot;&gt;
+  ...
+&lt;/div&gt;
+</code></pre>
 
-<p>距今6500万年前，灾难再次降临，恐龙灭绝。哺乳动物开始成为这个星球的主宰。</p>
+<p><code>.container_fluid</code> 类用于100%宽度，占据全部视口（viewport) 的容器。</p>
 
-<p>距今350万年前，真正被称为人的动物肯尼亚平脸人出现了。</p>
+<pre><code>&lt;div class=&quot;container-fluid&quot;&gt;
+  ...
+&lt;/div&gt;
+</code></pre>
 
-<p>在距今25万年前，我们的祖先现代人在东非诞生了。</p>
+<h3 id="toc_3">栅格系统</h3>
 
-<p>如果把地球的年龄缩短成一年，那么人类出现在这一年最后一天的最后半个小时。</p>
+<p>随着屏幕或视口尺寸的增加，系统会自动分为最多12列。<br/>
+栅格系统用于通过一系列的行（row）与列（column）的组合来创建页面布局，你的内容就可以放入这些创建好的布局中。<br/>
+工作原理：<br/>
+1. row 必须包含在 .container （固定宽度）或 .container_fluid （100%宽度）中，以便为其赋予合适的排列（aligment)和内补（padding）。<br/>
+2. 通过 行 (row）在水平方向创建一组列(column)。<br/>
+3. 你的内容应当放置于列内，并且只有列可以作为行的直接子元素。<br/>
+4. 类似 .row 和 .col-xs-4 这种预定义的类，可以用来快速创建栅格布局。Bootstrap 源码中定义的 mixin 也可以用来创建语义化的布局。<br/>
+5. 通过为“列（column）”设置 padding 属性，从而创建列与列之间的间隔（gutter）。通过为 .row 元素设置负值 margin 从而抵消掉为 .container 元素设置的 padding，也就间接为“行（row）”所包含的“列（column）”抵消掉了padding。<br/>
+6. The negative margin is why the examples below are outdented. It&#39;s so that content within grid columns is lined up with non-grid content.<br/>
+7. Grid columns are created by specifying the number of twelve available columns you wish to span. For example, three equal columns would use three .col-xs-4.<br/>
+8. 如果一“行（row）”中包含了的“列（column）”大于 12，多余的“列（column）”所在的元素将被作为一个整体另起一行排列。<br/>
+9. Grid classes apply to devices with screen widths greater than or equal to the breakpoint sizes, and override grid classes targeted at smaller devices. Therefore, applying any .col-md- class to an element will not only affect its styling on medium devices but also on large devices if a .col-lg- class is not present.</p>
 
-<p>大约10万年前，开始从东非向四周迁徙。大约在5万年前到达南亚，4万年前到达澳大利亚、中国和欧洲。3万年前到达美洲。</p>
+<p>Bootstrap 将全局 font-size 设置为 14px, line-height 设置为 1.428。这些属性直接赋予 <body> 元素和所有段落元素。<br/>
+<p> 元素还被设置了等于 1/2 行高（即 10px）的底部外边距。<br/>
+.lead 类可以让段落突出显示。</p>
 
-<p>从大约3万年前，现代的人类成为了地球的主人。要再过两万多年，人类的文明才真正开始。这已经是一年最后的一分钟了。</p>
+<p>高亮 <mark></mark><br/>
+删除效果：<del></del><br/>
+无用文本：<s></s><br/>
+<small>内的文本将被设置为父容器字体大小的85%。标题元素中嵌套的 <small> 元素被设置不同的 font-size 。<br/>
+在html5中，<b>用于高亮单词和短语，不带任何着重的意味；而 <i> 标签用于发言、技术词汇等。</p>
+
+<p>文本对齐类：text-left, text-center, test-right, test-justify, text-nowrap 。</p>
+
+<p>缩略词：</p>
+
+<pre><code>&lt;abbr title=&quot;attribute&quot;&gt;attr&lt;/abbr&gt;
+</code></pre>
+
+<p>地址：</p>
+
+<pre><code>&lt;address&gt;
+  &lt;strong&gt;Twitter, Inc.&lt;/strong&gt;&lt;br&gt;
+  795 Folsom Ave, Suite 600&lt;br&gt;
+  San Francisco, CA 94107&lt;br&gt;
+  &lt;abbr title=&quot;Phone&quot;&gt;P:&lt;/abbr&gt; (123) 456-7890
+&lt;/address&gt;
+
+&lt;address&gt;
+  &lt;strong&gt;Full Name&lt;/strong&gt;&lt;br&gt;
+  &lt;a href=&quot;mailto:#&quot;&gt;first.last@example.com&lt;/a&gt;
+&lt;/address&gt;
+</code></pre>
+
+<p>引用：</p>
+
+<pre><code>&lt;blockquote&gt;
+  &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.&lt;/p&gt;
+  &lt;footer&gt;Someone famous in &lt;cite title=&quot;Source Title&quot;&gt;Source Title&lt;/cite&gt;&lt;/footer&gt;
+&lt;/blockquote&gt;
+
+//右对齐
+&lt;blockquote class=&quot;blockquote-reverse&quot;&gt;
+  ...
+&lt;/blockquote&gt;
+</code></pre>
+
+<p>列表：<br/>
+有序列表和无序列表。</p>
+
+<p>无样式列表：class=&quot;list-unstyled&quot;,只针对于直接子元素。<br/>
+将列表元素放置于同一行：list-inline</p>
+
+<p>描述：</p>
+
+<pre><code>&lt;dl class=&quot;dl-horizontal&quot;&gt;
+  &lt;dt&gt;...&lt;/dt&gt;
+  &lt;dd&gt;...&lt;/dd&gt;
+&lt;/dl&gt;
+</code></pre>
+
+<p>表格<br/>
+默认表格：table</p>
+
+<p>条纹状表格：.table-striped<br/>
+带边框表格：.table-bordered<br/>
+鼠标悬停：.table-hover<br/>
+紧缩表格：.table-condensed<br/>
+为行或单元格设置颜色：.active, .success, .info, .warning, .danger</p>
+
+<p>响应式表格：.table-responsive<br/>
+将任何 .table 元素包裹在 .table-responsive 元素内，即可创建响应式表格。</p>
+
+<pre><code>&lt;div class=&quot;table-responsive&quot;&gt;
+  &lt;table class=&quot;table&quot;&gt;
+    ...
+  &lt;/table&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>表单：</p>
+
+<p>所有设置了 .form-control 类的 <input>、<textarea> 和 <select> 元素都将被默认设置宽度属性为 width: 100%;。 将 label 元素和前面提到的控件包裹在 .form-group 中可以获得最好的排列。</p>
+
+<p>内联表单：<br/>
+为 <form> 元素添加 .form-inline 类。</p>
+
+<p>水平排列的表单：<br/>
+通过为表单添加 .form-horizontal 类，并联合使用 Bootstrap 预置的栅格类，可以将 label 标签和控件组水平并排布局。这样做将改变 .form-group 的行为，使其表现为栅格系统中的行（row），因此就无需再额外添加 .row 了。</p>
+
+<pre><code>&lt;form class=&quot;form-horizontal&quot; role=&quot;form&quot;&gt;
+  &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;inputEmail3&quot; class=&quot;col-sm-2 control-label&quot;&gt;Email&lt;/label&gt;
+    &lt;div class=&quot;col-sm-10&quot;&gt;
+      &lt;input type=&quot;email&quot; class=&quot;form-control&quot; id=&quot;inputEmail3&quot; placeholder=&quot;Email&quot;&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;inputPassword3&quot; class=&quot;col-sm-2 control-label&quot;&gt;Password&lt;/label&gt;
+    &lt;div class=&quot;col-sm-10&quot;&gt;
+      &lt;input type=&quot;password&quot; class=&quot;form-control&quot; id=&quot;inputPassword3&quot; placeholder=&quot;Password&quot;&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;form-group&quot;&gt;
+    &lt;div class=&quot;col-sm-offset-2 col-sm-10&quot;&gt;
+      &lt;div class=&quot;checkbox&quot;&gt;
+        &lt;label&gt;
+          &lt;input type=&quot;checkbox&quot;&gt; Remember me
+        &lt;/label&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;form-group&quot;&gt;
+    &lt;div class=&quot;col-sm-offset-2 col-sm-10&quot;&gt;
+      &lt;button type=&quot;submit&quot; class=&quot;btn btn-default&quot;&gt;Sign in&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/form&gt;
+</code></pre>
+
+<p>包括大部分表单控件、文本输入域控件，还支持所有 HTML5 类型的输入控件： text、password、datetime、datetime-local、date、month、time、week、number、email、url、search、tel 和 color。</p>
 
 
 		</div>
@@ -171,14 +315,26 @@ $(document).ready(function(event) {
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
 	        
-	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -191,31 +347,31 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
-		        <a href="14798983960110.html">saltstack实践</a>
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798980187717.html">浏览器缓存机制</a>
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="redis-safe.html">redis 安全</a>
+		        <a href="14809496478909.html">laravel 安装</a>
 		      </li>
 	     
 	  

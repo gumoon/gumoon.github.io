@@ -73,7 +73,7 @@ $(document).ready(function(event) {
 
   <li id=""><a target="_self" href="archives.html">归档</a></li>
 
-  <li id=""><a target="_self" href="about.html">关于我</a></li>
+  <li id=""><a target="_self" href="about.html">关于</a></li>
 
 </ul>
 
@@ -84,47 +84,28 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14794370507786.html">UserDefaults</a></h1>
-			<p class="meta"><time datetime="2016-11-18T10:44:10+08:00" 
-			pubdate data-updated="true">2016/11/18</time></p>
+		  	<h1 class="entry-title"><a href="14803040439522.html">laravel 控制器的使用</a></h1>
+			<p class="meta"><time datetime="2016-11-28T11:34:03+08:00" 
+			pubdate data-updated="true">2016/11/28</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<h2 id="toc_0">是什么？</h2>
+		  	<h2 id="toc_0">作用</h2>
 
-<p>NSUserDefaults 类的连接。<br/>
-提供了一个对接默认系统的编程接口。<br/>
-数据存储在 user defaults database。<br/>
-数据先存储在内存中，通过周期性的自动调用<code>synchronize()</code>来刷新数据。</p>
+<ol>
+<li>MVC设计模式</li>
+<li>替代在 route 文件中，定义所有的请求处理逻辑</li>
+</ol>
 
-<h2 id="toc_1">作用</h2>
+<h2 id="toc_1">编写controller类</h2>
 
-<p>存储用户的自定义数据<br/>
-如：界面显示哪些部分、文档自动存储策略、默认的启动状态、默认行为</p>
+<ol>
+<li>要继承基类，虽然框架不强制继承</li>
+<li>基类提供了一些必要的功能</li>
+<li>控制器的命名：单数资源名+Controller</li>
+</ol>
 
-<h2 id="toc_2">可以存储哪些数据</h2>
-
-<p>floats, doubles, integers, Booleans, and URLs.<br/>
-支持的对象类型：NSData, NSString, NSNumber, NSDate, NSArray, or NSDictionary. </p>
-
-<p>如果你要存储其他类型的对象，你需要把它归档为 NSData 实例。</p>
-
-<h2 id="toc_3">返回值</h2>
-
-<p>返回值是常量。不可改变。<br/>
-即使你存的是一个变量。</p>
-
-<h2 id="toc_4">存储</h2>
-
-<p>默认为每个用户创建自动创建一个数据库。<br/>
-目前不支持分 domain 存储数据。需要的话，请使用 <code>CFPreferences</code><br/>
-但是，<code>UserDefaults</code> 可以分 domain 读数据。</p>
-
-<p>If you want to track a file by reference but you require explicit control over when resolution occurs, you should take care to write out bookmark data to NSUserDefaults rather than rely on -[NSUserDefaults setURL:forKey:]. This allows you to call +[NSURL URLByResolvingBookmarkData:options:relativeToURL:bookmarkDataIsStale:error:] at a time when you know your application will be able to handle the potential I/O or required user interface interactions.</p>
-
-<h2 id="toc_5">沙盒</h2>
-
-<p>不支持访问其它应用的 <code>UserDefaults</code></p>
+<p>php artisan make:controller ProgramInfoController --resource</p>
 
 
 		</div>
@@ -163,14 +144,26 @@ $(document).ready(function(event) {
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
 	        
-	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -183,31 +176,31 @@ $(document).ready(function(event) {
 	  
 	      
 		      <li class="post">
-		        <a href="14798983960110.html">saltstack实践</a>
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798980187717.html">浏览器缓存机制</a>
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="redis-safe.html">redis 安全</a>
+		        <a href="14809496478909.html">laravel 安装</a>
 		      </li>
 	     
 	  

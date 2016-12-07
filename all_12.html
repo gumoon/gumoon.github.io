@@ -73,7 +73,7 @@ $(document).ready(function(event) {
 
   <li id=""><a target="_self" href="archives.html">归档</a></li>
 
-  <li id=""><a target="_self" href="about.html">关于我</a></li>
+  <li id=""><a target="_self" href="about.html">关于</a></li>
 
 </ul>
 
@@ -84,66 +84,23 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="14798693795226.html">nginx最佳实践</a></h1>
-			<p class="meta"><time datetime="2016-11-23T10:49:39+08:00" 
-			pubdate data-updated="true">2016/11/23</time></p>
+		  	<h1 class="entry-title"><a href="14805676445589.html">mysql技术选型</a></h1>
+			<p class="meta"><time datetime="2016-12-01T12:47:24+08:00" 
+			pubdate data-updated="true">2016/12/1</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<h2 id="toc_0">安装</h2>
-
-<p>从 <code>http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm</code> 下载最新源更新包。</p>
-
-<pre><code>rpm -ivh nginx-release-centos-7-0.el7.ngx.noarch.rpm (这个文件从nginx官网下载的) 
-yum install nginx （一定先下载上面那个rpm，确保安装最新的nginx稳定版并且进行了包校验）
-</code></pre>
-
-<p>检查安装的版本：</p>
-
-<pre><code>nginx -V 
-</code></pre>
-
-<p>打开80端口：</p>
-
-<pre><code>firewall-cmd --add-service=http --permanent 
-firewall-cmd —reload 
-</code></pre>
-
-<p>启动服务：</p>
-
-<pre><code>systemctl enable nginx.service
-systemctl start nginx.service
-systemctl restart nginx.service
-
-nginx 启动nginx
-nginx -s reload 重启nginx
-</code></pre>
-
-<p>然后检测是否安装成功。</p>
-
-<h2 id="toc_1">配置</h2>
+		  	<h2 id="toc_0">因素</h2>
 
 <ol>
-<li>worker_processes auto nginx进程数，建议按照cpu核数来指定。2个4核cpu时计为8. auto 将自动检测cpu核数。</li>
-<li>worker_rlimit_nofile 65535; 这个指令是指一个nginx进程打开的最多文件描述符数目，理论值应该是最多打开文件数（ulimit -n)与nginx进程数相除，但是nginx分配请求并不是那么均匀，所以最好与 ulimit -n 的值保持一致。 现在在 linux2.6内核下进程最大打开文件数为65535，所以 worker_rlimit_nofile 就相应应该填写65535. 这是因为 nginx 调度时分配请求到进程并不是那么均衡，所以加入填写10240，总并发量达到3-4万时就有进程可能超过10240，这是就会返回502错误。</li>
-<li>use epoll; nginx自动选择最高效的连接处理方法。这个不需要指定。</li>
-<li>worker_connections number; 每个 worker_process 可以同时打开的最大连接数。理论上每台nginx服务器的最大连接数为 worker_processes*worker_connections。
-还有 fastcgi , https 等等</li>
+<li>mysql5.7是最新版本，支持很多新的特性，如：json数据类型</li>
+<li>阿里云目前支持mysql5.6，mysql5.5语法。</li>
+<li>mysql创始人后来发行的 mariadb，还没有原生支持 json。</li>
 </ol>
 
-<h2 id="toc_2">nginx的高性能指标</h2>
+<h2 id="toc_1">选择</h2>
 
-<p>每秒处理请求数1000以上。（SAE每秒处理请求数是5000）<br/>
-每个请求的处理时间：100毫秒以下。</p>
-
-<h2 id="toc_3">如何评测</h2>
-
-<pre><code>ab -n 10000 -c 100 http://www.yourdomain.com/
-</code></pre>
-
-<h2 id="toc_4">问题排查</h2>
-
-<p>多看日志</p>
+<p>先选择兼容阿里云的mysql5.6吧。本机上选择 mariadb 吧。</p>
 
 
 		</div>
@@ -182,14 +139,26 @@ nginx -s reload 重启nginx
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
 	        
-	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -202,31 +171,31 @@ nginx -s reload 重启nginx
 	  
 	      
 		      <li class="post">
-		        <a href="14798983960110.html">saltstack实践</a>
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798980187717.html">浏览器缓存机制</a>
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="redis-safe.html">redis 安全</a>
+		        <a href="14809496478909.html">laravel 安装</a>
 		      </li>
 	     
 	  

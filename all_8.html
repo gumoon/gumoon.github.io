@@ -73,7 +73,7 @@ $(document).ready(function(event) {
 
   <li id=""><a target="_self" href="archives.html">归档</a></li>
 
-  <li id=""><a target="_self" href="about.html">关于我</a></li>
+  <li id=""><a target="_self" href="about.html">关于</a></li>
 
 </ul>
 
@@ -84,29 +84,36 @@ $(document).ready(function(event) {
 
 	<article>
 		 <header>
-		  	<h1 class="entry-title"><a href="php-gd.html">php 安装 gd 扩展</a></h1>
-			<p class="meta"><time datetime="2016-11-23T11:15:13+08:00" 
-			pubdate data-updated="true">2016/11/23</time></p>
+		  	<h1 class="entry-title"><a href="14807776698633.html">laravel Eloquent ORM</a></h1>
+			<p class="meta"><time datetime="2016-12-03T23:07:49+08:00" 
+			pubdate data-updated="true">2016/12/3</time></p>
 		 </header>
 	  	<div class="entry-content">
 		  	
-		  	<pre><code>yum install libwebp.x86_64 libwebp-devel.x86_64 libwebp-tools.x86_64
-yum install libjpeg-turbo-devel.x86_64 libjpeg-turbo-static.x86_64 libjpeg-turbo.x86_64 libjpeg-turbo-utils.x86_64
-yum install libpng.x86_64 libpng-devel.x86_64 libpng-static.x86_64
-yum install libXpm.x86_64 libXpm-devel.x86_64
-yum install freetype-devel.x86_64 freetype.x86_64
+		  	<p>ORM<br/>
+跟数据库表对应起来的ORM。跟业务逻辑还没有什么关系。在它之上可以再封装一下业务逻辑给controller用。<br/>
+文件都存放到 <code>app/Model</code> 目录下吧。</p>
 
-./configure --with-freetype-dir=/usr/lib64 --with-jpeg-dir=/usr/lib64
-make
-make install
+<p>创建 Model， 只是创建到了 app 目录下，如果能直接创建到 Model 目录下就好了。</p>
+
+<pre><code>php artisan make:model User
+php artisan make:model User -m
+php artisan make:model User --migration
 </code></pre>
 
-<p>gd扩展应该在编译php的时候编译进去。当然，得先安装图片类库。<br/>
-如果gd扩展在编译php的时候就编译进去了，那么，就不需要增加 extension=gd.so 了。</p>
+<p>假设默认的表名是 model类名的复数。除非显示指定。<br/>
+假设默认的主键是<code>id</code>,除非显示指定。<br/>
+假设主键是自增的整数。如果不是，请设置 \(incrementing 属性为 false。<br/>
+假设表存在 ``created_at`` 和 ``updated_at`` 列。如果没有，设置 \)timestamps 属性为false。<br/>
+需要自定义时间戳格式，请使用 \(dataFormat 属性。<br/>
+默认使用默认的数据库连接，除非设置了 \)connection 属性。</p>
 
-<p>make clean</p>
-
-<p>./configure 后面的选项非常重要，如果没加，就没有那几种图片文件生成支持。</p>
+<pre><code>protected $table = &#39;xxx&#39;;
+protected $primaryKey = &#39;xx&#39;;
+protected $incrementing = false;
+protected $timestamps = false;
+protected $connection = &#39;connection-name&#39;;
+</code></pre>
 
 
 		</div>
@@ -145,14 +152,26 @@ make install
 	      </li>
 	  
 	      <li class="post">
-	        <a href="technology.html"><strong>技术文档&nbsp;(30)</strong></a>
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
 	         <p class="cat-children-p"> 
 	        
 	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
 	        
-	        	<a href="yunwei.html">运维&nbsp;(11)</a>&nbsp;&nbsp;
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
 	        
-	        	<a href="web.html">web&nbsp;(2)</a>&nbsp;&nbsp;
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
 	        
 	         </p> 
 	      </li>
@@ -165,31 +184,31 @@ make install
 	  
 	      
 		      <li class="post">
-		        <a href="14798983960110.html">saltstack实践</a>
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798980187717.html">浏览器缓存机制</a>
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798974234237.html">YSlow性能优化指导</a>
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="14798739132293.html">从零开始配置阿里云ECS</a>
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
 		      </li>
 	     
 	  
 	      
 		      <li class="post">
-		        <a href="redis-safe.html">redis 安全</a>
+		        <a href="14809496478909.html">laravel 安装</a>
 		      </li>
 	     
 	  

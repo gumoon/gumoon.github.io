@@ -1,0 +1,443 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>
+    
+  php - 自由学习网
+  
+
+  </title>
+  <meta name="author" content="gumoon">
+  <meta name="description" content="积累、思考、成长、分享、厚积薄发、学以致用">
+
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link href="asset/css/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="atom.xml" rel="alternate" title="自由学习网" type="application/atom+xml">
+  <script src="asset/js/modernizr-2.0.js"></script>
+  <script src="asset/js/jquery.min.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/solarized_light.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <style type="text/css">
+  .cat-children-p{ padding: 6px 0px;}
+  .hljs{background: none;}
+  </style>
+  <script type="text/javascript">
+  var isAddSildbar = true;
+  </script>
+  <script src="asset/js/octopress.js" type="text/javascript"></script>
+</head>
+<script type="text/javascript">
+//链接新开窗口
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+$(document).ready(function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="index.html">自由学习网</a></h1>
+  
+    <h2>积累、思考、成长、分享、厚积薄发、学以致用</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="wd" value="site:www.free-abc.com.cn" />
+    <input class="search" type="text" name="wd" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+
+  <li id=""><a target="_self" href="index.html">首页</a></li>
+
+  <li id=""><a target="_self" href="archives.html">归档</a></li>
+
+  <li id=""><a target="_self" href="about.html">关于</a></li>
+
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content"> 
+<div class="blog-index">
+
+	<article>
+		 <header>
+		  	<h1 class="entry-title"><a href="14808216901864.html">laravel console command</a></h1>
+			<p class="meta"><time datetime="2016-12-04T11:21:30+08:00" 
+			pubdate data-updated="true">2016/12/4</time></p>
+		 </header>
+	  	<div class="entry-content">
+		  	
+		  	<h2 id="toc_0">控制台命令</h2>
+
+<p>原则：功能单一化，有利于被重用。</p>
+
+<p>一个控制台命令，包含哪些属性呢？</p>
+
+<ul>
+<li><p>管理所有命令的管理器</p>
+
+<ul>
+<li>可用命令列表</li>
+<li>查看命令帮助文档</li>
+<li>创建单个命令脚手架的命令</li>
+<li>命令代码（可执行文件）存放在哪个目录</li>
+<li>注册一个新的命令到管理器</li>
+<li>命令如何互相调用，如何控制互相调用引发的输出</li>
+<li>命令如何被非CLI程序调用</li>
+<li>系统命令和用户自定义命令区分</li>
+<li>如何修改系统命令</li>
+</ul></li>
+<li><p>单个命令</p>
+
+<ul>
+<li>创建方法</li>
+<li>命令代码结构</li>
+<li>如何定义命令名</li>
+<li>如何定义帮助文档</li>
+<li>如何定义参数名</li>
+<li>如何定义多个参数</li>
+<li>如何为参数指定默认值</li>
+<li>如何定义选项名</li>
+<li>如何定义多个选项</li>
+<li>如何定义选项默认值</li>
+<li>代码里如何获取参数值</li>
+<li>代码里如何获取选项值</li>
+<li>如何输出信息</li>
+</ul></li>
+</ul>
+
+<h2 id="toc_1">下面来看看，laravel是如何支持控制台命令的：</h2>
+
+<h3 id="toc_2">laravel的命令行管理器是: artisan.</h3>
+
+<ul>
+<li>查看有哪些可用的命令：<code>php artisan list</code></li>
+<li>查看命令的帮助：<code>php artisan help migrate</code></li>
+<li>创建单个命令的脚手架：<code>php artisan make:command SendEmails</code></li>
+<li>命令代码存放目录：<code>app/Console/Commands</code></li>
+<li>注册一个新的命令到管理器：设置<code>app/Console/Kernel.php</code> 文件的 <code>commands</code>属性</li>
+<li>命令之间互相调用：</li>
+</ul>
+
+<pre><code>public function handle()
+{
+    $this-&gt;call(&#39;email:send&#39;, [
+        &#39;user&#39; =&gt; 1, &#39;--queue&#39; =&gt; &#39;default&#39;
+    ]);
+
+    //
+}
+
+//屏蔽该输出
+$this-&gt;callSilent(&#39;email:send&#39;, [
+    &#39;user&#39; =&gt; 1, &#39;--queue&#39; =&gt; &#39;default&#39;
+]);
+</code></pre>
+
+<ul>
+<li>命令如何被其他非CLI调用：</li>
+</ul>
+
+<pre><code>Route::get(&#39;/foo&#39;, function () {
+    $exitCode = Artisan::call(&#39;email:send&#39;, [
+        &#39;user&#39; =&gt; 1, &#39;--queue&#39; =&gt; &#39;default&#39;
+    ]);
+
+    //
+});
+
+//后台执行
+Route::get(&#39;/foo&#39;, function () {
+    Artisan::queue(&#39;email:send&#39;, [
+        &#39;user&#39; =&gt; 1, &#39;--queue&#39; =&gt; &#39;default&#39;
+    ]);
+
+    //
+});
+
+//不接受值的选项设置
+$exitCode = Artisan::call(&#39;migrate:refresh&#39;, [
+    &#39;--force&#39; =&gt; true,
+]);
+</code></pre>
+
+<ul>
+<li>系统命令和用户自定义命令，如何修改？
+系统命令定义在：<code>Illuminate\Foundation\Console</code> 目录下。（通过搜索 <code>make:model</code>关键词找到的。</li>
+</ul>
+
+<p>各个包可以遵循 laravel command规则写的命令。<br/>
+要修改他们的话，就去对应的包的相应目录下修改即可。</p>
+
+<h3 id="toc_3">单个命令</h3>
+
+<ul>
+<li><p>命令创建方法：</p>
+
+<ol>
+<li>脚手架命令（或者自己按照约定写脚手架）</li>
+<li>闭包</li>
+</ol></li>
+<li><p>命令代码结构:<br/>
+<code>signature</code>, <code>description</code>, <code>handle()</code><br/>
+支持在构造器注入依赖。</p></li>
+<li><p>如何定义命令名？</p></li>
+<li><p>使用 <code>signature</code> 参数</p></li>
+<li><p>在路由中直接使用 <code>Artisan::command()</code>方法。第一个参数就是命令名。</p></li>
+<li><p>如何定义参数，选项？<br/>
+使用 <code>signature</code> 属性定义参数和选项。<br/>
+使用 <code>description</code> 属性定义帮助文档。</p></li>
+</ul>
+
+<pre><code>protected $signature = &#39;email:send&#39;; //命令
+protected $signature = &#39;email:send {user}&#39;; //命令带必须的参数
+protected $signature = &#39;email:send {user?}&#39;; //命令带可选参数
+protected $signature = &#39;email:send {user=foo}&#39;; //命令带必须的参数，但有默认值
+protected $signature = &#39;email:send {user} {--queue}&#39;; //命令带必须的参数，可选选项
+protected $signature = &#39;email:send {user} {--queue=}&#39;; //命令带必须的参数，可选选项，若带选项，必须指定值
+protected $signature = &#39;email:send {user} {--queue=default}&#39;; //命令带必须的参数，可选选项，如果传递了选项，但没有指定值，则使用默认值
+protected $signature = &#39;email:send {user} {--Q|queue}&#39;; //命令带必须的参数，可选选项, 支持简写形式的选项
+email:send {user*} //参数数组
+email:send {user} {--id=*} //选项数组
+protected $signature = &#39;email:send
+                        {user : The ID of the user}
+                        {--queue= : Whether the job should be queued}&#39;;
+                        //参数和选项描述
+</code></pre>
+
+<ul>
+<li>获取参数和选项：</li>
+</ul>
+
+<pre><code>$userId = $this-&gt;argument(&#39;user&#39;); //检索单个参数值
+$arguments = $this-&gt;arguments(); //所有参数值
+$queueName = $this-&gt;option(&#39;queue&#39;); //单个选项值
+$options = $this-&gt;options(); //所有选项值
+当参数或者选项不存在时，返回 null.
+$name = $this-&gt;ask(&#39;What is your name?&#39;); //提示用户输入
+$password = $this-&gt;secret(&#39;What is the password?&#39;); //提示用户输入密码
+if ($this-&gt;confirm(&#39;Do you wish to continue?&#39;)) {
+    //
+} // 提示用户确认
+$name = $this-&gt;anticipate(&#39;What is your name?&#39;, [&#39;Taylor&#39;, &#39;Dayle&#39;]); //自动完成
+$name = $this-&gt;choice(&#39;What is your name?&#39;, [&#39;Taylor&#39;, &#39;Dayle&#39;], $default); //提示用户选择，并且给出默认值
+</code></pre>
+
+<ul>
+<li>如何输出命令信息：</li>
+</ul>
+
+<p><strong>单行文本</strong></p>
+
+<pre><code>public function handle()
+{
+    $this-&gt;info(&#39;Display this on the screen&#39;);
+}
+
+$this-&gt;error(&#39;Something went wrong!&#39;);
+$this-&gt;line(&#39;Display this on the screen&#39;);
+
+还有  comment() , question() 方法输出。
+</code></pre>
+
+<p><strong>表格</strong></p>
+
+<pre><code>$headers = [&#39;Name&#39;, &#39;Email&#39;];
+
+$users = App\User::all([&#39;name&#39;, &#39;email&#39;])-&gt;toArray();
+
+$this-&gt;table($headers, $users);
+</code></pre>
+
+<p><strong>进度条</strong></p>
+
+<pre><code>$users = App\User::all();
+
+$bar = $this-&gt;output-&gt;createProgressBar(count($users));
+
+foreach ($users as $user) {
+    $this-&gt;performTask($user);
+
+    $bar-&gt;advance();
+}
+
+$bar-&gt;finish();
+</code></pre>
+
+
+		</div>
+
+		
+
+	</article>
+  
+	<div class="pagination">
+	 <a class="prev" href="php_5.html">&larr; Older</a> 
+<a href="archives.html">Blog Archives</a>
+	 <a class="next" href="php_3.html">Newer &rarr;</a>  
+	    
+	</div>
+</div>
+ <aside class="sidebar"> 
+
+	<section>
+	  <h1>分类</h1>
+	  <ul id="recent_posts">
+	  
+	      <li class="post">
+	        <a href="translate.html"><strong>翻译文档&nbsp;(7)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="stetch.html">stetch&nbsp;(7)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	  
+	      <li class="post">
+	        <a href="history.html"><strong>历史&nbsp;(1)</strong></a>
+	        
+	        
+	        
+	      </li>
+	  
+	      <li class="post">
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
+	        
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	   
+	  </ul>
+	</section>
+	<section>
+	  <h1>最新发布</h1>
+	  <ul id="recent_posts">
+	  
+	      
+		      <li class="post">
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14809496478909.html">laravel 安装</a>
+		      </li>
+	     
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	   
+	  </ul>
+	</section>
+	
+</aside> </div></div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 -  -
+  <span class="credit">Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; Theme by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+
+  
+    
+
+<script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?831fc9a0be36b03335a3f24dda056e34";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</body>
+</html>
