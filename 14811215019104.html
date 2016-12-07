@@ -263,7 +263,11 @@ chsh -s /usr/bin/zsh
 
 <h2 id="toc_7">安装云监控插件</h2>
 
-<pre><code>
+<pre><code>sudo bash -c &quot;wget -e &#39;http_proxy=hzcmsproxy.aliyun.com:3128&#39; -O /tmp/cloudmonitor.tar.gz &#39;http://cms-download.aliyun.com/release/1.1.24/linux64/agent-linux64-1.1.24-package.tar.gz&#39; &amp;&amp; \
+mkdir /usr/local/cloudmonitor &amp;&amp; \
+tar -xf  /tmp/cloudmonitor.tar.gz -C /usr/local/cloudmonitor &amp;&amp; \
+/usr/local/cloudmonitor/wrapper/bin/cloudmonitor.sh install &amp;&amp; \
+/usr/local/cloudmonitor/wrapper/bin/cloudmonitor.sh start&quot;
 </code></pre>
 
 			</div>
