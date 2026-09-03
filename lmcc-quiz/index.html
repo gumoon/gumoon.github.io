@@ -322,6 +322,30 @@ body {
   font-family: "SF Mono", Monaco, monospace;
   font-size: 0.9em;
 }
+.question-text pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 14px 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin: 12px 0;
+}
+.question-text pre code {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+}
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: "SF Mono", Monaco, monospace;
+  font-size: 0.9em;
+}
 .options-list {
   display: flex;
   flex-direction: column;
@@ -954,13 +978,61 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+function isCodeLine(line) {
+  var trimmed = line.trim();
+  if (!trimmed) return false;
+  var patterns = [
+    /^import\s/, /^from\s/, /^def\s/, /^class\s/,
+    /^if\s/, /^for\s/, /^while\s/, /^return/,
+    /^try:/, /^except/, /^elif\s/, /^else:/,
+    /^#\s/, /^"""/, /^'''/, /^________/,
+    /^[a-zA-Z_][a-zA-Z0-9_]*\s*=/,
+    /^[a-zA-Z_][a-zA-Z0-9_]*\.__/, /^torch\./, /^nn\./, /^F\./,
+    /^top_/, /^sorted_/, /^probs_/, /^cumulative_/, /^min_/, /^scaled_/,
+    /^logits/, /^temperature/, /^sample_/
+  ];
+  for (var i = 0; i < patterns.length; i++) {
+    if (patterns[i].test(trimmed)) return true;
+  }
+  // 行首有缩进（至少2个空格）
+  if (/^\s{2,}/.test(line)) return true;
+  return false;
+}
+
+function formatQuestionText(text) {
+  var escaped = escapeHtml(text);
+  var lines = escaped.split('\n');
+  var result = [];
+  var codeBuffer = [];
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+    if (isCodeLine(line)) {
+      codeBuffer.push(line);
+    } else {
+      if (codeBuffer.length > 0) {
+        result.push('<pre><code>' + codeBuffer.join('\n') + '</code></pre>');
+        codeBuffer = [];
+      }
+      result.push(line);
+    }
+  }
+  if (codeBuffer.length > 0) {
+    result.push('<pre><code>' + codeBuffer.join('\n') + '</code></pre>');
+  }
+  return result.join('<br>');
+}
+  var div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 function renderQuizQuestion() {
   var q = filteredQuestions[currentIndex];
   document.getElementById('quizCurrentNum').textContent = currentIndex + 1;
   document.getElementById('quizQNum').textContent = currentIndex + 1;
   document.getElementById('quizQCategory').textContent = q.category;
   document.getElementById('quizProgressFill').style.width = ((currentIndex + 1) / filteredQuestions.length * 100) + '%';
-  document.getElementById('quizQText').innerHTML = escapeHtml(q.question).replace(/\n/g, '<br>');
+  document.getElementById('quizQText').innerHTML = formatQuestionText(q.question);
 
   var optsContainer = document.getElementById('quizOptionsList');
   optsContainer.innerHTML = '';
@@ -1090,7 +1162,7 @@ function renderExamQuestion() {
   document.getElementById('examQNum').textContent = examCurrentIdx + 1;
   document.getElementById('examQCategory').textContent = q.category;
   document.getElementById('examProgressFill').style.width = ((examCurrentIdx + 1) / 20 * 100) + '%';
-  document.getElementById('examQText').innerHTML = escapeHtml(q.question).replace(/\n/g, '<br>');
+  document.getElementById('examQText').innerHTML = formatQuestionText(q.question);
 
   var optsContainer = document.getElementById('examOptionsList');
   optsContainer.innerHTML = '';
@@ -1234,7 +1306,7 @@ function showWrongNotebook() {
       var border = l === q.answer ? 'var(--success)' : 'var(--border)';
       optsHtml += '<div style="padding:8px;border-radius:8px;background:' + bg + ';border:1px solid ' + border + ';"><strong>' + l + '.</strong> ' + escapeHtml(q.options[l]).slice(0, 80) + '</div>';
     }
-    html += '<div class="wrong-item"><div class="wrong-item-header" onclick="this.parentElement.classList.toggle(\'expanded\')"><span><strong>#' + (i+1) + '</strong> ' + qText + '</span><span style="display:flex;gap:8px;align-items:center;"><span class="category-badge">' + q.category + '</span><button class="btn btn-danger btn-sm" style="padding:4px 10px;font-size:0.75rem;" onclick="event.stopPropagation();removeWrong(currentUser,' + qIdx + ');showWrongNotebook();">移除</button></span></div><div class="wrong-item-body"><div style="font-weight:600;margin-bottom:10px;">' + escapeHtml(q.question).replace(/\n/g, '<br>') + '</div><div style="margin-bottom:8px;">正确答案：<strong style="color:var(--success)">' + q.answer + '</strong></div><div style="background:#eff6ff;padding:12px;border-radius:8px;margin-bottom:10px;">' + escapeHtml(q.explanation).replace(/\n/g, '<br>') + '</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">' + optsHtml + '</div></div></div>';
+    html += '<div class="wrong-item"><div class="wrong-item-header" onclick="this.parentElement.classList.toggle(\'expanded\')"><span><strong>#' + (i+1) + '</strong> ' + qText + '</span><span style="display:flex;gap:8px;align-items:center;"><span class="category-badge">' + q.category + '</span><button class="btn btn-danger btn-sm" style="padding:4px 10px;font-size:0.75rem;" onclick="event.stopPropagation();removeWrong(currentUser,' + qIdx + ');showWrongNotebook();">移除</button></span></div><div class="wrong-item-body"><div style="font-weight:600;margin-bottom:10px;">' + formatQuestionText(q.question) + '</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">' + optsHtml + '</div></div></div>';
   }
   html += '</div>';
   container.innerHTML = html;
