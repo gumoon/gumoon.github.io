@@ -331,7 +331,19 @@ const QUESTIONS = [
       "D": "FSDP 主要用于加速模型的推理速度，而非训练速度"
     },
     "answer": "A",
-    "explanation": "A 正确：FSDP（如 ZeRO-3 的实现）是数据并行的一种高\n级形式，它将模型状态（参数、梯度、优化器状态）在所有\n数据并行副本之间进行分片，从而使每个GPU 只需要存储\n模型状态的一小部分，显著降低了显存需求。\n：\n题目\n在分布式训练中，通信开销（Communication Overhead）是\n影响训练速度的关键瓶颈之一。以下哪项技术不是主要用于\n减少通信开销的？\nA. Gradient Checkpointing（梯度检查点）\nB. All-Reduce 算法优化（如Ring All-Reduce）\nC. ZeRO 优化器（特别是ZeRO-2/3）\nD. Token Compression（词元压缩）\n答案：A\n解析：\nA错误：Gradient Checkpointing 主要目的是减少显存占用，\n通过重计算来换取显存，它不会减少通信开销，反而可能因\n为引入额外的计算图而间接增加一些同步开销。\nB、C、D 都是通信优化的范畴：All-Reduce 是高效的聚合\n梯度通信算法；ZeRO 通过分片减少了需要传输的梯度和参\n数量；Token Compression 理论上可以减少需要传输的 token\n数量（如果是在模型间传输某些中间表示）。\n指令微调",
+    "explanation": "A 正确：FSDP（如 ZeRO-3 的实现）是数据并行的一种高\n级形式，它将模型状态（参数、梯度、优化器状态）在所有\n数据并行副本之间进行分片，从而使每个GPU 只需要存储\n模型状态的一小部分，显著降低了显存需求。",
+    "category": "预训练技术"
+  },
+  {
+    "question": "在分布式训练中，通信开销（Communication Overhead）是\n影响训练速度的关键瓶颈之一。以下哪项技术不是主要用于\n减少通信开销的？",
+    "options": {
+      "A": "Gradient Checkpointing（梯度检查点）",
+      "B": "All-Reduce 算法优化（如Ring All-Reduce）",
+      "C": "ZeRO 优化器（特别是ZeRO-2/3）",
+      "D": "Token Compression（词元压缩）"
+    },
+    "answer": "A",
+    "explanation": "A错误：Gradient Checkpointing 主要目的是减少显存占用，\n通过重计算来换取显存，它不会减少通信开销，反而可能因\n为引入额外的计算图而间接增加一些同步开销。\nB、C、D 都是通信优化的范畴：All-Reduce 是高效的聚合\n梯度通信算法；ZeRO 通过分片减少了需要传输的梯度和参\n数量；Token Compression 理论上可以减少需要传输的 token\n数量（如果是在模型间传输某些中间表示）。\n指令微调",
     "category": "预训练技术"
   },
   {
