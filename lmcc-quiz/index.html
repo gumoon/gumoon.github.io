@@ -315,16 +315,16 @@ body {
   white-space: pre-wrap;
 }
 .question-text code {
-  background: #1e293b;
-  color: #e2e8f0;
+  background: #f1f5f9;
+  color: #334155;
   padding: 2px 6px;
   border-radius: 4px;
   font-family: "SF Mono", Monaco, monospace;
   font-size: 0.9em;
 }
 .question-text pre {
-  background: #1e293b;
-  color: #e2e8f0;
+  background: #f8f9fa;
+  color: #1a1a2e;
   padding: 14px 16px;
   border-radius: 8px;
   overflow-x: auto;
@@ -332,19 +332,13 @@ body {
   font-size: 0.85rem;
   line-height: 1.6;
   margin: 12px 0;
+  border: 1px solid #e5e7eb;
 }
 .question-text pre code {
   background: transparent;
   padding: 0;
   border-radius: 0;
   font-size: inherit;
-}
-  background: #1e293b;
-  color: #e2e8f0;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: "SF Mono", Monaco, monospace;
-  font-size: 0.9em;
 }
 .options-list {
   display: flex;
@@ -981,21 +975,29 @@ function escapeHtml(text) {
 function isCodeLine(line) {
   var trimmed = line.trim();
   if (!trimmed) return false;
+  // 纯中文行（不含英文字母）直接排除
+  if (!/[a-zA-Z]/.test(trimmed)) return false;
+  // 中文占比过高的行排除
+  var cnCount = (trimmed.match(/[\u4e00-\u9fa5]/g) || []).length;
+  if (cnCount > 0 && cnCount / trimmed.length > 0.6) return false;
   var patterns = [
     /^import\s/, /^from\s/, /^def\s/, /^class\s/,
-    /^if\s/, /^for\s/, /^while\s/, /^return/,
+    /^if\s/, /^for\s/, /^while\s/, /^return\s/,
     /^try:/, /^except/, /^elif\s/, /^else:/,
     /^#\s/, /^"""/, /^'''/, /^________/,
     /^[a-zA-Z_][a-zA-Z0-9_]*\s*=/,
     /^[a-zA-Z_][a-zA-Z0-9_]*\.__/, /^torch\./, /^nn\./, /^F\./,
     /^top_/, /^sorted_/, /^probs_/, /^cumulative_/, /^min_/, /^scaled_/,
-    /^logits/, /^temperature/, /^sample_/
+    /^logits\s*\[/, /^temperature\s*=/, /^sample_/
   ];
   for (var i = 0; i < patterns.length; i++) {
     if (patterns[i].test(trimmed)) return true;
   }
-  // 行首有缩进（至少2个空格）
-  if (/^\s{2,}/.test(line)) return true;
+  // 行首有缩进（至少2个空格），但排除中文占比高的行
+  if (/^\s{2,}/.test(line)) {
+    if (cnCount > 0 && cnCount / trimmed.length > 0.4) return false;
+    return true;
+  }
   return false;
 }
 
