@@ -577,7 +577,7 @@ body {
     <div class="auth-screen card">
       <h2>欢迎</h2>
       <p>输入昵称即可开始刷题，昵称唯一，先到先得</p>
-      <input type="text" class="auth-input" id="nicknameInput" placeholder="请输入昵称" maxlength="20">
+      <input type="text" class="auth-input" id="nicknameInput" placeholder="请输入昵称，字母开头，仅含字母和数字" maxlength="50">
       <div class="auth-error" id="authError"></div>
       <button class="btn btn-primary" style="width:100%;" onclick="handleAuth()">进入刷题</button>
     </div>
@@ -835,7 +835,13 @@ function handleAuth() {
   var error = document.getElementById('authError');
   var name = input.value.trim();
   if (!name) { error.textContent = '请输入昵称'; return; }
-  if (name.length > 20) { error.textContent = '昵称不能超过20个字符'; return; }
+  if (name.length > 50) { error.textContent = '昵称不能超过50个字符'; return; }
+  // 必须以字母开头（支持中英文等Unicode字母），只能包含字母和数字
+  var validRegex = /^[\p{L}][\p{L}\p{N}]*$/u;
+  if (!validRegex.test(name)) {
+    error.textContent = '昵称需以字母开头，且仅包含字母和数字';
+    return;
+  }
   var users = getUsers();
   if (!users.includes(name)) {
     users.push(name);
