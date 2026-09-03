@@ -1021,10 +1021,6 @@ function formatQuestionText(text) {
   }
   return result.join('<br>');
 }
-  var div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
 
 function renderQuizQuestion() {
   var q = filteredQuestions[currentIndex];
