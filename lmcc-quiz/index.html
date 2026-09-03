@@ -1,722 +1,261 @@
+
 <!DOCTYPE html>
-<html lang="zh-CN">
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js"><!--<![endif]-->
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LMCC 大模型能力认证 - 在线刷题</title>
-<style>
-:root {
-  --bg: #f5f7fa;
-  --card: #ffffff;
-  --text: #1a1a2e;
-  --text-secondary: #6b7280;
-  --primary: #4f46e5;
-  --primary-light: #e0e7ff;
-  --success: #10b981;
-  --success-light: #d1fae5;
-  --danger: #ef4444;
-  --danger-light: #fee2e2;
-  --warning: #f59e0b;
-  --warning-light: #fef3c7;
-  --border: #e5e7eb;
-  --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-  min-height: 100vh;
-}
-.container { max-width: 800px; margin: 0 auto; padding: 20px; }
+  <meta charset="utf-8">
+  <title>
+    
+  自由学习网
+  
 
-/* Header */
-.header {
-  text-align: center;
-  padding: 40px 20px 20px;
-}
-.header h1 {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--primary);
-  margin-bottom: 8px;
-}
-.header p { color: var(--text-secondary); font-size: 1rem; }
+  </title>
+  <meta name="author" content="gumoon">
+  <meta name="description" content="积累、思考、成长、分享、厚积薄发、学以致用">
 
-/* Cards */
-.card {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: var(--shadow);
-  margin-bottom: 16px;
-}
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link href="asset/css/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="atom.xml" rel="alternate" title="自由学习网" type="application/atom+xml">
+  <script src="asset/js/modernizr-2.0.js"></script>
+  <script src="asset/js/jquery.min.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/solarized_light.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
 
-/* Start Screen */
-.start-screen .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
-  margin: 20px 0;
-}
-.stat-item {
-  background: var(--primary-light);
-  color: var(--primary);
-  padding: 16px;
-  border-radius: 12px;
-  text-align: center;
-}
-.stat-item .number { font-size: 1.5rem; font-weight: 700; }
-.stat-item .label { font-size: 0.85rem; opacity: 0.9; }
-
-.category-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 16px 0;
-}
-.category-chip {
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: 2px solid var(--border);
-  background: var(--card);
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-  user-select: none;
-}
-.category-chip:hover { border-color: var(--primary); }
-.category-chip.active {
-  background: var(--primary);
-  color: white;
-  border-color: var(--primary);
-}
-
-.settings-row {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  margin: 12px 0;
-  flex-wrap: wrap;
-}
-.settings-row label { font-weight: 500; }
-.settings-row input[type="number"] {
-  width: 80px;
-  padding: 8px 12px;
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  font-size: 1rem;
-}
-.settings-row input[type="checkbox"] {
-  width: 20px; height: 20px; cursor: pointer;
-}
-
-.btn {
-  display: inline-block;
-  padding: 14px 32px;
-  border-radius: 12px;
-  border: none;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-align: center;
-}
-.btn-primary {
-  background: var(--primary);
-  color: white;
-  box-shadow: var(--shadow);
-}
-.btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-.btn-secondary {
-  background: var(--border);
-  color: var(--text);
-}
-.btn-secondary:hover { background: #d1d5db; }
-.btn-success { background: var(--success); color: white; }
-.btn-danger { background: var(--danger); color: white; }
-
-/* Quiz Screen */
-.quiz-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.quiz-header .category-badge {
-  background: var(--primary-light);
-  color: var(--primary);
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-.progress-bar {
-  height: 8px;
-  background: var(--border);
-  border-radius: 4px;
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-.progress-bar .fill {
-  height: 100%;
-  background: var(--primary);
-  border-radius: 4px;
-  transition: width 0.3s ease;
-}
-.progress-text {
-  text-align: right;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
-}
-
-.question-card {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: var(--shadow);
-}
-.question-number {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
-}
-.question-text {
-  font-size: 1.15rem;
-  font-weight: 600;
-  margin-bottom: 20px;
-  line-height: 1.7;
-  white-space: pre-wrap;
-}
-.question-text code {
-  background: #1e293b;
-  color: #e2e8f0;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: "SF Mono", Monaco, monospace;
-  font-size: 0.9em;
-}
-.question-text pre {
-  background: #1e293b;
-  color: #e2e8f0;
-  padding: 16px;
-  border-radius: 8px;
-  overflow-x: auto;
-  margin: 12px 0;
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-.question-text pre code {
-  background: transparent;
-  padding: 0;
-}
-
-.options-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.option {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 14px 16px;
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-  background: var(--card);
-}
-.option:hover:not(.disabled) {
-  border-color: var(--primary);
-  background: var(--primary-light);
-}
-.option .opt-letter {
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  border-radius: 50%;
-  background: var(--bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-}
-.option .opt-text {
-  flex: 1;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  white-space: pre-wrap;
-}
-.option .opt-text code {
-  background: #1e293b;
-  color: #e2e8f0;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: "SF Mono", Monaco, monospace;
-  font-size: 0.85em;
-}
-.option.selected {
-  border-color: var(--primary);
-  background: var(--primary-light);
-}
-.option.selected .opt-letter {
-  background: var(--primary);
-  color: white;
-}
-.option.correct {
-  border-color: var(--success);
-  background: var(--success-light);
-}
-.option.correct .opt-letter {
-  background: var(--success);
-  color: white;
-}
-.option.wrong {
-  border-color: var(--danger);
-  background: var(--danger-light);
-}
-.option.wrong .opt-letter {
-  background: var(--danger);
-  color: white;
-}
-.option.disabled { cursor: default; }
-
-.explanation {
-  margin-top: 20px;
-  padding: 16px;
-  background: #eff6ff;
-  border-left: 4px solid var(--primary);
-  border-radius: 0 8px 8px 0;
-  font-size: 0.95rem;
-  line-height: 1.7;
-  white-space: pre-wrap;
-}
-.explanation strong { color: var(--primary); }
-
-.quiz-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
-  gap: 12px;
-}
-
-/* Results Screen */
-.results-header {
-  text-align: center;
-  padding: 30px 20px;
-}
-.score-circle {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: conic-gradient(var(--success) calc(var(--score) * 1%), var(--border) 0);
-  margin: 0 auto 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-.score-circle::before {
-  content: '';
-  position: absolute;
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  background: var(--card);
-}
-.score-circle .score-text {
-  position: relative;
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--text);
-}
-.results-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin: 20px 0;
-}
-.result-stat {
-  text-align: center;
-  padding: 16px;
-  border-radius: 12px;
-}
-.result-stat.correct { background: var(--success-light); color: var(--success); }
-.result-stat.wrong { background: var(--danger-light); color: var(--danger); }
-.result-stat.total { background: var(--primary-light); color: var(--primary); }
-.result-stat .num { font-size: 1.5rem; font-weight: 700; }
-.result-stat .lbl { font-size: 0.85rem; }
-
-.review-section { margin-top: 20px; }
-.review-item {
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  margin-bottom: 12px;
-  overflow: hidden;
-}
-.review-item-header {
-  padding: 14px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  background: var(--card);
-}
-.review-item-header:hover { background: var(--bg); }
-.review-item-header .status {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-.review-item-header .status.correct { background: var(--success-light); color: var(--success); }
-.review-item-header .status.wrong { background: var(--danger-light); color: var(--danger); }
-.review-item-body {
-  padding: 16px;
-  background: var(--bg);
-  border-top: 1px solid var(--border);
-  display: none;
-}
-.review-item.expanded .review-item-body { display: block; }
-
-.hidden { display: none !important; }
-
-@media (max-width: 600px) {
-  .header h1 { font-size: 1.5rem; }
-  .card, .question-card { padding: 16px; }
-  .question-text { font-size: 1rem; }
-  .results-stats { grid-template-columns: 1fr; }
-}
-</style>
+  <style type="text/css">
+  .cat-children-p{ padding: 6px 0px;}
+  .hljs{background: none;}
+  </style>
+  <script type="text/javascript">
+  var isAddSildbar = true;
+  </script>
+  <script src="asset/js/octopress.js" type="text/javascript"></script>
 </head>
-<body>
-<div class="container">
-  <!-- Header -->
-  <div class="header">
-    <h1>LMCC 大模型能力认证</h1>
-    <p>CCF 大模型能力认证（LMCC）在线刷题 - 第一轮样题</p>
-  </div>
-
-  <!-- Start Screen -->
-  <div id="startScreen" class="start-screen">
-    <div class="card">
-      <h3 style="margin-bottom:12px;">题库概况</h3>
-      <div class="stats-grid" id="statsGrid"></div>
-      <div style="margin: 20px 0;">
-        <h4 style="margin-bottom:8px;">选择模块（可多选，不选则全部）</h4>
-        <div class="category-filters" id="categoryFilters"></div>
-      </div>
-      <div class="settings-row">
-        <label><input type="checkbox" id="shuffleCheck" checked> 随机顺序</label>
-        <label><input type="checkbox" id="immediateCheck" checked> 答完立即显示解析</label>
-      </div>
-      <div class="settings-row">
-        <label>题目数量：</label>
-        <input type="number" id="questionCount" value="113" min="1" max="113">
-        <span style="color:var(--text-secondary);font-size:0.9rem;">（最多 <span id="maxCount">113</span> 题）</span>
-      </div>
-      <div style="text-align:center;margin-top:24px;">
-        <button class="btn btn-primary" onclick="startQuiz()" style="font-size:1.1rem;padding:16px 48px;">开始刷题</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Quiz Screen -->
-  <div id="quizScreen" class="hidden">
-    <div class="progress-text"><span id="currentNum">1</span> / <span id="totalNum">113</span></div>
-    <div class="progress-bar"><div class="fill" id="progressFill" style="width:0%"></div></div>
-    <div class="question-card">
-      <div class="quiz-header">
-        <span class="question-number">第 <span id="qNum">1</span> 题</span>
-        <span class="category-badge" id="qCategory">模块</span>
-      </div>
-      <div class="question-text" id="qText"></div>
-      <div class="options-list" id="optionsList"></div>
-      <div class="explanation hidden" id="explanation"></div>
-      <div class="quiz-nav">
-        <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()">上一题</button>
-        <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">下一题</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Results Screen -->
-  <div id="resultsScreen" class="hidden">
-    <div class="card results-header">
-      <h2 style="margin-bottom:16px;">刷题完成！</h2>
-      <div class="score-circle" id="scoreCircle" style="--score:0">
-        <span class="score-text" id="scoreText">0%</span>
-      </div>
-      <div class="results-stats">
-        <div class="result-stat correct"><div class="num" id="correctCount">0</div><div class="lbl">正确</div></div>
-        <div class="result-stat wrong"><div class="num" id="wrongCount">0</div><div class="lbl">错误</div></div>
-        <div class="result-stat total"><div class="num" id="totalCount">0</div><div class="lbl">总计</div></div>
-      </div>
-      <div style="margin-top:20px;">
-        <button class="btn btn-primary" onclick="restartQuiz()">重新刷题</button>
-        <button class="btn btn-secondary" onclick="reviewWrong()">复习错题</button>
-      </div>
-    </div>
-    <div class="review-section hidden" id="reviewSection"></div>
-  </div>
-</div>
-
-<script src="questions.js"></script>
-<script>
-let allQuestions = QUESTIONS;
-let filteredQuestions = [];
-let currentIndex = 0;
-let userAnswers = {};
-let selectedCategories = new Set();
-let isImmediate = true;
-let isReviewMode = false;
-
-function init() {
-  renderStats();
-  renderCategories();
-}
-
-function renderStats() {
-  const cats = {};
-  allQuestions.forEach(q => { cats[q.category] = (cats[q.category]||0)+1; });
-  const grid = document.getElementById('statsGrid');
-  grid.innerHTML = `
-    <div class="stat-item"><div class="number">${allQuestions.length}</div><div class="label">总题数</div></div>
-    <div class="stat-item"><div class="number">${Object.keys(cats).length}</div><div class="label">模块数</div></div>
-    <div class="stat-item"><div class="number">${Object.entries(cats).sort((a,b)=>b[1]-a[1])[0][0].slice(0,4)}</div><div class="label">最多模块</div></div>
-  `;
-}
-
-function renderCategories() {
-  const cats = {};
-  allQuestions.forEach(q => { cats[q.category] = (cats[q.category]||0)+1; });
-  const container = document.getElementById('categoryFilters');
-  container.innerHTML = Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([cat,count]) =>
-    `<span class="category-chip" data-cat="${cat}" onclick="toggleCategory(this)">${cat} (${count})</span>`
-  ).join('');
-}
-
-function toggleCategory(el) {
-  const cat = el.dataset.cat;
-  if (selectedCategories.has(cat)) {
-    selectedCategories.delete(cat);
-    el.classList.remove('active');
-  } else {
-    selectedCategories.add(cat);
-    el.classList.add('active');
-  }
-  updateMaxCount();
-}
-
-function updateMaxCount() {
-  const max = selectedCategories.size > 0
-    ? allQuestions.filter(q => selectedCategories.has(q.category)).length
-    : allQuestions.length;
-  document.getElementById('maxCount').textContent = max;
-  const input = document.getElementById('questionCount');
-  input.max = max;
-  if (parseInt(input.value) > max) input.value = max;
-}
-
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function startQuiz() {
-  const count = parseInt(document.getElementById('questionCount').value) || allQuestions.length;
-  isImmediate = document.getElementById('immediateCheck').checked;
-  isReviewMode = false;
-
-  filteredQuestions = selectedCategories.size > 0
-    ? allQuestions.filter(q => selectedCategories.has(q.category))
-    : [...allQuestions];
-
-  if (document.getElementById('shuffleCheck').checked) {
-    filteredQuestions = shuffle(filteredQuestions);
-  }
-
-  filteredQuestions = filteredQuestions.slice(0, count);
-  currentIndex = 0;
-  userAnswers = {};
-
-  document.getElementById('startScreen').classList.add('hidden');
-  document.getElementById('resultsScreen').classList.add('hidden');
-  document.getElementById('quizScreen').classList.remove('hidden');
-  document.getElementById('totalNum').textContent = filteredQuestions.length;
-
-  renderQuestion();
-}
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-function formatText(text) {
-  // Format code blocks
-  let html = escapeHtml(text);
-  // Convert newlines to <br> for non-code parts
-  return html.replace(/\n/g, '<br>');
-}
-
-function renderQuestion() {
-  const q = filteredQuestions[currentIndex];
-  document.getElementById('currentNum').textContent = currentIndex + 1;
-  document.getElementById('qNum').textContent = currentIndex + 1;
-  document.getElementById('qCategory').textContent = q.category;
-  document.getElementById('progressFill').style.width = ((currentIndex + 1) / filteredQuestions.length * 100) + '%';
-
-  // Handle code blocks in question
-  let qText = escapeHtml(q.question);
-  // Simple code block formatting: lines with 4+ spaces or containing specific patterns
-  document.getElementById('qText').innerHTML = qText.replace(/\n/g, '<br>');
-
-  const optsContainer = document.getElementById('optionsList');
-  optsContainer.innerHTML = '';
-
-  const userAns = userAnswers[currentIndex];
-  const showResult = userAns !== undefined;
-
-  ['A','B','C','D'].forEach(letter => {
-    if (!q.options[letter]) return;
-    const div = document.createElement('div');
-    div.className = 'option';
-    if (showResult) div.classList.add('disabled');
-    if (userAns === letter) div.classList.add('selected');
-    if (showResult && letter === q.answer) div.classList.add('correct');
-    if (showResult && userAns === letter && letter !== q.answer) div.classList.add('wrong');
-
-    div.innerHTML = `<span class="opt-letter">${letter}</span><span class="opt-text">${escapeHtml(q.options[letter]).replace(/\n/g, '<br>')}</span>`;
-    div.onclick = () => { if (!showResult) selectOption(letter); };
-    optsContainer.appendChild(div);
+<script type="text/javascript">
+//链接新开窗口
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
   });
-
-  const expEl = document.getElementById('explanation');
-  if (showResult) {
-    expEl.innerHTML = `<strong>解析：</strong><br>${escapeHtml(q.explanation).replace(/\n/g, '<br>')}`;
-    expEl.classList.remove('hidden');
-  } else {
-    expEl.classList.add('hidden');
-  }
-
-  document.getElementById('prevBtn').style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
-  document.getElementById('nextBtn').textContent = currentIndex === filteredQuestions.length - 1 ? '查看结果' : '下一题';
 }
-
-function selectOption(letter) {
-  userAnswers[currentIndex] = letter;
-  if (isImmediate) {
-    renderQuestion();
-  } else {
-    renderQuestion();
-  }
-}
-
-function nextQuestion() {
-  if (currentIndex < filteredQuestions.length - 1) {
-    currentIndex++;
-    renderQuestion();
-  } else {
-    showResults();
-  }
-}
-
-function prevQuestion() {
-  if (currentIndex > 0) {
-    currentIndex--;
-    renderQuestion();
-  }
-}
-
-function showResults() {
-  document.getElementById('quizScreen').classList.add('hidden');
-  document.getElementById('resultsScreen').classList.remove('hidden');
-
-  let correct = 0, wrong = 0;
-  filteredQuestions.forEach((q, i) => {
-    if (userAnswers[i] === q.answer) correct++;
-    else if (userAnswers[i] !== undefined) wrong++;
-  });
-  const total = filteredQuestions.length;
-  const pct = total > 0 ? Math.round(correct / total * 100) : 0;
-
-  document.getElementById('scoreCircle').style.setProperty('--score', pct);
-  document.getElementById('scoreText').textContent = pct + '%';
-  document.getElementById('correctCount').textContent = correct;
-  document.getElementById('wrongCount').textContent = wrong;
-  document.getElementById('totalCount').textContent = total;
-}
-
-function restartQuiz() {
-  document.getElementById('resultsScreen').classList.add('hidden');
-  document.getElementById('reviewSection').classList.add('hidden');
-  document.getElementById('startScreen').classList.remove('hidden');
-}
-
-function reviewWrong() {
-  const wrongIndices = [];
-  filteredQuestions.forEach((q, i) => {
-    if (userAnswers[i] !== q.answer) wrongIndices.push(i);
-  });
-  if (wrongIndices.length === 0) {
-    alert('恭喜！没有错题！');
-    return;
-  }
-
-  const reviewSection = document.getElementById('reviewSection');
-  reviewSection.classList.remove('hidden');
-  reviewSection.innerHTML = '<h3 style="margin-bottom:12px;">错题回顾</h3>' +
-    wrongIndices.map(idx => {
-      const q = filteredQuestions[idx];
-      const ua = userAnswers[idx] || '未作答';
-      return `
-        <div class="review-item">
-          <div class="review-item-header" onclick="this.parentElement.classList.toggle('expanded')">
-            <span>第 ${idx+1} 题 - ${q.category}</span>
-            <span class="status wrong">错误</span>
-          </div>
-          <div class="review-item-body">
-            <div style="font-weight:600;margin-bottom:8px;">${escapeHtml(q.question).replace(/\n/g,'<br>')}</div>
-            <div style="margin-bottom:8px;">你的答案：<strong style="color:var(--danger)">${ua}</strong> | 正确答案：<strong style="color:var(--success)">${q.answer}</strong></div>
-            <div style="background:#eff6ff;padding:12px;border-radius:8px;">${escapeHtml(q.explanation).replace(/\n/g,'<br>')}</div>
-          </div>
-        </div>
-      `;
-    }).join('');
-  reviewSection.scrollIntoView({ behavior: 'smooth' });
-}
-
-// Keyboard shortcuts
-document.addEventListener('keydown', (e) => {
-  if (document.getElementById('quizScreen').classList.contains('hidden')) return;
-  if (userAnswers[currentIndex] !== undefined) {
-    if (e.key === 'ArrowRight' || e.key === 'Enter') nextQuestion();
-    if (e.key === 'ArrowLeft') prevQuestion();
-    return;
-  }
-  const key = e.key.toUpperCase();
-  if (['A','B','C','D'].includes(key)) {
-    const q = filteredQuestions[currentIndex];
-    if (q.options[key]) selectOption(key);
-  }
+$(document).ready(function(event) {
+  addBlankTargetForLinks();
 });
+</script>
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="index.html">自由学习网</a></h1>
+  
+    <h2>积累、思考、成长、分享、厚积薄发、学以致用</h2>
+  
+</hgroup>
 
-init();
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="wd" value="site:www.free-abc.com.cn" />
+    <input class="search" type="text" name="wd" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+
+  <li id=""><a target="_self" href="index.html">首页</a></li>
+
+  <li id=""><a target="_self" href="archives.html">归档</a></li>
+
+  <li id=""><a target="_self" href="about.html">关于</a></li>
+
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content"> 
+<div class="blog-index">
+
+	<article>
+		 <header>
+		  	<h1 class="entry-title"><a href="14811282557869.html">centos7.2 安装mysql</a></h1>
+			<p class="meta"><time datetime="2016-12-08T00:30:55+08:00" 
+			pubdate data-updated="true">2016/12/8</time></p>
+		 </header>
+	  	<div class="entry-content">
+		  	
+		  	<pre><code>yum install mariadb.x86_64 mariadb-server.x86_64
+</code></pre>
+
+<h2 id="toc_0">启动服务</h2>
+
+<pre><code>systemctl enable mariadb.service 
+systemctl start mariadb.service
+</code></pre>
+
+<h2 id="toc_1">设置root密码</h2>
+
+<pre><code>mysql -u root
+mysql&gt; SET PASSWORD FOR ‘root’@’localhost’ = PASSWORD(‘newpass’);
+</code></pre>
+
+
+		</div>
+
+		
+
+	</article>
+  
+	<div class="pagination">
+	 <a class="prev" href="all_1.html">&larr; Older</a> 
+<a href="archives.html">Blog Archives</a>
+	 
+	    
+	</div>
+</div>
+ <aside class="sidebar"> 
+
+	<section>
+	  <h1>分类</h1>
+	  <ul id="recent_posts">
+	  
+	      <li class="post">
+	        <a href="translate.html"><strong>翻译文档&nbsp;(7)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="stetch.html">stetch&nbsp;(7)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	  
+	      <li class="post">
+	        <a href="history.html"><strong>历史&nbsp;(1)</strong></a>
+	        
+	        
+	        
+	      </li>
+	  
+	      <li class="post">
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
+	        
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	   
+	  </ul>
+	</section>
+	<section>
+	  <h1>最新发布</h1>
+	  <ul id="recent_posts">
+	  
+	      
+		      <li class="post">
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14809496478909.html">laravel 安装</a>
+		      </li>
+	     
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	   
+	  </ul>
+	</section>
+	
+</aside> </div></div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 -  -
+  <span class="credit">Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; Theme by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+
+  
+    
+
+<script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?831fc9a0be36b03335a3f24dda056e34";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
 </script>
 </body>
 </html>
