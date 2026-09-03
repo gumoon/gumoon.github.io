@@ -774,12 +774,22 @@ const LS_EXAM = (u) => 'lmcc_exam_' + u;
 const LS_EXAM_HISTORY = (u) => 'lmcc_exam_history_' + u;
 
 function getUsers() {
+  try { 
+    var data = JSON.parse(localStorage.getItem(LS_USERS) || '[]');
+    return Array.isArray(data) ? data : [];
+  } catch(e) { return []; }
+}
   try { return JSON.parse(localStorage.getItem(LS_USERS) || '[]'); } catch(e) { return []; }
 }
 function saveUsers(users) { localStorage.setItem(LS_USERS, JSON.stringify(users)); }
 function getCurrentUser() { return localStorage.getItem(LS_CURRENT); }
 function setCurrentUser(u) { localStorage.setItem(LS_CURRENT, u); }
 function getWrong(u) {
+  try { 
+    var data = JSON.parse(localStorage.getItem(LS_WRONG(u)) || '[]');
+    return Array.isArray(data) ? data : [];
+  } catch(e) { return []; }
+}
   try { return JSON.parse(localStorage.getItem(LS_WRONG(u)) || '[]'); } catch(e) { return []; }
 }
 function saveWrong(u, wrong) { localStorage.setItem(LS_WRONG(u), JSON.stringify(wrong)); }
@@ -797,6 +807,11 @@ function getExam(u) {
 function saveExam(u, exam) { localStorage.setItem(LS_EXAM(u), JSON.stringify(exam)); }
 function clearExam(u) { localStorage.removeItem(LS_EXAM(u)); }
 function getExamHistory(u) {
+  try { 
+    var data = JSON.parse(localStorage.getItem(LS_EXAM_HISTORY(u)) || '[]');
+    return Array.isArray(data) ? data : [];
+  } catch(e) { return []; }
+}
   try { return JSON.parse(localStorage.getItem(LS_EXAM_HISTORY(u)) || '[]'); } catch(e) { return []; }
 }
 function saveExamHistory(u, history) { localStorage.setItem(LS_EXAM_HISTORY(u), JSON.stringify(history)); }
@@ -831,6 +846,32 @@ function showHome() {
 }
 
 function handleAuth() {
+  var input = document.getElementById('nicknameInput');
+  var error = document.getElementById('authError');
+  error.textContent = '';
+  var name = input.value.trim();
+  if (!name) { error.textContent = '请输入昵称'; return; }
+  if (name.length > 50) { error.textContent = '昵称不能超过50个字符'; return; }
+  // 必须以字母开头（支持中英文等Unicode字母），只能包含字母和数字
+  var validRegex = /^[\p{L}][\p{L}\p{N}]*$/u;
+  if (!validRegex.test(name)) {
+    error.textContent = '昵称需以字母开头，且仅包含字母和数字';
+    return;
+  }
+  try {
+    var users = getUsers();
+    if (!users.includes(name)) {
+      users.push(name);
+      saveUsers(users);
+    }
+    currentUser = name;
+    setCurrentUser(name);
+    showHome();
+  } catch(e) {
+    error.textContent = '登录失败，请检查浏览器是否开启了隐私模式或禁用了本地存储';
+    console.error('Auth error:', e);
+  }
+}
   var input = document.getElementById('nicknameInput');
   var error = document.getElementById('authError');
   var name = input.value.trim();
