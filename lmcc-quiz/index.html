@@ -569,7 +569,42 @@ body {
   .dashboard-grid { grid-template-columns: 1fr; }
   .exam-score { font-size: 3rem; }
 }
-</style>
+
+    .blank-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      background: var(--card-bg);
+      color: var(--text);
+      transition: border-color 0.2s, background 0.2s;
+      margin-top: 6px;
+    }
+    .blank-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .blank-input.correct {
+      border-color: var(--success);
+      background: rgba(34,197,94,0.08);
+    }
+    .blank-input.wrong {
+      border-color: var(--danger);
+      background: rgba(239,68,68,0.08);
+    }
+    .blank-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .blank-answer-display {
+      margin-top: 4px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+  </style>
 </head>
 <body>
 
@@ -1110,19 +1145,65 @@ function renderQuizQuestion() {
   var userAns = userAnswers[currentIndex];
   var showResult = userAns !== undefined;
 
-  var letters = ['A','B','C','D'];
-  for (var i = 0; i < letters.length; i++) {
-    var letter = letters[i];
-    if (!q.options[letter]) continue;
-    var div = document.createElement('div');
-    div.className = 'option';
-    if (showResult) div.classList.add('disabled');
-    if (userAns === letter) div.classList.add('selected');
-    if (showResult && letter === q.answer) div.classList.add('correct');
-    if (showResult && userAns === letter && letter !== q.answer) div.classList.add('wrong');
-    div.innerHTML = '<span class="opt-letter">' + letter + '</span><span class="opt-text">' + escapeHtml(q.options[letter]).replace(/\n/g, '<br>') + '</span>';
-    div.onclick = (function(l){ return function(){ if (!showResult) selectQuizOption(l); }; })(letter);
-    optsContainer.appendChild(div);
+  if (q.type === 'fill_blank') {
+    // 填空题渲染
+    for (var i = 0; i < q.blanks.length; i++) {
+      var blank = q.blanks[i];
+      var wrapper = document.createElement('div');
+      wrapper.style.margin = '14px 0';
+
+      var label = document.createElement('div');
+      label.className = 'blank-label';
+      label.textContent = '填空 ' + (i + 1) + '：';
+      wrapper.appendChild(label);
+
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'blank-input';
+      input.placeholder = '请输入答案';
+      input.dataset.blankIndex = i;
+
+      if (showResult) {
+        var userVal = userAns && userAns[i] ? userAns[i] : '';
+        input.value = userVal;
+        input.disabled = true;
+        var isCorrect = checkBlankAnswer(userVal, blank);
+        input.classList.add(isCorrect ? 'correct' : 'wrong');
+
+        var ansDisplay = document.createElement('div');
+        ansDisplay.className = 'blank-answer-display';
+        var altText = blank.alternatives && blank.alternatives.length > 0 ? '（或 ' + blank.alternatives.join(' / ') + '）' : '';
+        ansDisplay.innerHTML = isCorrect ? '<span style="color:var(--success)">✓ 正确</span>' : '<span style="color:var(--danger)">✗ 正确答案：' + escapeHtml(blank.answer) + escapeHtml(altText) + '</span>';
+        wrapper.appendChild(ansDisplay);
+      }
+      wrapper.appendChild(input);
+      optsContainer.appendChild(wrapper);
+    }
+
+    if (!showResult) {
+      var submitBtn = document.createElement('button');
+      submitBtn.className = 'btn btn-primary';
+      submitBtn.style.marginTop = '12px';
+      submitBtn.textContent = '提交答案';
+      submitBtn.onclick = submitFillBlank;
+      optsContainer.appendChild(submitBtn);
+    }
+  } else {
+    // 选择题渲染
+    var letters = ['A','B','C','D'];
+    for (var i = 0; i < letters.length; i++) {
+      var letter = letters[i];
+      if (!q.options[letter]) continue;
+      var div = document.createElement('div');
+      div.className = 'option';
+      if (showResult) div.classList.add('disabled');
+      if (userAns === letter) div.classList.add('selected');
+      if (showResult && letter === q.answer) div.classList.add('correct');
+      if (showResult && userAns === letter && letter !== q.answer) div.classList.add('wrong');
+      div.innerHTML = '<span class="opt-letter">' + letter + '</span><span class="opt-text">' + escapeHtml(q.options[letter]).replace(/\n/g, '<br>') + '</span>';
+      div.onclick = (function(l){ return function(){ if (!showResult) selectQuizOption(l); }; })(letter);
+      optsContainer.appendChild(div);
+    }
   }
 
   var expEl = document.getElementById('quizExplanation');
@@ -1146,6 +1227,39 @@ function selectQuizOption(letter) {
   renderQuizQuestion();
 }
 
+function checkBlankAnswer(userVal, blank) {
+  if (!userVal) return false;
+  userVal = userVal.toLowerCase().trim();
+  if (userVal === blank.answer.toLowerCase()) return true;
+  var alts = blank.alternatives || [];
+  for (var j = 0; j < alts.length; j++) {
+    if (userVal === alts[j].toLowerCase().trim()) return true;
+  }
+  return false;
+}
+
+function submitFillBlank() {
+  var q = filteredQuestions[currentIndex];
+  var inputs = document.querySelectorAll('#quizOptionsList .blank-input');
+  var answers = [];
+  var allCorrect = true;
+
+  for (var i = 0; i < inputs.length; i++) {
+    var val = inputs[i].value.trim();
+    answers.push(val);
+    if (!checkBlankAnswer(val, q.blanks[i])) {
+      allCorrect = false;
+    }
+  }
+
+  userAnswers[currentIndex] = answers;
+  var qIdx = allQuestions.indexOf(q);
+  if (!allCorrect && qIdx >= 0) {
+    addWrong(currentUser, qIdx);
+  }
+  renderQuizQuestion();
+}
+
 function nextQuestion() {
   if (currentIndex < filteredQuestions.length - 1) { currentIndex++; renderQuizQuestion(); }
   else { showQuizResults(); }
@@ -1155,12 +1269,23 @@ function prevQuestion() {
   if (currentIndex > 0) { currentIndex--; renderQuizQuestion(); }
 }
 
+function isAnswerCorrect(q, ans) {
+  if (q.type === 'fill_blank') {
+    if (!ans || !Array.isArray(ans)) return false;
+    for (var i = 0; i < q.blanks.length; i++) {
+      if (!checkBlankAnswer(ans[i], q.blanks[i])) return false;
+    }
+    return true;
+  }
+  return ans === q.answer;
+}
+
 function showQuizResults() {
   hideAllScreens();
   document.getElementById('quizResultsScreen').classList.remove('hidden');
   var correct = 0, wrong = 0;
   for (var i = 0; i < filteredQuestions.length; i++) {
-    if (userAnswers[i] === filteredQuestions[i].answer) correct++;
+    if (isAnswerCorrect(filteredQuestions[i], userAnswers[i])) correct++;
     else if (userAnswers[i] !== undefined) wrong++;
   }
   var total = filteredQuestions.length;
