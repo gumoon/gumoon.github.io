@@ -337,7 +337,7 @@ const QUESTIONS = [
     "group": "youth"
   },
   {
-    "question": "在混合精度训练中，BF16（Bfloat16） 和 FP16（Half Precision Float）相比，BF16的主要特点是：",
+    "question": "在混合精度训练中，BF16（Bfloat16）和 FP16（Half Precision Float）相比，BF16的主要特点是：",
     "options": {
       "A": "拥有与 FP32 相同的指数位宽度，因此数值范围更广，但精度较低",
       "B": "拥有与 FP32 相同的尾数位宽度，因此数值精度更高，但范围较窄",
@@ -1548,13 +1548,13 @@ const QUESTIONS = [
   {
     "question": "关于精确率（Precision）和召回率（Recall），正确的是：",
     "options": {
-      "A": "交叉验证的主要作用是增加模型复杂度",
-      "B": "过拟合是模型在训练数据上表现很好，在新数据上表现\n较差",
-      "C": "过拟合是因为模型太简单",
-      "D": "交叉验证只能用于无监督学习"
+      "A": "精确率表示所有正样本中被正确预测的比例",
+      "B": "召回率表示预测为正的样本中有多少是正确的",
+      "C": "精确率关注预测结果的准确性，召回率关注对正样本的覆盖能力",
+      "D": "两者完全等价，只是名称不同"
     },
     "answer": "C",
-    "explanation": "",
+    "explanation": "A 错误：这是召回率的定义，不是精确率。\nB 错误：这是精确率的定义，不是召回率。\nC 正确：精确率关注\"预测为正的准确性\"（Precision = TP/(TP+FP)），召回率关注\"正样本的覆盖率\"（Recall = TP/(TP+FN)）。\nD 错误：两者定义和关注点不同。",
     "category": "人工智能基础概念",
     "group": "youth"
   },
@@ -1702,16 +1702,16 @@ const QUESTIONS = [
     "group": "youth"
   },
   {
-    "question": "大模型在没有进行权重更新的前提下，仅通过在提示词\n（Prompt）中加入几个示例就能学会处理新任务，这种能力\n被称为：",
+    "question": "大模型在没有进行权重更新的前提下，仅通过在提示词（Prompt）中加入几个示例就能学会处理新任务，这种能力被称为：",
     "options": {
-      "A": "涌现能力是指小模型也具备，只是在大模型中表现得更\n明显而已",
-      "B": "涌现能力通常指在模型参数量超过一定阈值后，模型在\n某些复杂任务上的表现突然从“随机猜测”跃升至“远超随机”\n的现象",
-      "C": "涌现能力意味着模型已经产生了自我意识",
-      "D": "涌现能力只能通过增加模型的层数获得，与参数量无关"
+      "A": "上下文学习（In-Context Learning）",
+      "B": "涌现能力（Emergent Abilities）",
+      "C": "迁移学习（Transfer Learning）",
+      "D": "元学习（Meta-Learning）"
     },
-    "answer": "C",
-    "explanation": "",
-    "category": "提示学习",
+    "answer": "A",
+    "explanation": "A 正确：上下文学习（In-Context Learning）是指模型通过提示词中的少量示例（Few-shot Examples）来理解并执行新任务，无需更新模型权重。\nB 错误：涌现能力指模型规模达到某个阈值后突然出现的全新能力。\nC 错误：迁移学习通常指将一个任务学到的知识迁移到另一个任务，往往需要微调。\nD 错误：元学习指\"学会学习\"的能力，与上下文学习不同。",
+    "category": "大模型基础概念",
     "group": "youth"
   },
   {
@@ -1793,28 +1793,28 @@ const QUESTIONS = [
     "group": "youth"
   },
   {
-    "question": "以下代码实现了旋转位置编码（RoPE），请阅读代码并填\n写空缺部分。\nimport torch\nimport math\ndef apply_rotary_pos_emb(q, k, pos):\n\"\"\"\n对 Query 和 Key 应用旋转位置编码（RoPE）\n参数:\nq: Query张量, shape (batch, heads, seq_len, head_dim)\nk: Key张量, shape (batch, heads, seq_len, head_dim)\npos: 位置索引, shape (seq_len,)\n返回:\n旋转编码后的 q 和 k\n\"\"\"\nhead_dim = q.size(-1)\n# 计算频率基底: theta_i = 1 / (10000 ^ (2i / d))\nfreq_indices = torch.arange(0, head_dim, 2, dtype=torch.float32)\nfreqs = 1.0 / (10000.0 ** (freq_indices / head_dim))\n# 计算位置角度: pos * theta\nangles = pos.unsqueeze(-1).float() * freqs.unsqueeze(0) # (seq_len, head_dim//2)\ncos_vals = torch.cos(angles) # (seq_len, head_dim//2)\nsin_vals = torch.sin(angles) # (seq_len, head_dim//2)\n# 将 q 拆分为偶数维和奇数维\nq_even = q[..., 0::2] # (..., head_dim//2)\nq_odd = q[..., 1::2] # (..., head_dim//2)\n# [1] 对 Query 应用旋转变换: q_rotated_even = q_even * cos - q_odd * sin\n______________________________\n# [2] 对 Query 应用旋转变换: q_rotated_odd = q_even * sin + q_odd * cos\n[1] 和 [2] 处应分别填入：",
+    "question": "以下代码实现了旋转位置编码（RoPE），请阅读代码并填写空缺部分。\nimport torch\nimport math\ndef apply_rotary_pos_emb(q, k, pos):\n    \"\"\"\n    对 Query 和 Key 应用旋转位置编码（RoPE）\n    参数:\n    q: Query张量, shape (batch, heads, seq_len, head_dim)\n    k: Key张量, shape (batch, heads, seq_len, head_dim)\n    pos: 位置索引, shape (seq_len,)\n    返回:\n    旋转编码后的 q 和 k\n    \"\"\"\n    head_dim = q.size(-1)\n    # 计算频率基底: theta_i = 1 / (10000 ^ (2i / d))\n    freq_indices = torch.arange(0, head_dim, 2, dtype=torch.float32)\n    freqs = 1.0 / (10000.0 ** (freq_indices / head_dim))\n    # 计算位置角度: pos * theta\n    angles = pos.unsqueeze(-1).float() * freqs.unsqueeze(0)  # (seq_len, head_dim//2)\n    cos_vals = torch.cos(angles)  # (seq_len, head_dim//2)\n    sin_vals = torch.sin(angles)  # (seq_len, head_dim//2)\n    # 将 q 拆分为偶数维和奇数维\n    q_even = q[..., 0::2]  # (..., head_dim//2)\n    q_odd = q[..., 1::2]  # (..., head_dim//2)\n    # [1] 对 Query 应用旋转变换: q_rotated_even = q_even * cos - q_odd * sin\n    ______________________________\n    # [2] 对 Query 应用旋转变换: q_rotated_odd = q_even * sin + q_odd * cos\n    [1] 和 [2] 处应分别填入：",
     "options": {
-      "A": "RMSNorm 相比 LayerNorm 省去了均值的计算，仅使用\n均方根进行归一化，计算效率更高",
-      "B": "LayerNorm和RMSNorm的计算方式完全相同，没有区别",
-      "C": "GELU激活函数与ReLU完全一致，都在负数区域输出恒\n为零",
-      "D": "Pre-Norm 和 Post-Norm 的区别仅在于是否使用归一化，\n放置位置无影响"
+      "A": "[1] q_rotated_even = q_even * cos_vals - q_odd * sin_vals [2] q_rotated_odd = q_even * sin_vals + q_odd * cos_vals",
+      "B": "[1] q_rotated_even = q_even * sin_vals - q_odd * cos_vals [2] q_rotated_odd = q_even * cos_vals + q_odd * sin_vals",
+      "C": "[1] q_rotated_even = q_even + cos_vals [2] q_rotated_odd = q_odd + sin_vals",
+      "D": "[1] q_rotated_even = q_even * cos_vals + q_odd * sin_vals [2] q_rotated_odd = q_even * sin_vals - q_odd * cos_vals"
     },
     "answer": "A",
-    "explanation": "",
+    "explanation": "A 正确：RoPE 的旋转变换公式为 [x_even', x_odd'] = [x_even*cos - x_odd*sin, x_even*sin + x_odd*cos]，即二维旋转矩阵。\nB 错误：sin/cos 位置颠倒。\nC 错误：RoPE 是旋转变换，不是加法。\nD 错误：第二项符号错误。",
     "category": "模型架构",
     "group": "adult"
   },
   {
-    "question": "关于 Transformer 模型中的归一化和激活函数配置，下列说\n法正确的是：",
+    "question": "关于 Transformer 模型中的归一化和激活函数配置，下列说法正确的是：",
     "options": {
-      "A": "探针技术通过在模型中间层训练简单分类器来探测模型\n是否学到了特定的语言知识",
-      "B": "注意力可视化可以直接证明模型的推理因果过程",
-      "C": "特征重要性分析只适用于传统机器学习模型，不能用于\n大语言模型",
-      "D": "大模型的可解释性分析方法目前只有注意力可视化一种"
+      "A": "RMSNorm 相比 LayerNorm 省去了均值的计算，仅使用均方根进行归一化，计算效率更高",
+      "B": "LayerNorm和RMSNorm的计算方式完全相同，没有区别",
+      "C": "GELU激活函数与ReLU完全一致，都在负数区域输出恒为零",
+      "D": "Pre-Norm 和 Post-Norm 的区别仅在于是否使用归一化，放置位置无影响"
     },
     "answer": "A",
-    "explanation": "",
+    "explanation": "A 正确：RMSNorm 是 LayerNorm 的简化版本，省去了减均值的步骤，只做均方根归一化。\nB 错误：RMSNorm省略了均值中心化步骤。\nC 错误：GELU 在负数区域有平滑的非零输出，而 ReLU 在负数区域输出恒为0。\nD 错误：Pre-Norm 在注意力/FFN 之前归一化，Post-Norm 在之后归一化，位置不同影响训练稳定性。",
     "category": "模型架构",
     "group": "youth"
   },
@@ -1936,15 +1936,15 @@ const QUESTIONS = [
     "group": "youth"
   },
   {
-    "question": "以下代码实现了温度采样、Top-K 采样和 Top-P 采样，请阅\n读代码并填写空缺部分。\nimport torch\nimport torch.nn.functional as F\ndef sample_with_strategies(logits, temperature=1.0, top_k=0, top_p=0.0):\n\"\"\"\n对模型输出的logits应用温度、Top-K、Top-P采样策略\n参数:\nlogits: 模型输出的原始分数, shape (vocab_size,)\ntemperature: 温度参数，控制分布的平滑程度\ntop_k: 只保留概率最高的k个token（0表示不启用）\ntop_p: 只保留累积概率达到p的最少token集合（0.0表示不启用）\n返回:\n采样得到的token索引\n\"\"\"\n# [1] 温度缩放：用temperature对logits进行缩放\n______________________________\n# Top-K 采样：只保留概率最高的k个token\nif top_k > 0:\ntop_k_values, _ = torch.topk(scaled_logits, top_k)\nmin_top_k = top_k_values[-1]\nscaled_logits = scaled_logits.masked_fill(scaled_logits < min_top_k, float('-inf'))\n# Top-P (Nucleus) 采样\nif top_p > 0.0:\nsorted_logits, sorted_indices = torch.sort(scaled_logits, descending=True)\nprobs_sorted = F.softmax(sorted_logits, dim=-1)\ncumulative_probs = torch.cumsum(probs_sorted, dim=-1)\n# [2] 创建掩码：移除累积概率超过top_p的token，但保留第一个超过阈值的\ntoken\n[1] 和 [2] 处应分别填入：",
+    "question": "以下代码实现了温度采样、Top-K 采样和 Top-P 采样，请阅读代码并填写空缺部分。\nimport torch\nimport torch.nn.functional as F\ndef sample_with_strategies(logits, temperature=1.0, top_k=0, top_p=0.0):\n    \"\"\"\n    对模型输出的logits应用温度、Top-K、Top-P采样策略\n    参数:\n    logits: 模型输出的原始分数, shape (vocab_size,)\n    temperature: 温度参数，控制分布的平滑程度\n    top_k: 只保留概率最高的k个token（0表示不启用）\n    top_p: 只保留累积概率达到p的最少token集合（0.0表示不启用）\n    返回:\n    采样得到的token索引\n    \"\"\"\n    # [1] 温度缩放：用temperature对logits进行缩放\n    ______________________________\n    # Top-K 采样：只保留概率最高的k个token\n    if top_k > 0:\n        top_k_values, _ = torch.topk(scaled_logits, top_k)\n        min_top_k = top_k_values[-1]\n        scaled_logits = scaled_logits.masked_fill(scaled_logits < min_top_k, float(\"-inf\"))\n    # Top-P (Nucleus) 采样\n    if top_p > 0.0:\n        sorted_logits, sorted_indices = torch.sort(scaled_logits, descending=True)\n        probs_sorted = F.softmax(sorted_logits, dim=-1)\n        cumulative_probs = torch.cumsum(probs_sorted, dim=-1)\n        # [2] 创建掩码：移除累积概率超过top_p的token，但保留第一个超过阈值的token\n    [1] 和 [2] 处应分别填入：",
     "options": {
-      "A": "top-p采样（核采样）根据累积概率动态调整候选词数量，\n当概率集中时自动减少候选词，分散时自动增加",
-      "B": "使用top-k=1的采样与使用高温采样的效果相同",
-      "C": "同时使用top-k和top-p策略是不可能的",
-      "D": "采样策略只影响生成速度，不影响生成质量和多样性"
+      "A": "[1] scaled_logits = logits / temperature [2] sorted_indices_to_remove = cumulative_probs > top_p",
+      "B": "[1] scaled_logits = logits * temperature [2] sorted_indices_to_remove = cumulative_probs > top_p",
+      "C": "[1] scaled_logits = logits / temperature [2] sorted_indices_to_remove = cumulative_probs < top_p",
+      "D": "[1] scaled_logits = logits - temperature [2] sorted_indices_to_remove = probs_sorted > top_p"
     },
     "answer": "A",
-    "explanation": "",
+    "explanation": "A 正确：温度采样的公式为 logits/T，T越大分布越平滑（更随机），T越小越尖锐（更确定）；Top-P 先用 cumulative_probs > top_p 标记超过阈值的位置，再将掩码右移一位，从而保留第一个超过阈值的token，得到\"累计概率刚好覆盖top_p\"的最小候选集合。\nB 错误：温度应该是除法（logits/T）而非乘法。\nC 错误：Top-P 应移除累积概率超过 p 的 token（>p），而非低于p的（<p）。\nD 错误：温度缩放是除法操作，不是减法；且应基于累积概率而非单个token概率来过滤。",
     "category": "解码与部署",
     "group": "adult"
   },
@@ -2003,27 +2003,27 @@ const QUESTIONS = [
   {
     "question": "Zero-shot CoT（零样本思维链）最简单且常用的触发短语是：",
     "options": {
-      "A": "它通过增加输入长度来强迫模型运行更久",
-      "B": "它将复杂的全局任务分解为一系列连续的局部中间推理\n步骤",
-      "C": "它通过改变词表概率分布来消除随机性",
-      "D": "它仅通过增加 Token 数量来规避计算量限制"
+      "A": "\"请给出最终答案\"",
+      "B": "\"不要胡说八道\"",
+      "C": "\"让我们一步步思考\"",
+      "D": "\"这是一个分类任务\""
     },
     "answer": "C",
-    "explanation": "",
-    "category": "预训练技术",
+    "explanation": "C 正确：\"Let's think step by step\"（让我们一步步思考）是零样本思维链最简单且常用的触发短语，能诱导模型生成中间推理步骤，从而显著提高复杂问题的解决能力。",
+    "category": "提示学习",
     "group": "youth"
   },
   {
     "question": "检索增强生成（RAG）相较于直接生成，其核心优势在于：",
     "options": {
-      "A": "推理包括演绎推理、归纳推理和溯因推理等多种形式，\n大语言模型可以通过不同策略模拟这些推理过程",
-      "B": "推理仅指数学计算，不包括逻辑判断和因果分析",
-      "C": "大语言模型的推理能力完全依赖于模型参数量，与训练\n数据无关",
-      "D": "所有类型的推理任务难度相同，不需要不同的处理策略"
+      "A": "能够减少显存占用",
+      "B": "能够利用外部实时知识并缓解事实性幻觉",
+      "C": "能够加快推理速度",
+      "D": "能够让模型自动学会编程"
     },
     "answer": "B",
-    "explanation": "",
-    "category": "人类对齐",
+    "explanation": "B 正确：RAG 将外部权威知识作为上下文提供给模型，解决了模型\"预训练知识陈旧\"和\"虚假记忆\"的问题，从而缓解事实性幻觉。\nA 错误：RAG 需要额外的检索模块，不会减少显存。\nC 错误：检索步骤会增加延迟，不会加快推理速度。\nD 错误：RAG 与编程能力无直接关系。",
+    "category": "智能体应用",
     "group": "youth"
   },
   {
