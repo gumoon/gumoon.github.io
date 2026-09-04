@@ -9,7 +9,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：ALiBi 在注意力分数上减去一个与 query-key 距离成正比的偏置项，距离越远惩罚越大\nB 错误：ALiBi、RoPE 插值等方法可以较好地外推到更长序列\nC 错误：长上下文拓展通常还需要长文本数据进行继续训练以适应长序列\nD 错误：ALiBi是预定义的线性偏置，无需学习位置嵌入",
-    "category": "模型架构"
+    "category": "模型架构",
+    "group": "youth"
   },
   {
     "question": "关于长上下文模型的效率优化和训练方法，下列描述正确的是：",
@@ -21,7 +22,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "A 错误：标准自注意力的计算复杂度与序列长度呈二次方关系O(n²)\nB 正确：渐进式训练（逐步增加序列长度）是常用的长上下文训练策略\nC 错误：更长的上下文会显著增加KV 缓存的显存消耗\nD 错误：长上下文模型需要高质量的长文本数据进行训练",
-    "category": "模型架构"
+    "category": "模型架构",
+    "group": "youth"
   },
   {
     "question": "以下代码实现了分组查询注意力（GQA），请阅读代码并填写空缺部分。\nimport torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport math\nclass GroupedQueryAttention(nn.Module):\n\"\"\"分组查询注意力（GQA）: 多个Query头共享同一组Key和Value头\"\"\"\ndef __init__(self, hidden_dim, num_q_heads, num_kv_heads):\nsuper().__init__()\nself.num_q_heads = num_q_heads # Query头的数量，例如32\nself.num_kv_heads = num_kv_heads # KV头的数量，例如8\nself.head_dim = hidden_dim // num_q_heads\n# [1] 计算每个KV头对应多少个Query头（分组大小）\n______________________________\nself.q_proj = nn.Linear(hidden_dim, num_q_heads * self.head_dim)\nself.k_proj = nn.Linear(hidden_dim, num_kv_heads * self.head_dim)\nself.v_proj = nn.Linear(hidden_dim, num_kv_heads * self.head_dim)\nself.o_proj = nn.Linear(hidden_dim, hidden_dim)\ndef forward(self, x):\nB, L, _ = x.shape\nq = self.q_proj(x).view(B, L, self.num_q_heads, self.head_dim).transpose(1, 2)\nk = self.k_proj(x).view(B, L, self.num_kv_heads, self.head_dim).transpose(1, 2)\nv = self.v_proj(x).view(B, L, self.num_kv_heads, self.head_dim).transpose(1, 2)\n[1] 和 [2] 处应分别填入：",
@@ -33,7 +35,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：GQA 中 num_q_heads/num_kv_heads 得到每组的 Q头数量；repeat_interleave沿 dim=1 逐元素重复，使每个KV头被相邻的Q头共享\nB 错误：分组大小应为 q_heads/kv_heads 而非 kv_heads/q_ heads；repeat会整体重复而非逐元素交错重复，分组对应关系会错乱\nC 错误：expand 不能直接将 (B,num_kv_heads,L,d) 扩展为(B,num_q_heads,L,d)， 因为 num_kv_heads ≠ num_q_heads时维度不匹配\nD 错误：分组大小应为除法而非乘法，q_heads*kv_heads 会导致过度重复",
-    "category": "模型架构"
+    "category": "模型架构",
+    "group": "youth"
   },
   {
     "question": "关于高效注意力机制的理论基础，下列描述正确的是：",
@@ -45,7 +48,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：注意力矩阵在实践中通常具有低秩特性，可以用低秩分解来高效近似\nB 错误：线性注意力通过核函数技巧将复杂度降低到O(n)\nC 错误：合理的低秩近似可以在几乎不损失精度的情况下大幅提升效率\nD 错误：FlashAttention 是 IO 感知的精确注意力计算优化，不是低秩近似",
-    "category": "模型架构"
+    "category": "模型架构",
+    "group": "youth"
   },
   {
     "question": "以下哪种模型最适合处理二分类问题，并能够输出一个表示概率的连续值？",
@@ -57,7 +61,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "A 错误：线性回归主要用于预测连续数值，不适合直接用于分类。\nB 正确：逻辑回归通过 Sigmoid 函数将线性模型的输出映射到(0, 1) 区间，常用于二分类问题的概率估计。C、D：K-Means 是无监督聚类算法，PCA 是降维算法，均不直接用于分类任务。",
-    "category": "人工智能基础概念"
+    "category": "人工智能基础概念",
+    "group": "youth"
   },
   {
     "question": "当一个学习任务需要同时预测多个相互关联的类别标签时\n（例如，在一张图片中同时识别出“人”和“狗”），这属于哪种类型的学习任务？",
@@ -69,7 +74,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "B 正确：多标签分类允许一个样本属于多个类别。单标签多类别分类则要求样本只属于其中一个类别。",
-    "category": "其他"
+    "category": "其他",
+    "group": "youth"
   },
   {
     "question": "自监督学习中的“掩码预测”（Masked Prediction）任务，例如 BERT 的 Masked Language Model (MLM)，其核心思想是：",
@@ -81,7 +87,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "A 描述的是对比学习。C 描述的是自回归语言模型。D 描述的是降维。B准确描述了掩码预测的核心机制。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "在自监督学习中，针对自然语言（如文本）的掩码预测任务（如MLM）与针对图像的掩码预测任务（如 MAE - Masked Autoencoders）相比，主要区别在于：",
@@ -93,7 +100,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：文本是离散符号序列，遮盖后需要预测离散符号；图像是连续像素，遮盖后重构连续像素。\nB 错误：MAE（MAE - Masked Autoencoders）的遮盖比例可以非常高（例如75%）。\nC 错误：文本的掩码预测（如BERT）非常依赖全局上下文。\nD 错误：MAE是重构，文本MLM也是重构。○考核方式：概念、公式、简答码（如 BERT 的 MLM）",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "在预训练技术中，下一个词元预测任务（Next Token Prediction）主要基于以下哪种核心思想？",
@@ -105,7 +113,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：下一个词元预测是自回归语言模型（如 GPT）的核心训练任务，模型根据已有的前文序列预测下一个词元。B选项描述的是掩码语言模型（如 BERT）的训练方式。C和D选项都不是标准的语言模型训练方式。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "如果一个预训练模型在训练时，除了预测下一个词元，还被要求完成例如情感分析、问答等多个下游任务（并在训练时共享参数），这种训练方式更接近于：",
@@ -117,7 +126,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "B 正确：多任务学习是指模型在训练过程中同时学习多个相关任务，以期通过共享表示（参数）来提高整体性能和泛化能力。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "关于批量大小（Batch Size）对模型训练的影响，以下说法错误的是：",
@@ -129,7 +139,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "B 错误：Batch梯度估计的期望等于真实梯度，与batch size无关的期望等于真实梯度，与batch size无关。较大的批量大小能提供方差更小的梯度估计（因为平均了更多样本的梯度，统计上更稳定），而较小的批量大小梯度噪声更大（方差大）。小batch的噪声有时反而有助于逃出局部最优、提升泛化能力。因此B选项中\"更加准确\"这一说法不严谨，是错误的。其他选项都正确：大批量提高并行效率（A）、需要权衡（C）、过大批量可能影响泛化（D）。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "某预训练任务初始批次大小（Batch Size）为 256，采用梯度累积（Gradient Accumulation）策略每 4 步更新一次，实际等效批次大小是多少？若改为动态调整策略，在训练中期将批次大小增至 512，请计算梯度累积步数应如何调整以保持等效批次大小不变？",
@@ -141,7 +152,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：初始情况：256 × 4 = 1024。当批次大小增至 512 时，为保持等效批次大小 1024 不变，需要调整累积步数：1024 ÷ 512 = 2 步。梯度累积是一种在显存受限时模拟大批次训练的技术，通过累积多个小批次的梯度后再更新参数。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "在深度学习模型训练中，学习率预热（Learning Rate Warm-\nup）策略主要用于解决以下哪个问题？",
@@ -153,7 +165,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：模型在训练初期参数随机，使用一个小的学习率开始，并逐渐将其增加到预设的目标学习率，可以避免因初始梯度过大导致模型不稳定的问题。\nB 错误：梯度消失通常通过激活函数选择、残差连接或更深的网络结构来解决。\nC 错误：预热主要影响训练初期，后期泛化更多受正则化、数据等影响。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "Cosine 学习率衰减（Cosine Learning Rate Decay）策略是一种常用的学习率调度方法。相较于步进式衰减（Step Decay），其主要优点是：",
@@ -165,7 +178,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：Cosine衰减在训练初期保持较高的学习率，然后平滑地降低到接近零，这种平滑的衰减过程有助于模型在训练后期稳定下来，找到更优的局部最小值。\nB 错误：衰减速度不是恒定的，而是遵循Cosine函数的形状。\nC 错误：它通常从一个较高的学习率开始，逐渐衰减，可以贯穿训练过程。\nD 错误：Cosine衰减和Warm-up是不同的概念，Warm-up是“升”学习率，衰减是“降”学习率。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "随机梯度下降（SGD）优化器与 Adam 优化器相比，通常的特点是：",
@@ -177,7 +191,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "B 正确：SGD 对超参数（学习率、衰减）非常敏感，但由于其梯度噪声，有时能跳出局部最优，获得更好的泛化。Adam 自带动量和二阶矩估计，通常收敛更快，对超参数不敏感，但可能泛化略差。\nA 错误：SGD不具备自适应学习率，Adam才具备。\nC 错误：Adam需要存储动量和二阶矩，计算量比SGD大。\nD 错误：Adam 的自适应性使其在稀疏梯度场景下表现往往更好。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "关于AdamW优化器的改进，以下说法正确的是？",
@@ -189,7 +204,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：AdamW将权重衰减（weight decay）从梯度更新中解耦出来，直接作用于参数本身，这使得正则化效果更加稳定有效。\nB 错误：AdamW保留了Adam的自适应学习率机制。\nC 错误：AdamW的计算复杂度没有明显增加。\nD 错误：AdamW广泛应用于各类深度学习任务，不限于计算机视觉。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "一个简单的全连接层（Fully Connected Layer），其输入维度为 N，输出维度为 M。则该层有多少个可训练参数？",
@@ -201,7 +217,8 @@ const QUESTIONS = [
     },
     "answer": "C",
     "explanation": "C 正确：全连接层包含权重矩阵 W (N*MW个参数) 和偏置向量 b (M个参数)。",
-    "category": "其他"
+    "category": "其他",
+    "group": "youth"
   },
   {
     "question": "对于一个包含 K 个专家（Experts）的稀疏激活（Sparse Activation）的 Mixture-of-Experts (MoE) 模型，假设所有专家的参数量相同，且在一次前向传播中，门控网络（Gating Network）会选择 M 个专家进行计算（M<K）。那么，在评估MoE模型的总参数量时，最主要的组成部分是：",
@@ -213,7 +230,8 @@ const QUESTIONS = [
     },
     "answer": "C",
     "explanation": "C 正确：虽然每次只激活 M 个专家，但模型中所有 K 个专家都是可训练参数，因此总参数量需要计入所有专家以及门控网络的参数。",
-    "category": "模型架构"
+    "category": "模型架构",
+    "group": "youth"
   },
   {
     "question": "对于一个 Transformer Decoder-only 模型，在处理一个长度为 L 的序列时，其自注意力（Self-Attention）机制的计算复杂度（按乘加运算次数计）大致为：",
@@ -224,7 +242,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "B 正确：Transformer 的自注意力机制需要计算序列中任意两个 Token 之间的关联度，其计算复杂度与序列长度的平方成正比，即 O(L^2) 。",
-    "category": "模型架构"
+    "category": "模型架构",
+    "group": "youth"
   },
   {
     "question": "假设一个大模型的训练中，模型参数量为 P，梯度大小为 G，\n优化器状态（如Adam的动量和二阶矩）大小为 O。则单次前向 / 反向传播（不含优化器状态）所需的显存（约等于）\n主要由以下几项组成：",
@@ -236,7 +255,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：在单次前向和反向传播过程中，至少需要存储模型参数（P）和计算过程中产生的梯度（G）。优化器的状态（O）通常在参数更新时使用，不一定在每次前向 / 反向计算时都需要全部加载到显存（但如果考虑整个 batch 的训练，则需要）。在不考虑激活值、缓存等的情况下，参数和梯度是基础。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "梯度检查点（Gradient Checkpointing）技术在训练大模型时，\n其主要的权衡是：",
@@ -248,7 +268,8 @@ const QUESTIONS = [
     },
     "answer": "C",
     "explanation": "C 正确：梯度检查点通过在反向传播时重新计算一部分中间激活值，而不是全部存储它们，来大幅减少显存占用。这会增加计算量，但对于内存受限的训练场景至关重要。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "在深度学习模型训练过程中， 梯度裁剪（Gradient Clipping）技术的主要作用是什么？",
@@ -260,7 +281,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "B 正确：梯度裁剪通过限制梯度的范数或值，防止训练中出现梯度爆炸问题，这在训练循环神经网络和深层网络时尤为重要。它不直接加速收敛（\nA 错误）、不减少参数量（\nC 错误）、主要目的也不是防止过拟合（\nD 错误），而是确保训练过程的数值稳定性。",
-    "category": "其他"
+    "category": "其他",
+    "group": "youth"
   },
   {
     "question": "在深度学习模型训练中，混合精度训练（Mixed Precision Training）技术的主要作用是什么？",
@@ -272,7 +294,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：混合精度训练是一种加速训练的技术。它用 float16 进行前向和反向传播计算以加速训练，同时保留 float32 的主参数副本以维持精度；并使用损失缩放（loss scaling）技术防止小梯度下溢。这种方法不能完全消除精度损失（\nB 错误），不涉及整型计算（\nC 错误），也不增加参数量（\nD 错误）。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "在分布式训练中，数据并行（Data Parallelism）的主要思想是：",
@@ -284,7 +307,8 @@ const QUESTIONS = [
     },
     "answer": "C",
     "explanation": "C 正确：数据并行是最大化模型训练效率的常用方法，即复制模型，分发数据。A 描述的是流水线并行，B 描述的是张量并行。D是混合并行。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "ZeRO（Zero Redundancy Optimizer）优化器，特别是其后期的版本（如 ZeRO-2, ZeRO-3），主要目标是在数据并行训练的基础上，进一步减少什么方面的冗余，从而大幅降低显存占用？",
@@ -296,7 +320,8 @@ const QUESTIONS = [
     },
     "answer": "D",
     "explanation": "D 正确：ZeRO 通过将模型参数、梯度和优化器状态进行分片（sharding），并只在需要时才进行通信或聚合，从而在数据并行中消除了不同 GPU 之间冗余存储的参数、梯度和优化器状态，极大地降低了显存占用。模型训练的影响",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "与单精度浮点（FP32）相比，半精度浮点（FP16）在训练大模型时带来的主要优势是：",
@@ -308,7 +333,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "B 正确：FP16 格式比 FP32 占用一半的存储空间，并且许多现代硬件（如NVIDIA Tensor Cores）可以加速 FP16计算，从而提高训练速度。\nA 错误：FP16 的表示范围和精度低于 FP32，可能导致训练精度下降或数值不稳定。\nC 错误：FP16的数值范围比FP32小。\nD 错误：反向传播过程本身并未简化，但数值计算可能更快。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "在混合精度训练中，BF16（Bfloat16） 和 FP16（Half Precision Float）相比，BF16的主要特点是：",
@@ -320,7 +346,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：BF16 (Brain Floating Point) 格式与 FP32 一样，都拥有 8 位指数（Exponent）和 23 位尾数（Mantissa）。BF16 格式与 FP32 有相同的指数位（8 位），这意味着它能表示的数值范围与 FP32 几乎相同，这有助于避免溢出和下溢问题；但它只有 7 位尾数，相比 FP32 的 23 位尾数，其数值精度较低。FP16则有5位指数和10位尾数。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "完全分片数据并行（Fully Sharded Data Parallelism, FSDP）\n与传统数据并行（Data Parallelism）相比，其核心优势在于：",
@@ -332,7 +359,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：FSDP（如 ZeRO-3 的实现）是数据并行的一种高级形式，它将模型状态（参数、梯度、优化器状态）在所有数据并行副本之间进行分片，从而使每个GPU 只需要存储模型状态的一小部分，显著降低了显存需求。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "在分布式训练中，通信开销（Communication Overhead）是影响训练速度的关键瓶颈之一。以下哪项技术不是主要用于减少通信开销的？",
@@ -344,7 +372,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 错误：Gradient Checkpointing 主要目的是减少显存占用，通过重计算来换取显存，它不会减少通信开销，反而可能因为引入额外的计算图而间接增加一些同步开销。B、C、D 都是通信优化的范畴：All-Reduce 是高效的聚合梯度通信算法；ZeRO 通过分片减少了需要传输的梯度和参数量；Token Compression 理论上可以减少需要传输的 token数量（如果是在模型间传输某些中间表示）。",
-    "category": "预训练技术"
+    "category": "预训练技术",
+    "group": "youth"
   },
   {
     "question": "关于语言模型中的概率分布与采样，下列说法正确的是：",
@@ -356,7 +385,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：语言模型的输出层经过 softmax 后形成词表上的概率分布\nB 错误：始终选最大概率的是贪心搜索，采样是按概率随机选取\nC 错误：logits需要经过softmax函数变换后才成为概率分布\nD 错误：经过softmax后的概率分布所有值之和恒等于1",
-    "category": "其他"
+    "category": "其他",
+    "group": "youth"
   },
   {
     "question": "关于给定概率分布下的采样方法，下列描述正确的是：",
@@ -368,7 +398,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：采样是按概率随机选取，高概率词更可能被选中但非必然\nB 错误：采样具有随机性，每次结果可能不同\nC 错误：均匀分布对所有词等概率，而模型输出分布有偏好，效果差异很大\nD 错误：采样的核心就是引入随机性",
-    "category": "其他"
+    "category": "其他",
+    "group": "youth"
   },
   {
     "question": "关于指令微调的核心概念，下列说法正确的是：",
@@ -380,7 +411,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：指令微调在预训练基础上用 \" 指令 + 期望响应 \" 数据对进行微调，提升指令遵循能力\nB 错误：指令微调是在已有预训练模型基础上进行的，不是从零训练\nC 错误：指令数据通常包含指令输入和对应的期望输出\nD 错误：指令微调是在保留预训练知识的前提下增强指令遵循能力",
-    "category": "指令微调"
+    "category": "指令微调",
+    "group": "youth"
   },
   {
     "question": "关于指令微调与多任务学习的关系，下列描述正确的是：",
@@ -392,7 +424,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：指令微调通过统一的 \" 指令 - 响应 \" 格式整合多种任务数据，本质上是多任务学习\nB 错误：指令微调的核心优势之一就是可以通过多任务数据提升泛化能力\nC 错误：指令微调与多任务学习高度相关，前者可视为后者的特殊形式\nD 错误：多任务数据通常能提升模型泛化能力，不会必然导致性能下降",
-    "category": "指令微调"
+    "category": "指令微调",
+    "group": "youth"
   },
   {
     "question": "关于指令数据的合成方法，下列说法正确的是：",
@@ -404,7 +437,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：Self-Instruct 是经典的指令数据合成方法，用少量种子指令引导LLM生成新指令\nB 错误：Self-Instruct、Evol-Instruct 等方法都是自动化合成指令数据的方式\nC 错误：合成数据质量不一定高于人工标注，需要额外筛选和清洗\nD 错误：Self-Instruct等方法通常需要种子指令作为启动数据",
-    "category": "指令微调"
+    "category": "指令微调",
+    "group": "youth"
   },
   {
     "question": "关于高质量指令数据的筛选与清洗，下列描述正确的是：",
@@ -416,7 +450,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：高质量数据需要语义匹配、多样性和准确性多方面保障\nB 错误：自动生成的数据中可能存在低质量、重复或不准确的内容\nC 错误：质量取决于语义一致性、准确性、多样性等多个维度，不仅是长度\nD 错误：数据清洗还包括过滤低质量响应、纠正错误标注、去除有害内容等",
-    "category": "指令微调"
+    "category": "指令微调",
+    "group": "youth"
   },
   {
     "question": "关于指令数据构建的提升方法，下列说法正确的是：",
@@ -428,7 +463,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：Evol-Instruct 通过深度进化和广度进化策略逐步提升指令的复杂度和多样性\nB 错误：Bootstrapping 正是利用模型自身输出作为反馈来增强指令数据\nC 错误：长上下文指令需要精心设计上下文结构，不是简单拼接\nD 错误：进化算法的目的就是逐步增加指令复杂度，会超过原始种子",
-    "category": "指令微调"
+    "category": "指令微调",
+    "group": "youth"
   },
   {
     "question": "关于指令数据质量与模型泛化能力的关系，下列描述正确的是：",
@@ -440,7 +476,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：数据的质量和多样性是影响泛化能力的关键因素\nB 错误：大量低质量数据可能反而损害模型性能，质量比数量更重要\nC 错误：单一领域数据会导致模型在其他领域表现不佳\nD 错误：指令数据质量对泛化能力有显著影响",
-    "category": "指令微调"
+    "category": "指令微调",
+    "group": "youth"
   },
   {
     "question": "关于指令微调的优化设置，下列说法正确的是：",
@@ -452,7 +489,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：指令微调通常只对模型生成的响应部分计算损失，指令部分不参与损失计算\nB 错误：过大的批次可能影响泛化能力，需要在效率和效果之间权衡\nC 错误：多指令合并是将多条指令打包到同一个序列中高效训练，但每条指令的损失独立计算\nD 错误：多阶段训练的核心是不同阶段使用不同的数据配比和课程安排",
-    "category": "指令微调"
+    "category": "指令微调",
+    "group": "youth"
   },
   {
     "question": "关于指令微调中的资源消耗估算，下列描述正确的是：",
@@ -464,7 +502,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：显存消耗的四大组成部分是参数、梯度、优化器状态和激活值\nB 错误：参数量越大，显存消耗越大，70B 比 7B 需要多得多的显存\nC 错误：更大的批次会增加激活值的显存占用\nD 错误：LoRA只训练少量参数，显存消耗远低于全参数微调",
-    "category": "指令微调"
+    "category": "指令微调",
+    "group": "youth"
   },
   {
     "question": "关于指令微调中的数据组织策略，下列说法正确的是：",
@@ -476,7 +515,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：利用领域专家模型评估指令数据与目标领域的相关性和质量\nB 错误：代理模型引导的配比是根据模型反馈动态调整各领域数据的比例\nC 错误：基于导数的方法正是利用梯度信息来选择对模型最有益的训练数据\nD 错误：数据组织策略对微调效果有显著影响",
-    "category": "指令微调"
+    "category": "指令微调",
+    "group": "youth"
   },
   {
     "question": "关于垂直领域的指令数据构造与使用，下列描述正确的是：",
@@ -488,7 +528,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：垂直领域数据需要领域专家参与构建，确保专业性和准确性\nB 错误：通用数据缺乏领域专业性，无法完全替代垂直领域数据\nC 错误：垂直领域数据的质量尤为重要，低质量数据可能引入领域错误\nD 错误：合理的微调策略可以在保持通用能力的同时增强领域能力",
-    "category": "指令微调"
+    "category": "指令微调",
+    "group": "youth"
   },
   {
     "question": "以下代码实现了 LoRA（低秩适配）微调层，请阅读代码并填写空缺部分。\nimport torch\nimport torch.nn as nn\nimport math\nclass LoRALinear(nn.Module):\n\"\"\"在原始线性层旁添加低秩分解矩阵实现LoRA微调\"\"\"\ndef __init__(self, original_linear: nn.Linear, rank: int = 8, alpha: float = 16.0):\nsuper().__init__()\nself.original_linear = original_linear self.rank = rank self.alpha = alpha self.scaling = alpha / rank in_features = original_linear.in_features out_features = original_linear.out_features\n# [1] 初始化低秩矩阵A和B\n# LoRA的核心: ΔW = A @ B, 其中A: (in_features, rank), B: (rank, out_features)\n[1] ______________________________\n[2] ______________________________\nnn.init.kaiming_uniform_(self.lora_A, a=math.sqrt(5))\nnn.init.zeros_(self.lora_",
@@ -500,7 +541,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：LoRA 将 ΔW 分解为 A(in,rank)×B(rank,out)，前向计算为 x@A@B 乘以缩放因子，且 A 和 B 必须是nn.Parameter可学习参数\nB 错误：矩阵 A 的维度应为 (in_features, rank)，B 为 (rank, out_features)，B选项维度颠倒了\nC 错误：LoRA 的增量输出是矩阵乘法 x@A@B，不是加法x+A+B\nD 错误：lora_A和lora_B必须用nn.Parameter包裹才能被优化器识别为可训练参数，普通tensor不参与梯度更新",
-    "category": "指令微调"
+    "category": "指令微调",
+    "group": "youth"
   },
   {
     "question": "除了无害性、有用性和诚实性，人类对齐还可能包含哪些重要标准？",
@@ -512,7 +554,8 @@ const QUESTIONS = [
     },
     "answer": "D",
     "explanation": "D 正确：人类对齐除了核心的无害性、有用性和诚实性（3H 原则）（3H 原则），还包括语言和文化适应性、道德规范、隐私保护等多个方面。不同的应用场景和文化背景可能对对齐标准有不同要求，因此 A、B、C 都是重要的对齐标准。",
-    "category": "人类对齐"
+    "category": "人类对齐",
+    "group": "youth"
   },
   {
     "question": "在大模型对齐的实践中，除了核心的“3H”原则，还需要考虑语言表达与道德标准。关于这些扩展标准，下列说法错误的是：",
@@ -524,7 +567,8 @@ const QUESTIONS = [
     },
     "answer": "C",
     "explanation": "C 错误：道德标准往往具有地域性、时代性和文化相关性，不存在一套全球完全统一且永恒不变的道德准则。对齐工作需要根据目标用户群体和法律环境动态调整。A、B、D 均属于对齐过程中需要考虑的多维度标准。",
-    "category": "其他"
+    "category": "其他",
+    "group": "youth"
   },
   {
     "question": "在收集人类偏好数据以训练奖励模型时，相比于直接给单个回答打分（Scoring），采用“两两比较并排序（Ranking/\nPairwise Comparison）”的主要优势是：",
@@ -536,7 +580,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "打分存在“锚定效应”，不同人对“4 分”的定义不同。而让标注者在两个回答中选出更好的一个，更容易达成共识，数据一致性更高，这也是目前 RLHF 流程中的主流做法。",
-    "category": "人类对齐"
+    "category": "人类对齐",
+    "group": "youth"
   },
   {
     "question": "人类反馈数据中常存在“长度偏见（Length Bias）”，这指的是：",
@@ -548,7 +593,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "研究发现，人类和奖励模型往往会无意识地偏好更长、辞藻更华丽的回答，这种偏差需要在数据采样和模型训练中进行修正。",
-    "category": "人类对齐"
+    "category": "人类对齐",
+    "group": "youth"
   },
   {
     "question": "DPO 算法在对齐大模型时，相比于传统的 RLHF（基于PPO 算法），其最核心的改变是：",
@@ -560,7 +606,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "DPO 将奖励函数与最优策略的关系进行了闭式解变换，使得我们可以直接利用偏好数据进行监督学习（通常是交叉熵损失），从而避开了复杂的强化学习（PPO）框架。",
-    "category": "人类对齐"
+    "category": "人类对齐",
+    "group": "youth"
   },
   {
     "question": "关于 DPO 的变种算法，下列描述正确的是：",
@@ -572,7 +619,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：标准的 DPO 是句子级的（Sequence-level），Token-level DPO 试图解决句子内部不同部分贡献度不同的问题。C 不准确：虽然移除 Ref 模型能省显存，但 Reference-free DPO（如某些对齐研究中尝试将 Ref 项设为常数或使用隐含先验）的主要挑战在于失去正则化后容易导致模型崩溃或过度拟合偏好数据，通常不被视为标准生产推荐做法。\nB 错误：完全取消约束会导致训练崩溃。",
-    "category": "人类对齐"
+    "category": "人类对齐",
+    "group": "youth"
   },
   {
     "question": "关于打分式、对比式（两两比较）和排序式（列表排序）损失的逻辑，以下说法正确的是：",
@@ -584,7 +632,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "A 错误：打分式（Pointwise）最大的问题在于主观标准不统一（例如：标注者 A 认为的 4 分可能是标注者 B 认为的 3分），会引入大量噪声。\nB 正确：对比式（Pairwise）损失不要求模型学习绝对分值，而是学习相对偏好序。这符合人类标注的习惯（两两相比更容易达成共识），是当前大模型奖励模型训练的主流方案。\nC 错误：排序式（Listwise/Ranking）损失可以处理包含多个回答的列表，通过优化整个序列的排列顺序来训练模型，并不局限于两个回答。\nD 错误：它们的目标逻辑不同。打分式关注绝对值预测；对比式和排序式关注相对序的准确性，不强制要求输出特定的分数值。",
-    "category": "其他"
+    "category": "其他",
+    "group": "youth"
   },
   {
     "question": "奖励模型训练中存在“奖励欺骗（Reward Hacking）”现象，\n这反映了奖励模型在泛化能力上的什么局限性？",
@@ -596,7 +645,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "B 正确：奖励欺骗是泛化失败的典型表现。当奖励模型无法完美捕捉人类真实意图时，策略模型（Generator）会利用奖励模型的弱点（例如：RM 偏好结尾加“谢谢”，模型就在所有回答后加“谢谢”而不顾质量）来刷分。",
-    "category": "人类对齐"
+    "category": "人类对齐",
+    "group": "youth"
   },
   {
     "question": "大模型的幻觉可以分为“内在幻觉”和“外在幻觉”。关于“外在幻觉（Extrinsic Hallucination）”，下列描述准确的是：",
@@ -608,7 +658,8 @@ const QUESTIONS = [
     },
     "answer": "C",
     "explanation": "内在幻觉指逻辑矛盾或与上下文冲突；外在幻觉指模型输出了无法从输入或已知事实中证实的内容（即凭空捏造事实）。",
-    "category": "人类对齐"
+    "category": "人类对齐",
+    "group": "youth"
   },
   {
     "question": "在实际应用中，为了缓解大模型的幻觉问题，以下哪种技术手段被证明是最直接有效的“外挂知识库”方案？",
@@ -620,7 +671,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "B 正确：RAG 通过在生成前从外部可靠知识库检索相关文档并作为上下文输入给模型，显著降低了模型因知识遗忘或缺失而产生的事实性幻觉。CoT 主要解决推理逻辑问题，不能直接提供模型未学过的实时事实。",
-    "category": "人类对齐"
+    "category": "人类对齐",
+    "group": "youth"
   },
   {
     "question": "关于语言模型的解码方法，下列说法正确的是：",
@@ -632,7 +684,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：贪心搜索每步选最大概率词，效率高但是局部最优，可能错过全局更优序列\nB 错误：束搜索同时维护多个候选序列（束宽个），贪心搜索只保留1个\nC 错误：贪心搜索是局部最优策略，不能保证全局最优\nD 错误：束搜索需要设置束宽（beam width）等超参数",
-    "category": "解码与部署"
+    "category": "解码与部署",
+    "group": "youth"
   },
   {
     "question": "关于束搜索的超参数调优，下列描述正确的是：",
@@ -644,7 +697,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：更大的束宽意味着更多候选路径，搜索更全面但计算量线性增长\nB 错误：束宽为1时束搜索退化为贪心搜索，两者等价\nC 错误：束宽过大可能导致生成结果过于保守和重复，且计算开销过大\nD 错误：长度惩罚参数会影响模型对不同长度序列的偏好",
-    "category": "解码与部署"
+    "category": "解码与部署",
+    "group": "youth"
   },
   {
     "question": "以下代码实现了温度采样、Top-K 采样和 Top-P 采样，请阅读代码并填写空缺部分。\nimport torch\nimport torch.nn.functional as F\ndef sample_with_strategies(logits, temperature=1.0, top_k=0, top_p=0.0):\n\"\"\"对模型输出的logits应用温度、Top-K、Top-P采样策略参数:\nlogits: 模型输出的原始分数, shape (vocab_size,)\ntemperature: 温度参数，控制分布的平滑程度\ntop_k: 只保留概率最高的k个token（0表示不启用）\ntop_p: 只保留累积概率达到p的最少token集合（0.0表示不启用）\n返回:\n采样得到的token索引\n\"\"\"\n# [1] 温度缩放：用temperature对logits进行缩放\n______________________________\n# Top-K 采样：只保留概率最高的k个token\nif top_k > 0:\ntop_k_values, _ = torch.topk(scaled_logits, top_k)\nmin_top_k = top_k_values[-1]\nscaled_logits = scaled_logits.masked_fill(scaled_logits < min_top_k, float('-inf'))\n# Top-P (Nucleus) 采样\nif top_p > 0.0:\nsorted_logits, sorted_indices = torch.sort(scaled_logits, descending=True)\nprobs_sorted = F.softmax(sorted_logits, dim=-1)\ncumulative_probs = torch.cumsum(probs_sorted, dim=-1)\n# [2] 创建掩码：移除累积概率超过top_p的token，但保留第一个超过阈值的token\n[1] 和 [2] 处应分别填入：",
@@ -656,7 +710,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：温度采样的公式为 logits/T，T越大分布越平滑（更随机），T 越小越尖锐（更确定）；Top-P 先用 cumulative_ probs > top_p 标记超过阈值的位置，再将掩码右移一位，从而保留第一个超过阈值的 token，得到“累计概率刚好覆盖top_p”的最小候选集合\nB 错误：温度应该是除法（logits/T）而非乘法，乘以温度会使高温时分布更尖锐，与期望相反\nC 错误：Top-P 应移除累积概率超过 p 的 token（>p），而非低于p的（<p）\nD 错误：温度缩放是除法操作，不是减法；且应基于累积概率而非单个token概率来过滤",
-    "category": "解码与部署"
+    "category": "解码与部署",
+    "group": "youth"
   },
   {
     "question": "关于不同采样策略对生成多样性的影响，下列描述正确的是：",
@@ -668,7 +723,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：top-p 动态选择累积概率达到 p 的最少词集合，自适应调整候选词数量\nB 错误：top-k=1 等价于贪心搜索（最确定），高温采样输出更随机\nC 错误：实践中经常同时使用 top-k 和 top-p 来联合控制采样范围\nD 错误：采样策略直接影响生成文本的多样性、质量和创造性",
-    "category": "其他"
+    "category": "其他",
+    "group": "youth"
   },
   {
     "question": "关于大语言模型的解码方式和推理工具，下列说法正确的是：",
@@ -680,7 +736,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：KV Cache 缓存历史的 Key 和 Value，每步只需计算新token的注意力，大幅减少计算量\nB 错误：全量解码每步重复计算所有位置，效率远低于增量解码\nC 错误：vLLM 是高效的 LLM 推理引擎， 通过PagedAttention等技术加速推理\nD 错误：解码效率评估包括吞吐量（tokens/s）、延迟（latency）、首token时间（TTFT）等指标回归解码、早退机制、级联解码）、解码加速的系统级优化（FlashAttention、PagedAttention、批次管理优化）",
-    "category": "大模型基础概念"
+    "category": "大模型基础概念",
+    "group": "youth"
   },
   {
     "question": "关于解码加速的优化算法和系统级优化，下列描述正确的是：",
@@ -692,7 +749,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：推测解码用小模型草拟，大模型批量验证，在不改变输出分布的前提下加速生成\nB 错误：FlashAttention 是 IO 感知的精确注意力实现，不损失精度，通过减少HBM读写来加速\nC 错误：PagedAttention 借鉴操作系统分页思想管理 KV 缓存显存，减少显存碎片\nD 错误：非自回归解码可以并行生成多个 token，通常比自回归解码更快",
-    "category": "解码与部署"
+    "category": "解码与部署",
+    "group": "youth"
   },
   {
     "question": "关于模型量化的基本概念，下列说法正确的是：",
@@ -704,7 +762,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：量化通过降低数值精度来压缩模型，是降低部署资源需求的核心技术\nB 错误：对称量化以零为中心映射，非对称量化使用零点偏移，映射方式不同\nC 错误：量化会引入精度损失，但合理的量化方法可以将损失控制在可接受范围\nD 错误：量化粒度指对多大范围的参数使用同一组量化参数（如逐张量、逐通道、逐组）",
-    "category": "解码与部署"
+    "category": "解码与部署",
+    "group": "youth"
   },
   {
     "question": "关于量化工具和实际应用，下列描述正确的是：",
@@ -716,7 +775,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：GPTQ 和 AWQ 是主流的后训练量化方法，支持低至4-bit量化\nB 错误：量化后的模型可以在 CPU、GPU 等多种硬件上高效运行\nC 错误：后训练量化（PTQ）不需要重新训练，量化感知训练（QAT）才需要\nD 错误：量化可以同时应用于参数和激活值",
-    "category": "解码与部署"
+    "category": "解码与部署",
+    "group": "youth"
   },
   {
     "question": "关于模型压缩的三种主要方法，下列说法正确的是：",
@@ -728,7 +788,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：知识蒸馏通过教师 - 学生框架将大模型的知识迁移到小模型\nB 错误：剪枝是移除冗余参数或结构来减小模型体积\nC 错误：三种方法可以组合使用，如先蒸馏再量化\nD 错误：剪枝后通常需要微调来恢复因剪枝损失的性能",
-    "category": "其他"
+    "category": "其他",
+    "group": "youth"
   },
   {
     "question": "关于模型压缩方法在实际使用中的注意事项，下列描述正确的是：",
@@ -740,7 +801,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：蒸馏+量化的组合是实际部署中常用的压缩策略\nB 错误：结构化剪枝移除整个通道/层，更容易获得硬件加速；非结构化剪枝产生稀疏矩阵\nC 错误：蒸馏通常使用教师模型的软标签（输出概率分布）来指导学生\nD 错误：QAT 在训练中模拟量化效果，PTQ 在训练后直接量化，流程不同",
-    "category": "其他"
+    "category": "其他",
+    "group": "youth"
   },
   {
     "question": "关于大模型推理中的资源管理和性能优化，下列说法正确的是：",
@@ -752,7 +814,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：预填充阶段通常是计算瓶颈，解码阶段通常是内存带宽瓶颈\nB 错误：不同阶段和不同配置下瓶颈不同，需要具体分析\nC 错误：多GPU 带来通信开销，不能保证线性加速\nD 错误：实际部署需要综合考虑精度、延迟、吞吐量等多个指标优化",
-    "category": "复杂推理"
+    "category": "复杂推理",
+    "group": "adult"
   },
   {
     "question": "关于分布式资源管理和硬件软件协同优化，下列描述正确的是：",
@@ -764,7 +827,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：张量并行将单层参数切分到多设备，流水线并行将不同层分配到不同设备\nB 错误：新硬件通常需要软件适配（如CUDA版本、算子优化）才能充分发挥性能\nC 错误：张量并行需要频繁的设备间All-Reduce通信来同步中间结果\nD 错误：还有张量并行、数据并行、专家并行等多种策略",
-    "category": "其他"
+    "category": "其他",
+    "group": "youth"
   },
   {
     "question": "关于提示工程（Prompt Engineering）的主要目的和局限，下列说法正确的是：",
@@ -776,7 +840,8 @@ const QUESTIONS = [
     },
     "answer": "C",
     "explanation": "C 正确：提示工程是在不改变模型参数的前提下引导模型输出。其局限性在于对输入的敏感性（Robustness 问题），微小的改动可能导致截然不同的结果。",
-    "category": "提示学习"
+    "category": "提示学习",
+    "group": "youth"
   },
   {
     "question": "在以下场景中，哪项最适合应用提示学习方法？",
@@ -788,7 +853,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "B 正确：提示学习（Prompt Learning）的核心思想是利用预训练模型已学到的知识，通过设计合适的提示来引导模型完成特定任务，无需大量标注数据和重新训练。因此最适合B选项的场景。\nA 错误：从零开始训练一个全新的深度学习模型不属于提示学习的应用范畴，提示学习是利用现有预训练模型。\nC 错误：处理大规模结构化数据的统计分析不是提示学习的典型应用场景。\nD 错误：进行复杂的数学公式推导计算也不是提示学习的典型应用场景。",
-    "category": "其他"
+    "category": "其他",
+    "group": "youth"
   },
   {
     "question": "上下文学习（In-Context Learning）的核心特征是：",
@@ -800,7 +866,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "B 正确：上下文学习（In-Context Learning）是通过输入中的示例（Input-Output Pairs）进行类比推理。",
-    "category": "大模型基础概念"
+    "category": "大模型基础概念",
+    "group": "youth"
   },
   {
     "question": "关于思维链（CoT）提升模型性能的原理，下列描述最准确的是：",
@@ -812,7 +879,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "B 正确：思维链（CoT）通过生成中间推理步骤，降低了模型直接从问题跳转到复杂答案的推理难度。跳转到复杂答案的推理难度。",
-    "category": "提示学习"
+    "category": "提示学习",
+    "group": "youth"
   },
   {
     "question": "关于推理的基本方法与范畴，下列说法正确的是：",
@@ -824,7 +892,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：推理涵盖多种形式，LLM 通过思维链等策略模拟不同类型的推理\nB 错误：推理范畴广泛，包括逻辑推理、因果推理、常识推理等\nC 错误：推理能力与训练数据的质量和多样性也密切相关\nD 错误：不同推理任务（如数学、逻辑、常识）难度和策略需求不同",
-    "category": "复杂推理"
+    "category": "复杂推理",
+    "group": "adult"
   },
   {
     "question": "关于感知、认知与推理的区别，下列描述正确的是：",
@@ -836,7 +905,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：三者形成层级关系，感知→认知→推理，逐步从低层到高层\nB 错误：三者是不同层次的智能能力\nC 错误：推理通常建立在感知获取信息、认知理解信息的基础之上\nD 错误：多模态大模型已具备一定的感知能力，语言理解体现了认知能力",
-    "category": "复杂推理"
+    "category": "复杂推理",
+    "group": "adult"
   },
   {
     "question": "关于长思维链（Chain-of-Thought）推理和测试时间扩展，\n下列说法正确的是：",
@@ -848,7 +918,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：CoT 让模型 \" 思考 \" 中间步骤，将复杂问题分解，显著提升推理准确率\nB 错误：测试时间扩展是指在推理（测试）阶段投入更多计算资源来提升性能\nC 错误：思维链推理可以用于逻辑推理、代码生成、常识推理等多种任务\nD 错误：对于复杂推理任务，更详细的推理过程通常能提高准确率",
-    "category": "复杂推理"
+    "category": "复杂推理",
+    "group": "adult"
   },
   {
     "question": "关于使用推理模型解决不同类型任务，下列描述正确的是：",
@@ -860,7 +931,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：推理模型通过长思维链在多步推理任务上有显著优势\nB 错误：推理模型可以处理数学、代码、逻辑、科学等多种复杂任务\nC 错误：在简单任务上推理模型可能不比普通模型更好，且推理开销更大\nD 错误：推理模型以更多的推理计算量换取更高的准确率令蒸馏方法",
-    "category": "复杂推理"
+    "category": "复杂推理",
+    "group": "adult"
   },
   {
     "question": "关于基于监督微调的推理模型训练，下列说法正确的是：",
@@ -872,7 +944,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：指令蒸馏利用强模型生成高质量的思维链推理数据来训练小模型\nB 错误：长思维链数据的核心价值就是包含详细的中间推理步骤\nC 错误：蒸馏后的小模型通常不会超过教师模型，但能显著提升自身推理能力\nD 错误：长思维链数据需要包含正确的推理步骤和答案，不是随机文本",
-    "category": "复杂推理"
+    "category": "复杂推理",
+    "group": "adult"
   },
   {
     "question": "关于以监督微调方式训练推理模型的流程，下列描述正确的是：",
@@ -884,7 +957,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：标准的监督微调流程，数据包含完整的推理过程和答案\nB 错误：监督微调需要标注好的推理数据\nC 错误：训练推理模型不仅要求答案正确，推理过程的质量也非常重要\nD 错误：监督微调是训练推理模型的有效方法之一",
-    "category": "复杂推理"
+    "category": "复杂推理",
+    "group": "adult"
   },
   {
     "question": "关于基于强化学习训练推理模型的方法，下列说法正确的是：",
@@ -896,7 +970,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：ORM 只看最终结果，PRM 对每步推理给出奖励，PRM能提供更细粒度的\nB 错误：强化学习的核心就是通过奖励信号引导模型优化\nC 错误：ORM 关注结果正确性，PRM 关注过程正确性，粒度不同\nD 错误：PPO、GRPO 等策略优化算法是 RL 训练推理模型的常用方法",
-    "category": "复杂推理"
+    "category": "复杂推理",
+    "group": "adult"
   },
   {
     "question": "关于强化学习训练推理模型时的探索策略，下列描述正确的是：",
@@ -908,7 +983,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：探索 - 利用平衡是 RL 的核心问题，推理模型需要尝试多样化推理路径\nB 错误：探索的核心就是尝试不同的推理路径，而非固定路径\nC 错误：增大温度会增加采样的随机性和多样性，促进探索\nD 错误：探索策略直接影响模型能否发现更优的推理路径中通过多路径搜索（Self-consistency）、树搜索（Tree-of- thoughts）等提升模型推理能力",
-    "category": "复杂推理"
+    "category": "复杂推理",
+    "group": "adult"
   },
   {
     "question": "关于基于搜索的测试时间扩展方法，下列说法正确的是：",
@@ -920,7 +996,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：Self-consistency 通过多次采样 + 多数投票来提升推理准确率\nB 错误：Tree-of-Thoughts 将推理组织成树状结构，每个节点可以展开多个分支\nC 错误：基于搜索的方法以增加推理计算量换取准确率提升\nD 错误：Self-consistency 的核心是多次采样取一致性最高的答案",
-    "category": "复杂推理"
+    "category": "复杂推理",
+    "group": "adult"
   },
   {
     "question": "关于搜索效率与准确性的权衡，下列描述正确的是：",
@@ -932,7 +1009,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：更多搜索路径提升准确性但增加计算成本，实际应用需要权衡\nB 错误：更多搜索路径意味着更多的推理计算，推理速度会降低\nC 错误：搜索效率和准确性之间存在典型的权衡关系\nD 错误：减少搜索路径通常会降低准确性",
-    "category": "复杂推理"
+    "category": "复杂推理",
+    "group": "adult"
   },
   {
     "question": "在构建智能体时，通过 System Prompt 定义其“身份设定\n（Profile）”的主要目的是：",
@@ -944,7 +1022,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "B 正确：Profile（画像 / 身份）设置通过提示词工程，让模型在特定的语境（Context）下运行，使其回复更符合特定角色（如：资深医生、幽默导游）的预期行为。",
-    "category": "提示学习"
+    "category": "提示学习",
+    "group": "youth"
   },
   {
     "question": "在长对话或复杂任务中，智能体容易出现“出戏（Out of Character）”现象。以下哪项是保持角色一致性的有效优化手段？",
@@ -956,7 +1035,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "由于模型注意力机制的限制，长对话中初始设定权重会下降。通过“固定前缀”或在每轮输入中动态注入 Profile 信息（Prompt Injection），可以有效维持角色的稳定性。",
-    "category": "智能体"
+    "category": "智能体",
+    "group": "adult"
   },
   {
     "question": "关于智能体的记忆机制，下列说法正确的是：",
@@ -968,7 +1048,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：显式记忆指可直接读取和检索的信息。隐式记忆通常指模型通过微调或长上下文学习到的、内化在参数或模式中的知识。\nC 错误：短期记忆通常指 Context window 内的信息；长期记忆依赖外部存储（RAG/Database）。",
-    "category": "智能体"
+    "category": "智能体",
+    "group": "adult"
   },
   {
     "question": "为了解决长时对话中“记忆碎片化”和“上下文窗口限制”问题，\n以下哪种记忆管理策略最为合理？",
@@ -980,7 +1061,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "B 正确：有效的记忆机制需要平衡“完整性”和“效率”。摘要化（将长对话浓缩成关键信息）和向量化检索（基于语义召回相关记忆）是解决长时记忆的主流技术。",
-    "category": "其他"
+    "category": "其他",
+    "group": "youth"
   },
   {
     "question": "在智能体调用外部工具（Tool Use/Function Calling）的过程中，模型的主要作用是：",
@@ -992,7 +1074,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "B 正确：LLM 在工具使用中充当“大脑”和“调度器”，它负责识别何时需要工具，并按预定义格式输出参数。实际的执行由外部系统完成。",
-    "category": "智能体"
+    "category": "智能体",
+    "group": "adult"
   },
   {
     "question": "当智能体可用的工具数量非常庞大（如超过 1000 个 API）时，\n直接将所有工具描述放入 Prompt 会导致超出 Token 限制。\n此时应采取的优化方案是：",
@@ -1004,7 +1087,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "这是构建大规模智能体系统的标准做法：意图识别 -> 工具检索 -> 精确调用。",
-    "category": "提示学习"
+    "category": "提示学习",
+    "group": "youth"
   },
   {
     "question": "在多智能体系统（MAS）中，若采用“星型通信结构”，其特点是：",
@@ -1016,7 +1100,8 @@ const QUESTIONS = [
     },
     "answer": "C",
     "explanation": "星型结构（Hub-and-Spoke）效率较高，便于控制，但核心节点容易成为瓶颈。链式（Chain）是 A 描述的模式，网状（Mesh）是 B 描述的模式。",
-    "category": "智能体"
+    "category": "智能体",
+    "group": "adult"
   },
   {
     "question": "多智能体频繁通信会消耗大量 Token。为了优化通信数据，\n以下哪种方案是不合理的？",
@@ -1028,7 +1113,8 @@ const QUESTIONS = [
     },
     "answer": "C",
     "explanation": "C 破坏了多智能体协作的基础——通信。A（向量通信）、B（协议化）、D（摘要）都是常见的通信优化手段。",
-    "category": "智能体"
+    "category": "智能体",
+    "group": "adult"
   },
   {
     "question": "在多智能体协作任务中，如果发现某个执行 Agent 总是无法理解主控 Agent 的指令，最先应该尝试的优化方案是：",
@@ -1040,7 +1126,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "在智能体开发中，Prompt 调优是最快速、成本最低且通常最有效的方案，尤其是针对逻辑理解问题。",
-    "category": "智能体"
+    "category": "智能体",
+    "group": "adult"
   },
   {
     "question": "多智能体协同学习（Cooperative Learning）的一种常见形式是“评审机制”，其流程通常是：",
@@ -1052,7 +1139,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "这种“生成-评审（Generator-Critic）”或“多轮博弈”是多智能体提升输出质量的关键机制。",
-    "category": "智能体"
+    "category": "智能体",
+    "group": "adult"
   },
   {
     "question": "在“人机协作（Human-in-the-loop）”模式下，智能体在执行高风险任务（如自动下单或删除文件）前请求人类确认。这种协作方式的主要目的是：",
@@ -1064,7 +1152,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "在高风险或高准确度要求的场景下，人类的审核（Approval）是智能体安全护栏的重要组成部分。",
-    "category": "智能体"
+    "category": "智能体",
+    "group": "adult"
   },
   {
     "question": "在智能体与人协作的过程中，为了提升系统整体的协作效率并避免人工审核成为流程瓶颈，以下哪项优化策略最为合理？",
@@ -1076,7 +1165,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "A 错误：会导致严重的效率低下，使系统无法处理大规模任务。\nB 正确：这是效率优化的核心策略。通过设置置信度阈值，让智能体自主处理“有把握”的任务，而将“拿不准”的复杂或高风险任务交由人类处理，实现了安全与效率的平衡。\nC 错误：忽略了安全性和人类最终控制权的底线，不符合协作原则。\nD 错误：这属于增加流程复杂度，会进一步降低协作效率。",
-    "category": "智能体"
+    "category": "智能体",
+    "group": "adult"
   },
   {
     "question": "在具身智能或复杂任务中，“世界模型（World Model）”的作用是：",
@@ -1088,7 +1178,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "世界模型让智能体具备“预见性”，即在实际行动前，先在模拟的环境中演练动作的后果。",
-    "category": "其他"
+    "category": "其他",
+    "group": "youth"
   },
   {
     "question": "在构建智能体（Agent）的仿真环境（如自动化脚本执行器）\n时，关于“沙箱隔离（Sandboxing）”与“环境反馈（Observation）”\n的设计，以下说法正确的是：",
@@ -1100,7 +1191,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "B 正确：环境在 Agent 架构中负责接收 Action，更新状态，并向 Agent 返回 Observation（观察值）或 Reward（奖励），这是智能体实现自我迭代的基础。\nA 错误：直接操作宿主机极具风险，必须通过容器或虚拟化技术进行沙箱隔离。\nC 错误：错误反馈（如代码报错信息）是智能体学习“纠错”的关键数据。\nD 错误：适度的环境随机性有助于提升智能体的泛化能力和鲁棒性。",
-    "category": "智能体"
+    "category": "智能体",
+    "group": "adult"
   },
   {
     "question": "斯坦福大学的“生成式智能体（Generative Agents）”实验（俗称斯坦福小镇）展示了智能体在社会模拟中的什么特性？",
@@ -1112,7 +1204,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "该实验证明了当 Agent 具备长期记忆和架构逻辑后，在模拟社会环境中能够表现出类似人类的社交、传播和协同行为。",
-    "category": "智能体"
+    "category": "智能体",
+    "group": "adult"
   },
   {
     "question": "关于模型评测中的数据集划分和泛化能力，下列说法正确的是：",
@@ -1124,7 +1217,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：标准三分法，训练集用于训练，验证集用于调参，测试集用于最终评估泛化能力\nB 错误：训练集表现好不代表泛化能力强，可能存在过拟合\nC 错误：验证集用于超参数调优和模型选择，测试集用于最终评估，功能不同\nD 错误：划分方式（如比例、是否分层）会影响评测结果的可靠性",
-    "category": "模型评测"
+    "category": "模型评测",
+    "group": "adult"
   },
   {
     "question": "关于模型泛化能力的理论保证，下列描述正确的是：",
@@ -1136,7 +1230,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：泛化理论（如 VC 理论）表明数据量和模型复杂度的平衡是泛化的关键\nB 错误：过于复杂的模型容易过拟合，泛化能力反而下降\nC 错误：泛化误差与模型复杂度密切相关，过复杂的模型泛化误差大\nD 错误：训练误差为零可能是过拟合的表现F1 分数、困惑度、BLEU、ROUGE 等、准确定、成功率、NDCG",
-    "category": "模型评测"
+    "category": "模型评测",
+    "group": "adult"
   },
   {
     "question": "关于常见的模型评测指标，下列说法正确的是：",
@@ -1148,7 +1243,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：F1 = 2 × Precision × Recall / (Precision + Recall)，是两者的调和平均\nB 错误：BLEU 主要用于机器翻译等文本生成任务，衡量生成文本与参考文本的n-gram重合度\nC 错误：困惑度越低表示模型越好，代表模型对数据的拟合程度越高\nD 错误：ROUGE 用于评测文本摘要等生成任务的质量",
-    "category": "人工智能基础概念"
+    "category": "人工智能基础概念",
+    "group": "youth"
   },
   {
     "question": "以下代码实现了 BLEU 评测指标的计算，请阅读代码并填写空缺部分。\nimport math\nfrom collections import Counter\ndef compute_bleu(reference, candidate, max_n=4):\n\"\"\"计算BLEU分数（简化版）\n参数:\nreference: 参考文本（分词后的列表），如 [\"the\", \"cat\", \"sat\", \"on\", \"the\", \"mat\"]\ncandidate: 候选文本（分词后的列表），如 [\"the\", \"cat\", \"on\", \"the\", \"mat\"]\nmax_n: 最大n-gram阶数\n返回:\nBLEU分数 (float)\n\"\"\"\nprecisions = []\nfor n in range(1, max_n + 1):\n# 生成n-gram\nref_ngrams = [tuple(reference[i:i+n]) for i in range(len(reference) - n + 1)]\ncand_ngrams = [tuple(candidate[i:i+n]) for i in range(len(candidate) - n + 1)]\nref_counts = Counter(ref_ngrams)\ncand_counts = Counter(cand_ngrams)\n# [1] 计算裁剪后的匹配数：候选n-gram的计数不能超过参考中对应n-gram的计数\nclipped_count = 0\nfor ngram, count in cand_counts.items():\n______________________________\ntotal_count = len(cand_ngrams)\nif total_count == 0:\nprecisions.append(0)\n[1] 和 [2] 处应分别填入：",
@@ -1160,7 +1256,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：裁剪计数取候选count和参考count的较小值（min），防止重复词被过度计数；长度惩罚BP在标准形式 exp(1-r/c)的基础上补充了 candidate 为空时返回 0.0 的边界处理，避免除零问题\nB 错误：应取 min 而非 max，max会导致匹配数超过参考中实际出现的次数\nC 错误：BP 应该使用指数惩罚 exp(1-r/c)，简单的比值不是BLEU的标准长度惩罚公式\nD 错误：不进行裁剪（直接用 count）会导致重复生成相同词的候选获得虚高的精度分数，且当 candidate 为空时仍有除零风险评估",
-    "category": "模型评测"
+    "category": "模型评测",
+    "group": "adult"
   },
   {
     "question": "关于大语言模型的评测范式，下列说法正确的是：",
@@ -1172,7 +1269,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：三种主要评测范式各有优缺点，通常结合使用\nB 错误：人类评估成本高且存在主观性，需要与自动评测结合\nC 错误：模型评估可能存在位置偏差、冗长偏差等系统性偏差\nD 错误：不同评测范式可能得出不一致的结论，需要综合分析",
-    "category": "人工智能基础概念"
+    "category": "人工智能基础概念",
+    "group": "youth"
   },
   {
     "question": "关于模型评测中的公平性问题，下列描述正确的是：",
@@ -1184,7 +1282,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：评测公平性受多方面因素影响，包括数据分布、指标选择、评测设置等\nB 错误：数据集的分布偏差是公平性问题的重要方面\nC 错误：不同评测基准可能对不同架构或训练方式的模型有天然偏向\nD 错误：评测公平性仍是活跃的研究领域。",
-    "category": "人工智能基础概念"
+    "category": "人工智能基础概念",
+    "group": "youth"
   },
   {
     "question": "关于常见的公开综合评测集，下列说法正确的是：",
@@ -1196,7 +1295,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：MMLU 是英文多学科评测基准，C-Eval 是中文多学科评测基准\nB 错误：不同评测集侧重不同能力维度\nC 错误：BIG-Bench包含200+多样化任务，涵盖推理、翻译、常识等\nD 错误：HELM是全面的评测框架，关注准确性、鲁棒性、公平性等多个维度",
-    "category": "人工智能基础概念"
+    "category": "人工智能基础概念",
+    "group": "youth"
   },
   {
     "question": "关于评测集构建和数据污染现象，下列描述正确的是：",
@@ -1208,7 +1308,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：数据污染会使模型在评测集上的表现不能代表真实泛化能力\nB 错误：数据污染会导致评测分数偏高，严重影响结果可靠性\nC 错误：评测集需要合理的难度梯度来区分不同水平的模型\nD 错误：公开评测集的数据可能出现在训练数据中，数据污染是普遍关注的问题",
-    "category": "模型评测"
+    "category": "模型评测",
+    "group": "adult"
   },
   {
     "question": "关于语言能力评测的基本任务和指标，下列说法正确的是：",
@@ -1220,7 +1321,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：分类用准确率 /F1，NER 用 F1，阅读理解用 EM/ F1，摘要用ROUGE等\nB 错误：不同任务性质不同，需要不同的评测指标\nC 错误：文本摘要通常使用ROUGE系列指标评测\nD 错误：文本生成（如摘要、翻译）是语言能力评测的重要组成部分",
-    "category": "人工智能基础概念"
+    "category": "人工智能基础概念",
+    "group": "youth"
   },
   {
     "question": "关于领域特定任务的语言能力评测，下列描述正确的是：",
@@ -1232,7 +1334,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：领域特定评测需要专业数据和指标来评估模型的领域适应性\nB 错误：通用评测无法覆盖特定领域的专业知识和术语\nC 错误：领域评测需要多维度指标，如准确性、专业术语使用等\nD 错误：专业领域对准确性要求更高，需要专门的评测集",
-    "category": "人工智能基础概念"
+    "category": "人工智能基础概念",
+    "group": "youth"
   },
   {
     "question": "关于知识利用能力评测的基本任务，下列说法正确的是：",
@@ -1244,7 +1347,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：闭卷依靠模型内部知识，开卷可以检索外部知识，知识不全测试模型处理不完整信息的能力\nB 错误：核心区别是是否允许访问外部知识源\nC 错误：知识不全场景正是测试模型在信息不充分时能否正确判断和回答\nD 错误：问答任务通常使用准确率、EM（完全匹配）、F1等指标",
-    "category": "人工智能基础概念"
+    "category": "人工智能基础概念",
+    "group": "youth"
   },
   {
     "question": "关于模型知识更新的时效性，下列描述正确的是：",
@@ -1256,7 +1360,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：LLM 的知识受限于训练数据的时间范围，存在知识截止问题\nB 错误：模型参数在训练后固定，知识不会自动更新\nC 错误：增加参数量不能解决知识时效性问题，需要检索增强或持续学习\nD 错误：评测时需要注意题目涉及的知识是否在模型训练数据截止日期之后",
-    "category": "其他"
+    "category": "其他",
+    "group": "youth"
   },
   {
     "question": "关于复杂推理能力的评测，下列说法正确的是：",
@@ -1268,7 +1373,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：推理评测涵盖多个维度，通过准确率等指标衡量推理结果的正确性\nB 错误：越来越多的评测也关注推理过程的质量和正确性\nC 错误：不同推理任务有不同的难度等级，评测集通常包含多个难度层次\nD 错误：推理评测需要精心设计的数据集，如GSM8K（数学）、HumanEval（代码）等",
-    "category": "人工智能基础概念"
+    "category": "人工智能基础概念",
+    "group": "youth"
   },
   {
     "question": "关于推理评测的可靠性，下列描述正确的是：",
@@ -1280,7 +1386,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：评测可靠性受多种因素影响，需要综合多个评测集和多次评测来保证\nB 错误：单一评测集可能存在偏差，需要多个评测集交叉验证\nC 错误：提示词格式对评测结果有显著影响，不同格式可能导致不同分数\nD 错误：由于采样随机性，模型在同一评测集上的得分可能略有波动评测、鲁棒性评测（对抗样本）",
-    "category": "人工智能基础概念"
+    "category": "人工智能基础概念",
+    "group": "youth"
   },
   {
     "question": "关于大语言模型的高级评测维度，下列说法正确的是：",
@@ -1292,7 +1399,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：对抗样本测试模型面对刻意设计的干扰输入时的稳定性和鲁棒性\nB 错误：人类对齐评测关注模型是否遵循人类价值观、安全性和有用性\nC 错误：工具使用评测正是测试模型正确调用 API、搜索引擎等外部工具的能力\nD 错误：环境交互评测需要模型在模拟或真实环境中执行操作",
-    "category": "人工智能基础概念"
+    "category": "人工智能基础概念",
+    "group": "youth"
   },
   {
     "question": "关于高级评测任务与模型基础能力的关系，下列描述正确的是：",
@@ -1304,7 +1412,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "A 正确：高级任务是基础能力的综合体现，如工具使用需要指令理解+推理+格式输出\nB 错误：高级任务高度依赖基础语言理解和推理能力\nC 错误：高级评测能发现基础评测无法暴露的问题\nD 错误：高级评测测试的是综合应用能力，不仅是记忆",
-    "category": "人工智能基础概念"
+    "category": "人工智能基础概念",
+    "group": "youth"
   },
   {
     "question": "下列哪个项是大语言模型产生偏见的主要来源？",
@@ -1316,7 +1425,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "训练数据中某些群体的样本不足或存在刻板印象，模型会学习并放大这些偏见。计算速度（B）、硬件容量（C）和界面设计（D）都与模型偏见的产生无直接关系。",
-    "category": "大模型基础概念"
+    "category": "大模型基础概念",
+    "group": "youth"
   },
   {
     "question": "某公司开发了一款基于大模型的自动化简历筛选系统，由于训练数据中历史高管多为男性，导致系统自动调低了女性应聘者的评分。这种现象主要体现了模型偏见的哪种实际影响？",
@@ -1328,7 +1438,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "模型偏见在实际应用中（如招聘、信贷、司法预测）会直接导致对特定群体的歧视，从而将现实中的社会不公通过算法进行放大和自动化执行。这属于算法伦理层面的重大风险，与计算效率、硬件成本等无关。",
-    "category": "大模型基础概念"
+    "category": "大模型基础概念",
+    "group": "youth"
   },
   {
     "question": "在保护大模型训练数据隐私的技术中，“差分隐私（Differential Privacy）”的核心机制是：",
@@ -1340,7 +1451,8 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "差分隐私的核心是通过数学手段注入噪声，使得外部攻击者无法通过模型的输出来反推训练集中是否包含某个特定个体的信息，从而在利用群体统计特征的同时保护个体隐私。",
-    "category": "模型伦理与安全"
+    "category": "模型伦理与安全",
+    "group": "adult"
   },
   {
     "question": "在大模型训练中应用隐私保护技术（如强噪声干扰的差分隐私）时，通常需要面对的权衡（Trade-off）是：",
@@ -1352,7 +1464,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "这是隐私保护领域的经典权衡：为了保护隐私而引入的噪声会干扰模型学习真实的特征分布，导致模型的性能（如准确率、困惑度等指标）出现下降。",
-    "category": "模型伦理与安全"
+    "category": "模型伦理与安全",
+    "group": "adult"
   },
   {
     "question": "大模型在推理服务阶段面临的主要数据安全风险之一是“训练数据泄露”，其表现形式通常为：",
@@ -1364,7 +1477,8 @@ const QUESTIONS = [
     },
     "answer": "A",
     "explanation": "数据泄露风险不仅指外部入侵，也包括模型在生成过程中由于“记忆”了过细的训练样本，导致通过特定的提示词诱导（Prompt Injection）吐露出原始训练数据中的私密信息。",
-    "category": "模型伦理与安全"
+    "category": "模型伦理与安全",
+    "group": "adult"
   },
   {
     "question": "下列哪项符合数据合规中的“最小必要”原则？",
@@ -1376,6 +1490,7 @@ const QUESTIONS = [
     },
     "answer": "B",
     "explanation": "且仅限于实现该目的的最小范围。",
-    "category": "其他"
+    "category": "其他",
+    "group": "youth"
   }
 ];

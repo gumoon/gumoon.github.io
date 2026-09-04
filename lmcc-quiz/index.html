@@ -601,6 +601,20 @@ body {
     </div>
   </div>
 
+  <!-- Exam Group Selection Modal -->
+  <div id="examGroupModal" class="hidden" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:200;display:flex;align-items:center;justify-content:center;">
+    <div class="card" style="max-width:400px;width:90%;text-align:center;">
+      <h3 style="margin-bottom:16px;">选择考试组别</h3>
+      <p style="color:var(--text-secondary);margin-bottom:20px;">成人组包含全部题目，青少年组仅包含基础题目</p>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
+        <button class="btn btn-primary" onclick="selectExamGroup('all')">全部题目</button>
+        <button class="btn btn-secondary" onclick="selectExamGroup('youth')">青少年组</button>
+        <button class="btn btn-secondary" onclick="selectExamGroup('adult')">成人组</button>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="document.getElementById('examGroupModal').classList.add('hidden')">取消</button>
+    </div>
+  </div>
+
   <!-- Home / Dashboard Screen -->
   <div id="homeScreen" class="hidden">
     <div class="header">
@@ -637,6 +651,14 @@ body {
     <div class="card">
       <h3 style="margin-bottom:12px;">题库概况</h3>
       <div class="stats-grid" id="quizStatsGrid"></div>
+      <div style="margin: 16px 0;">
+        <h4 style="margin-bottom:8px;">选择组别</h4>
+        <div class="settings-row">
+          <label><input type="radio" name="quizGroup" value="all" checked> 全部</label>
+          <label><input type="radio" name="quizGroup" value="youth"> 青少年组</label>
+          <label><input type="radio" name="quizGroup" value="adult"> 成人组</label>
+        </div>
+      </div>
       <div style="margin: 16px 0;">
         <h4 style="margin-bottom:8px;">选择模块（可多选，不选则全部）</h4>
         <div class="category-filters" id="quizCategoryFilters"></div>
@@ -921,9 +943,13 @@ function renderQuizSetup() {
     var c = allQuestions[i].category;
     cats[c] = (cats[c] || 0) + 1;
   }
+  var youthCount = allQuestions.filter(function(q){ return q.group === 'youth'; }).length;
+  var adultCount = allQuestions.filter(function(q){ return q.group === 'adult'; }).length;
   document.getElementById('quizStatsGrid').innerHTML =
     '<div class="stat-item"><div class="number">' + allQuestions.length + '</div><div class="label">总题数</div></div>' +
-    '<div class="stat-item"><div class="number">' + Object.keys(cats).length + '</div><div class="label">模块数</div></div>';
+    '<div class="stat-item"><div class="number">' + Object.keys(cats).length + '</div><div class="label">模块数</div></div>' +
+    '<div class="stat-item"><div class="number">' + youthCount + '</div><div class="label">青少年组</div></div>' +
+    '<div class="stat-item"><div class="number">' + adultCount + '</div><div class="label">成人组</div></div>';
   var html = '';
   var entries = Object.entries(cats).sort(function(a,b){ return b[1]-a[1]; });
   for (var j = 0; j < entries.length; j++) {
@@ -955,7 +981,15 @@ function shuffle(arr) {
 function startQuiz() {
   var count = parseInt(document.getElementById('quizQuestionCount').value) || allQuestions.length;
   isImmediate = document.getElementById('quizImmediateCheck').checked;
-  filteredQuestions = selectedCategories.size > 0 ? allQuestions.filter(function(q){ return selectedCategories.has(q.category); }) : allQuestions.slice();
+  var groupEl = document.querySelector('input[name="quizGroup"]:checked');
+  var groupFilter = groupEl ? groupEl.value : 'all';
+  filteredQuestions = allQuestions.slice();
+  if (groupFilter !== 'all') {
+    filteredQuestions = filteredQuestions.filter(function(q){ return q.group === groupFilter; });
+  }
+  if (selectedCategories.size > 0) {
+    filteredQuestions = filteredQuestions.filter(function(q){ return selectedCategories.has(q.category); });
+  }
   if (document.getElementById('quizShuffleCheck').checked) filteredQuestions = shuffle(filteredQuestions);
   filteredQuestions = filteredQuestions.slice(0, count);
   currentIndex = 0;
@@ -1140,7 +1174,20 @@ function restartQuiz() {
 // =====================
 // EXAM
 // =====================
+var examGroupFilter = 'all';
+
+function selectExamGroup(group) {
+  examGroupFilter = group;
+  startExamWithGroup();
+}
+
 function startExam() {
+  // Show group selection modal
+  document.getElementById('examGroupModal').classList.remove('hidden');
+}
+
+function startExamWithGroup() {
+  document.getElementById('examGroupModal').classList.add('hidden');
   var saved = getExam(currentUser);
   if (saved && !saved.submitted) {
     if (confirm('你有未完成的考试，是否继续？\n点击"确定"继续考试，点击"取消"重新开始新考试。')) {
@@ -1148,16 +1195,25 @@ function startExam() {
       return;
     }
   }
-  // Create new exam
+  // Create new exam with group filter
+  var pool = allQuestions.slice();
+  if (examGroupFilter !== 'all') {
+    pool = pool.filter(function(q){ return q.group === examGroupFilter; });
+  }
   var indices = [];
-  for (var i = 0; i < allQuestions.length; i++) indices.push(i);
+  for (var i = 0; i < pool.length; i++) indices.push(allQuestions.indexOf(pool[i]));
+  if (indices.length < 20) {
+    alert('该组别题目不足20道，请选择其他组别。');
+    return;
+  }
   indices = shuffle(indices).slice(0, 20);
   var exam = {
     questions: indices,
     answers: {},
     submitted: false,
     score: 0,
-    startTime: Date.now()
+    startTime: Date.now(),
+    groupFilter: examGroupFilter
   };
   saveExam(currentUser, exam);
   loadExam(exam);
@@ -1168,6 +1224,7 @@ function loadExam(exam) {
   for (var i = 0; i < exam.questions.length; i++) {
     examQuestions.push(allQuestions[exam.questions[i]]);
   }
+  examGroupFilter = exam.groupFilter || 'all';
   examAnswers = exam.answers;
   examCurrentIdx = 0;
   examSubmitted = exam.submitted;

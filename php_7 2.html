@@ -1,0 +1,322 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>
+    
+  php - 自由学习网
+  
+
+  </title>
+  <meta name="author" content="gumoon">
+  <meta name="description" content="积累、思考、成长、分享、厚积薄发、学以致用">
+
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link href="asset/css/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="atom.xml" rel="alternate" title="自由学习网" type="application/atom+xml">
+  <script src="asset/js/modernizr-2.0.js"></script>
+  <script src="asset/js/jquery.min.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/solarized_light.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <style type="text/css">
+  .cat-children-p{ padding: 6px 0px;}
+  .hljs{background: none;}
+  </style>
+  <script type="text/javascript">
+  var isAddSildbar = true;
+  </script>
+  <script src="asset/js/octopress.js" type="text/javascript"></script>
+</head>
+<script type="text/javascript">
+//链接新开窗口
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+$(document).ready(function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="index.html">自由学习网</a></h1>
+  
+    <h2>积累、思考、成长、分享、厚积薄发、学以致用</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="wd" value="site:www.free-abc.com.cn" />
+    <input class="search" type="text" name="wd" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+
+  <li id=""><a target="_self" href="index.html">首页</a></li>
+
+  <li id=""><a target="_self" href="archives.html">归档</a></li>
+
+  <li id=""><a target="_self" href="about.html">关于</a></li>
+
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content"> 
+<div class="blog-index">
+
+	<article>
+		 <header>
+		  	<h1 class="entry-title"><a href="14807554134214.html">laravel passport （API验证）</a></h1>
+			<p class="meta"><time datetime="2016-12-03T16:56:53+08:00" 
+			pubdate data-updated="true">2016/12/3</time></p>
+		 </header>
+	  	<div class="entry-content">
+		  	
+		  	<p>API 使用 token 来验证用户。<br/>
+传统的登录，使用 session来验证。</p>
+
+<p>Laravel Passport 提供OAuth2 实现。</p>
+
+<h2 id="toc_0">安装流程</h2>
+
+<ol>
+<li>安装相应的passport包</li>
+<li>注册到 app.php 的 Provider 中</li>
+<li>使用 migrate 创建相关的表</li>
+<li>往数据库插入几条记录</li>
+<li>配置 UserModel, AuthServiceProvider, config/auth.php</li>
+</ol>
+
+<p>详情见：<a href="https://laravel.com/docs/5.3/passport#installation">https://laravel.com/docs/5.3/passport#installation</a></p>
+
+<h2 id="toc_1">概念及原理</h2>
+
+<p>第三方开发者，如果需要调用你的接口的话，需要注册他们的应用为你的 client。<br/>
+第三方开发者需要提供应用名和回调链接。<br/>
+回调链接用于，在普通用户批准授权后，回调。</p>
+
+<p>可以通过 <code>php artisan passport:clint</code> 命令来创建client。<br/>
+第三方开发者获取到：clientId, Secret 。这些信息在请求 access_token 和 授权码 的时候会用到。</p>
+
+<p>要请求token：<br/>
+第三方app，带上必要的参数，发起重定向请求到平台的 oauth/authorize 路由。</p>
+
+<blockquote>
+<p>oauth/authorize 这个路由怎么需要验证用户登录呢？<br/>
+是的，需要用户已登录，然后再选择是否授权。如果未登录，得先登录。</p>
+</blockquote>
+
+<p>平台自动显示一个授权界面，让用户批准或者拒绝授权请求。<br/>
+如果用户批准授权，平台会根据申请client的时配置的重定向url，重定向回第三方。<br/>
+此时，第三方会获得授权码参数。<br/>
+接着，第三方app，再发起post请求到 oauth/token 请求获取 access_token ，refresh_token ，expires_in 的值。</p>
+
+<h2 id="toc_2">第一方应用</h2>
+
+<p>像自己平台开发的 移动应用。不希望走完整的流程，那么，如何获取 access_token 呢？</p>
+
+<p>使用 username 和 password 来获得。</p>
+
+<p>使用前，需要为自家的应用创建一个 client。</p>
+
+<p>然后通过post调用 oauth/token 来获取 access_token。<br/>
+这个接口，是通过 Passport::route 注册的。<br/>
+scope 参数，设置为“*”</p>
+
+<h2 id="toc_3">当第三方不方便保管 secret 时，使用隐式准许token</h2>
+
+<p>如：第三方app是javascript程序。<br/>
+类似于 第三方oAuth2实现。</p>
+
+<h2 id="toc_4">对于API测试的情况，用户希望自己获得access_token ，不走重定向循环</h2>
+
+<h2 id="toc_5">API如何验证access_token？</h2>
+
+<p>使用中间件 <code>auth:api</code></p>
+
+<p>接口调用者，通过 header 来传递 access_token 。<br/>
+<code>&#39;Authorization&#39; =&gt; &#39;Bearer &#39;.$accessToken,</code></p>
+
+<h2 id="toc_6">token 范围</h2>
+
+<p>考虑到我现在的app是自己的app，不需要控制范围。<br/>
+暂略。</p>
+
+<h2 id="toc_7">从js来调用api</h2>
+
+<p>api的调用者包括：web application, mobile application, third-party applications, any sdk,javascript application.</p>
+
+<p>在web中间件组中，使用 CreateFreshApiToken 中间件。</p>
+
+
+		</div>
+
+		
+
+	</article>
+  
+	<div class="pagination">
+	 <a class="prev" href="php_8.html">&larr; Older</a> 
+<a href="archives.html">Blog Archives</a>
+	 <a class="next" href="php_6.html">Newer &rarr;</a>  
+	    
+	</div>
+</div>
+ <aside class="sidebar"> 
+
+	<section>
+	  <h1>分类</h1>
+	  <ul id="recent_posts">
+	  
+	      <li class="post">
+	        <a href="translate.html"><strong>翻译文档&nbsp;(7)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="stetch.html">stetch&nbsp;(7)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	  
+	      <li class="post">
+	        <a href="history.html"><strong>历史&nbsp;(1)</strong></a>
+	        
+	        
+	        
+	      </li>
+	  
+	      <li class="post">
+	        <a href="technology.html"><strong>技术文档&nbsp;(61)</strong></a>
+	         <p class="cat-children-p"> 
+	        
+	        	<a href="swift.html">Swift&nbsp;(17)</a>&nbsp;&nbsp;
+	        
+	        	<a href="web.html">web&nbsp;(5)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mac.html">mac&nbsp;(4)</a>&nbsp;&nbsp;
+	        
+	        	<a href="php.html">php&nbsp;(24)</a>&nbsp;&nbsp;
+	        
+	        	<a href="nginx.html">nginx&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="redis.html">redis&nbsp;(2)</a>&nbsp;&nbsp;
+	        
+	        	<a href="memcached.html">memcached&nbsp;(1)</a>&nbsp;&nbsp;
+	        
+	        	<a href="mysq.html">mysql&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	        	<a href="centos.html">centos&nbsp;(3)</a>&nbsp;&nbsp;
+	        
+	         </p> 
+	      </li>
+	   
+	  </ul>
+	</section>
+	<section>
+	  <h1>最新发布</h1>
+	  <ul id="recent_posts">
+	  
+	      
+		      <li class="post">
+		        <a href="14811282557869.html">centos7.2 安装mysql</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811266558336.html">服务器配置lavavel项目</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811252163506.html">centos7.2 编译安装php7.1.0</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14811215019104.html">从零开始配置阿里云ECS,centos7.2</a>
+		      </li>
+	     
+	  
+	      
+		      <li class="post">
+		        <a href="14809496478909.html">laravel 安装</a>
+		      </li>
+	     
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	  
+	      
+	   
+	  </ul>
+	</section>
+	
+</aside> </div></div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 -  -
+  <span class="credit">Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; Theme by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+
+  
+    
+
+<script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?831fc9a0be36b03335a3f24dda056e34";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</body>
+</html>

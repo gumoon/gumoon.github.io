@@ -1,0 +1,1732 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[自由学习网]]></title>
+  <link href="http://www.free-abc.com.cn/atom.xml" rel="self"/>
+  <link href="http://www.free-abc.com.cn/"/>
+  <updated>2016-12-08T02:13:12+08:00</updated>
+  <id>http://www.free-abc.com.cn/</id>
+  <author>
+    <name><![CDATA[]]></name>
+    
+  </author>
+  <generator uri="http://www.coderforart.com/">CoderForArt</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[centos7.2 安装mysql]]></title>
+    <link href="http://www.free-abc.com.cn/14811282557869.html"/>
+    <updated>2016-12-08T00:30:55+08:00</updated>
+    <id>http://www.free-abc.com.cn/14811282557869.html</id>
+    <content type="html"><![CDATA[
+<pre><code>yum install mariadb.x86_64 mariadb-server.x86_64
+</code></pre>
+
+<h2 id="toc_0">启动服务</h2>
+
+<pre><code>systemctl enable mariadb.service 
+systemctl start mariadb.service
+</code></pre>
+
+<h2 id="toc_1">设置root密码</h2>
+
+<pre><code>mysql -u root
+mysql&gt; SET PASSWORD FOR ‘root’@’localhost’ = PASSWORD(‘newpass’);
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[服务器配置lavavel项目]]></title>
+    <link href="http://www.free-abc.com.cn/14811266558336.html"/>
+    <updated>2016-12-08T00:04:15+08:00</updated>
+    <id>http://www.free-abc.com.cn/14811266558336.html</id>
+    <content type="html"><![CDATA[
+<p>系统环境：centos7.2 </p>
+
+<p>安装好：nginx , php, mysql</p>
+
+<p>项目代码存储目录：/opt/projects</p>
+
+<p>把代码从 github 上 clone 到项目代码目录。</p>
+
+<p>配置nginx的虚拟主机：</p>
+
+<pre><code>server{
+    listen 80;
+    server_name w.xxx.com.cn 
+
+    root /opt/projects/yiduo/public;
+    error_log  /var/log/nginx/wx_yiduo_error.log;
+    access_log  /var/log/nginx/wx_yiduo_access.log  main;
+    index index.php index.html index.htm;
+
+    location / {
+        root /opt/projects/yiduo/public;
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html{
+        root /opt/projects/yiduo/public;
+    }
+
+ location ~ \.php$ {
+        root /opt/projects/yiduo/public; ## 此处很重要，不然报 FIle NOT Found
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+</code></pre>
+
+<p>重启nginx：<code>systemctl restart nginx</code></p>
+
+<p>权限方面：让 storage/， bootstrap/cache 这两个目录及其子目录nginx用户可读写。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[centos7.2 编译安装php7.1.0]]></title>
+    <link href="http://www.free-abc.com.cn/14811252163506.html"/>
+    <updated>2016-12-07T23:40:16+08:00</updated>
+    <id>http://www.free-abc.com.cn/14811252163506.html</id>
+    <content type="html"><![CDATA[
+<p>centos7.2 源里的php版本才5.4。根本不满足现代web应用需求。</p>
+
+<p>从 php.net 的下载页面，下载：</p>
+
+<pre><code>wget http://cn2.php.net/get/php-7.1.0.tar.gz/from/this/mirror
+mv mirror php-7.1.0.tar.gz
+tar zxvf php-7.1.0.tar.gz 
+</code></pre>
+
+<h2 id="toc_0">准备工作</h2>
+
+<ul>
+<li>更新系统 </li>
+</ul>
+
+<pre><code>yum update
+</code></pre>
+
+<ul>
+<li>安装 xml2, 确保有 xml2-config 命令</li>
+</ul>
+
+<pre><code>yum install libxml2-devel.x86_64 libxml2.x86_64  
+rpm -ql libxml2-devel.x86_64
+</code></pre>
+
+<ul>
+<li>安装 openssl</li>
+</ul>
+
+<pre><code>yum install openssl-devel.x86_64 openssl.x86_64
+</code></pre>
+
+<ul>
+<li>安装 curl</li>
+</ul>
+
+<pre><code>yum install libcurl.x86_64 libcurl-devel.x86_64
+</code></pre>
+
+<ul>
+<li>安装 libmcrypt</li>
+</ul>
+
+<pre><code>yum install libmcrypt.x86_64 libmcrypt-devel.x86_64
+</code></pre>
+
+<ul>
+<li>安装 gd 需要的lib
+<a href="php-gd.html">gd扩展（验证码用的到）</a></li>
+</ul>
+
+<h2 id="toc_1">编译</h2>
+
+<pre><code>./configure --prefix=/usr/local/php710 --exec-prefix=/usr/local/php710 --bindir=/usr/local/php710/bin --sbindir=/usr/local/php710/sbin --includedir=/usr/local/php710/include --libdir=/usr/local/php710/lib/php --mandir=/usr/local/php710/php/man --with-config-file-path=/usr/local/php710/etc --with-mcrypt=/usr/include --with-mhash --with-openssl --with-mysqli=shared,mysqlnd --with-pdo-mysql=shared,mysqlnd --with-iconv --with-zlib --enable-zip --enable-inline-optimization --disable-debug --disable-rpath --enable-shared --enable-xml --enable-bcmath --enable-shmop --enable-sysvsem --enable-mbregex --enable-mbstring --enable-gd-native-ttf --enable-pcntl --enable-sockets --with-xmlrpc --enable-soap --without-pear --with-gettext --enable-session --with-curl --enable-opcache --enable-fpm --with-fpm-user=nginx --with-fpm-group=nginx --without-gdbm --disable-fileinfo --with-freetype-dir=/usr/lib64 --with-jpeg-dir=/usr/lib64 --with-gd
+</code></pre>
+
+<pre><code>make &amp;&amp; make install
+make clean
+</code></pre>
+
+<h2 id="toc_2">配置文件</h2>
+
+<pre><code>cp php.ini-production /usr/local/php710/etc/php.ini
+cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+cp /usr/local/php710/etc/php-fpm.conf.default /usr/local/php710/etc/php-fpm.conf
+cp /usr/local/php710/etc/php-fpm.d/www.conf.default /usr/local/php710/etc/php-fpm.d/www.conf
+</code></pre>
+
+<h2 id="toc_3">设置path</h2>
+
+<pre><code>vim .zshrc
+</code></pre>
+
+<p>修改用户跟目录下的 .zshrc 文件，把 /usr/local/php710/bin 加在path项的前面。</p>
+
+<pre><code>source .zshrc
+</code></pre>
+
+<h2 id="toc_4">创建php日志文件目录</h2>
+
+<pre><code>mkdir -p /var/log/php-fpm/ &amp;&amp; mkdir -p /var/run/php-fpm &amp;&amp; cd /var/run/ &amp;&amp; chown -R nginx:nginx php-fpm
+
+mkdir -p /var/lib/php/session
+
+chown -R nginx:nginx /var/lib/php
+</code></pre>
+
+<h2 id="toc_5">检查扩展是否都安装了，安装并开启</h2>
+
+<pre><code>cd /usr/local/php710/lib/php/extensions/no-debug-non-zts-20160303
+</code></pre>
+
+<h2 id="toc_6">配置 php.ini 的 extension及其它</h2>
+
+<pre><code>zend_extension=opcache.so
+extension=mysqli.so
+extension=pdo_mysql.so
+</code></pre>
+
+<p>或者，使用 slat 同步php.ini &amp; php-fpm.conf 文件</p>
+
+<p>启动php-fpm：<br/>
+先给 /etc/init.d/php-fpm 增加可执行权限。</p>
+
+<pre><code>/etc/init.d/php-fpm start
+</code></pre>
+
+<h2 id="toc_7">配置 memcached 扩展</h2>
+
+<p><a href="php-memcached.html">php5.6 安装 memcached扩展</a></p>
+
+<h2 id="toc_8">配置gd扩展</h2>
+
+<p><a href="php-gd.html">gd扩展（验证码用的到）</a></p>
+
+<h2 id="toc_9">查看phpinfo</h2>
+
+<p>检查扩展安装情况。<br/>
+<a href="php-phpinfo.html">配置访问 phpinfo 的域名</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[从零开始配置阿里云ECS,centos7.2]]></title>
+    <link href="http://www.free-abc.com.cn/14811215019104.html"/>
+    <updated>2016-12-07T22:38:21+08:00</updated>
+    <id>http://www.free-abc.com.cn/14811215019104.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">装完centos7.2 64位系统后的状态</h2>
+
+<ol>
+<li>默认操作系统情况</li>
+</ol>
+
+<pre><code>[root@iZ25gxj8d82Z etc]# uname -a
+Linux iZm5ee4pfq8op61udbacmoZ 3.10.0-327.22.2.el7.x86_64 #1 SMP Thu Jun 23 17:05:11 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+
+<ol>
+<li>开启的对外端口情况</li>
+</ol>
+
+<pre><code>[root@iZ25gxj8d82Z ~]# ss -ntlp
+State      Recv-Q Send-Q                                                                                       Local Address:Port                                                                                         Peer Address:Port
+LISTEN     0      128                                                                                                      *:22                                                                                                      *:*      users:((&quot;sshd&quot;,895,3))
+</code></pre>
+
+<p>只开放了22端口。</p>
+
+<ol>
+<li>检查默认开机启动应用</li>
+</ol>
+
+<pre><code>[root@iZ25gxj8d82Z ~]# systemctl list-unit-files |grep enable
+aliyun-util.service                       enabled
+aliyun.service                            enabled
+crond.service                             enabled
+dbus-org.fedoraproject.FirewallD1.service enabled
+firewalld.service                         enabled
+getty@.service                            enabled
+microcode.service                         enabled
+ntpd.service                              enabled
+rsyslog.service                           enabled
+sshd.service                              enabled
+systemd-readahead-collect.service         enabled
+systemd-readahead-drop.service            enabled
+systemd-readahead-replay.service          enabled
+default.target                            enabled
+multi-user.target                         enabled
+</code></pre>
+
+<ol>
+<li>默认用户情况</li>
+</ol>
+
+<pre><code>[root@iZ25gxj8d82Z ~]# cat /etc/passwd
+root:x:0:0:root:/root:/usr/bin/zsh
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+avahi-autoipd:x:170:170:Avahi IPv4LL Stack:/var/lib/avahi-autoipd:/sbin/nologin
+systemd-bus-proxy:x:999:997:systemd Bus Proxy:/:/sbin/nologin
+systemd-network:x:998:996:systemd Network Management:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+polkitd:x:997:995:User for polkitd:/:/sbin/nologin
+tss:x:59:59:Account used by the trousers package to sandbox the tcsd daemon:/dev/null:/sbin/nologin
+postfix:x:89:89::/var/spool/postfix:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+ntp:x:38:38::/etc/ntp:/sbin/nologin
+</code></pre>
+
+<p>以下都可以通过 saltstack 这个工具来实现：</p>
+
+<h2 id="toc_1">更新系统</h2>
+
+<p>查看目前有哪些源：</p>
+
+<pre><code>yum repolist all 
+</code></pre>
+
+<p>替换官方centos源为阿里云源镜像。</p>
+
+<ul>
+<li>备份： </li>
+</ul>
+
+<pre><code>mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+</code></pre>
+
+<ul>
+<li>下载新的 CentOS-Base.repo 到 /etc/yum.repos.d/ （此处使用阿里云源站内网域名，不占用公网流量）</li>
+</ul>
+
+<pre><code>wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyuncs.com/repo/Centos-7.repo
+</code></pre>
+
+<ul>
+<li>之后运行以下命令，生成缓存</li>
+</ul>
+
+<pre><code>yum makecache
+</code></pre>
+
+<ul>
+<li>更新系统软件：</li>
+</ul>
+
+<pre><code>yum update
+</code></pre>
+
+<h2 id="toc_2">打开防火墙，并设置开机自启动</h2>
+
+<pre><code>systemctl enable firewalld.service 
+systemctl start firewalld.service
+</code></pre>
+
+<h2 id="toc_3">确认git，svn安装情况</h2>
+
+<pre><code>yum install git.x86_64
+git --version
+
+yum install subversion.x86_64
+svn --version
+</code></pre>
+
+<h2 id="toc_4">确认 gcc 安装情况，centos7.2居然没有</h2>
+
+<pre><code>yum install gcc.x86_64
+</code></pre>
+
+<p>源码安装php的时候需要用到c编译器。</p>
+
+<h2 id="toc_5">配置VIM</h2>
+
+<pre><code>默认没有安装vim。
+yum install vim-enhanced.x86_64
+
+配置文件：/etc/vimrc
+</code></pre>
+
+<h2 id="toc_6">安装 zsh , oh-my-zsh</h2>
+
+<ul>
+<li>安装 zsh，配置 zsh 为root用户默认shell。 </li>
+</ul>
+
+<pre><code>yum install zsh 
+which zsh (/usr/bin/zsh) 
+vim /etc/shells 在文件末尾增加一行 /usr/bin/zsh 
+chsh -s /usr/bin/zsh
+</code></pre>
+
+<ul>
+<li>安装 oh-my-zsh </li>
+</ul>
+
+<pre><code>sh -c &quot;$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)&quot;
+</code></pre>
+
+<ul>
+<li>安装 autojump:</li>
+</ul>
+
+<pre><code>yum install autojump-zsh
+</code></pre>
+
+<ul>
+<li>配置 .zshrc ：</li>
+</ul>
+
+<pre><code>plugins=(git history autojump)
+</code></pre>
+
+<h2 id="toc_7">安装云监控插件</h2>
+
+<pre><code>sudo bash -c &quot;wget -e &#39;http_proxy=hzcmsproxy.aliyun.com:3128&#39; -O /tmp/cloudmonitor.tar.gz &#39;http://cms-download.aliyun.com/release/1.1.24/linux64/agent-linux64-1.1.24-package.tar.gz&#39; &amp;&amp; \
+mkdir /usr/local/cloudmonitor &amp;&amp; \
+tar -xf  /tmp/cloudmonitor.tar.gz -C /usr/local/cloudmonitor &amp;&amp; \
+/usr/local/cloudmonitor/wrapper/bin/cloudmonitor.sh install &amp;&amp; \
+/usr/local/cloudmonitor/wrapper/bin/cloudmonitor.sh start&quot;
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel 安装]]></title>
+    <link href="http://www.free-abc.com.cn/14809496478909.html"/>
+    <updated>2016-12-05T22:54:07+08:00</updated>
+    <id>http://www.free-abc.com.cn/14809496478909.html</id>
+    <content type="html"><![CDATA[
+<p>开启一个新项目的时候，就需要了。</p>
+
+<pre><code>composer selfupdate
+
+laravel new project-name
+创建完项目后，把它用github管理起来。
+
+cd 到 project-name 目录
+valet link
+
+访问：http://project-name.dev 即可访问
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel task scheduling]]></title>
+    <link href="http://www.free-abc.com.cn/14808262704807.html"/>
+    <updated>2016-12-04T12:37:50+08:00</updated>
+    <id>http://www.free-abc.com.cn/14808262704807.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">计划任务</h2>
+
+<p>概念：<br/>
+1. 它跟系统的计划任务如何结合<br/>
+2. 可执行什么任务<br/>
+3. 计划任务如何编写<br/>
+4. 如何精细化控制任务执行<br/>
+5. 输出如何控制<br/>
+6. 钩子</p>
+
+<h3 id="toc_1">它跟系统的计划任务有什么关系</h3>
+
+<ol>
+<li>计划任务不可以版本控制</li>
+<li>需要登录服务器修改和添加</li>
+</ol>
+
+<p>laravel 的解决方案是：<br/>
+只需要在系统计划任务中添加一条记录，永久不变。<br/>
+<code>* * * * * php /path/to/artisan schedule:run &gt;&gt; /dev/null 2&gt;&amp;1</code></p>
+
+<p>应用的其它计划任务，写在代码里即可。</p>
+
+<h3 id="toc_2">任务如何编写？可执行什么任务？</h3>
+
+<p>任务都写到这里：<code>App\Console\Kernel</code>类中的 <code>schedule()</code> 方法。</p>
+
+<pre><code>protected function schedule(Schedule $schedule)
+{
+   $schedule-&gt;call(function () {
+       DB::table(&#39;recent_users&#39;)-&gt;delete();
+   })-&gt;daily();
+}
+
+$schedule-&gt;command(&#39;emails:send --force&#39;)-&gt;daily();
+
+$schedule-&gt;command(EmailsCommand::class, [&#39;--force&#39;])-&gt;daily();
+
+$schedule-&gt;exec(&#39;node /home/forge/script.js&#39;)-&gt;daily();
+</code></pre>
+
+<h3 id="toc_3">如何精细化控制任务执行</h3>
+
+<pre><code>-&gt;cron(&#39;* * * * * *&#39;);  Run the task on a custom Cron schedule
+-&gt;everyMinute();    Run the task every minute
+-&gt;everyFiveMinutes();   Run the task every five minutes
+-&gt;everyTenMinutes();    Run the task every ten minutes
+-&gt;everyThirtyMinutes(); Run the task every thirty minutes
+-&gt;hourly(); Run the task every hour
+-&gt;daily();  Run the task every day at midnight
+-&gt;dailyAt(&#39;13:00&#39;); Run the task every day at 13:00
+-&gt;twiceDaily(1, 13);    Run the task daily at 1:00 &amp; 13:00
+-&gt;weekly(); Run the task every week
+-&gt;monthly();    Run the task every month
+-&gt;monthlyOn(4, &#39;15:00&#39;);    Run the task every month on the 4th at 15:00
+-&gt;quarterly();  Run the task every quarter
+-&gt;yearly(); Run the task every year
+-&gt;timezone(&#39;America/New_York&#39;);Set the timezone
+
+-&gt;weekdays();   Limit the task to weekdays
+-&gt;sundays();    Limit the task to Sunday
+-&gt;mondays();    Limit the task to Monday
+-&gt;tuesdays();   Limit the task to Tuesday
+-&gt;wednesdays(); Limit the task to Wednesday
+-&gt;thursdays();  Limit the task to Thursday
+-&gt;fridays();    Limit the task to Friday
+-&gt;saturdays();  Limit the task to Saturday
+-&gt;between($start, $end);    Limit the task to run between start and end times
+-&gt;when(Closure);    Limit the task based on a truth test
+
+// Run once per week on Monday at 1 PM...
+$schedule-&gt;call(function () {
+    //
+})-&gt;weekly()-&gt;mondays()-&gt;at(&#39;13:00&#39;);
+
+// Run hourly from 8 AM to 5 PM on weekdays...
+$schedule-&gt;command(&#39;foo&#39;)
+          -&gt;weekdays()
+          -&gt;hourly()
+          -&gt;timezone(&#39;America/Chicago&#39;)
+          -&gt;between(&#39;8:00&#39;, &#39;17:00&#39;);
+          
+$schedule-&gt;command(&#39;reminders:send&#39;)
+                    -&gt;hourly()
+                    -&gt;unlessBetween(&#39;23:00&#39;, &#39;4:00&#39;);
+
+$schedule-&gt;command(&#39;emails:send&#39;)-&gt;daily()-&gt;skip(function () {
+    return true;
+}); //跳过某个条件
+
+$schedule-&gt;command(&#39;emails:send&#39;)-&gt;withoutOverlapping(); //前一个计划在执行时，不执行下一个任务
+
+$schedule-&gt;command(&#39;emails:send&#39;)-&gt;evenInMaintenanceMode(); //维护状态也执行
+</code></pre>
+
+<h3 id="toc_4">计划任务执行输出</h3>
+
+<pre><code>$schedule-&gt;command(&#39;emails:send&#39;)
+         -&gt;daily()
+         -&gt;sendOutputTo($filePath);
+         
+$schedule-&gt;command(&#39;emails:send&#39;)
+         -&gt;daily()
+         -&gt;appendOutputTo($filePath);
+         
+$schedule-&gt;command(&#39;foo&#39;)
+         -&gt;daily()
+         -&gt;sendOutputTo($filePath)
+         -&gt;emailOutputTo(&#39;foo@example.com&#39;);
+
+
+</code></pre>
+
+<h3 id="toc_5">钩子</h3>
+
+<pre><code>$schedule-&gt;command(&#39;emails:send&#39;)
+         -&gt;daily()
+         -&gt;before(function () {
+             // Task is about to start...
+         })
+         -&gt;after(function () {
+             // Task is complete...
+         });
+         
+$schedule-&gt;command(&#39;emails:send&#39;)
+         -&gt;daily()
+         -&gt;pingBefore($url)
+         -&gt;thenPing($url);
+         
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel console command]]></title>
+    <link href="http://www.free-abc.com.cn/14808216901864.html"/>
+    <updated>2016-12-04T11:21:30+08:00</updated>
+    <id>http://www.free-abc.com.cn/14808216901864.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">控制台命令</h2>
+
+<p>原则：功能单一化，有利于被重用。</p>
+
+<p>一个控制台命令，包含哪些属性呢？</p>
+
+<ul>
+<li><p>管理所有命令的管理器</p>
+
+<ul>
+<li>可用命令列表</li>
+<li>查看命令帮助文档</li>
+<li>创建单个命令脚手架的命令</li>
+<li>命令代码（可执行文件）存放在哪个目录</li>
+<li>注册一个新的命令到管理器</li>
+<li>命令如何互相调用，如何控制互相调用引发的输出</li>
+<li>命令如何被非CLI程序调用</li>
+<li>系统命令和用户自定义命令区分</li>
+<li>如何修改系统命令</li>
+</ul></li>
+<li><p>单个命令</p>
+
+<ul>
+<li>创建方法</li>
+<li>命令代码结构</li>
+<li>如何定义命令名</li>
+<li>如何定义帮助文档</li>
+<li>如何定义参数名</li>
+<li>如何定义多个参数</li>
+<li>如何为参数指定默认值</li>
+<li>如何定义选项名</li>
+<li>如何定义多个选项</li>
+<li>如何定义选项默认值</li>
+<li>代码里如何获取参数值</li>
+<li>代码里如何获取选项值</li>
+<li>如何输出信息</li>
+</ul></li>
+</ul>
+
+<h2 id="toc_1">下面来看看，laravel是如何支持控制台命令的：</h2>
+
+<h3 id="toc_2">laravel的命令行管理器是: artisan.</h3>
+
+<ul>
+<li>查看有哪些可用的命令：<code>php artisan list</code></li>
+<li>查看命令的帮助：<code>php artisan help migrate</code></li>
+<li>创建单个命令的脚手架：<code>php artisan make:command SendEmails</code></li>
+<li>命令代码存放目录：<code>app/Console/Commands</code></li>
+<li>注册一个新的命令到管理器：设置<code>app/Console/Kernel.php</code> 文件的 <code>commands</code>属性</li>
+<li>命令之间互相调用：</li>
+</ul>
+
+<pre><code>public function handle()
+{
+    $this-&gt;call(&#39;email:send&#39;, [
+        &#39;user&#39; =&gt; 1, &#39;--queue&#39; =&gt; &#39;default&#39;
+    ]);
+
+    //
+}
+
+//屏蔽该输出
+$this-&gt;callSilent(&#39;email:send&#39;, [
+    &#39;user&#39; =&gt; 1, &#39;--queue&#39; =&gt; &#39;default&#39;
+]);
+</code></pre>
+
+<ul>
+<li>命令如何被其他非CLI调用：</li>
+</ul>
+
+<pre><code>Route::get(&#39;/foo&#39;, function () {
+    $exitCode = Artisan::call(&#39;email:send&#39;, [
+        &#39;user&#39; =&gt; 1, &#39;--queue&#39; =&gt; &#39;default&#39;
+    ]);
+
+    //
+});
+
+//后台执行
+Route::get(&#39;/foo&#39;, function () {
+    Artisan::queue(&#39;email:send&#39;, [
+        &#39;user&#39; =&gt; 1, &#39;--queue&#39; =&gt; &#39;default&#39;
+    ]);
+
+    //
+});
+
+//不接受值的选项设置
+$exitCode = Artisan::call(&#39;migrate:refresh&#39;, [
+    &#39;--force&#39; =&gt; true,
+]);
+</code></pre>
+
+<ul>
+<li>系统命令和用户自定义命令，如何修改？
+系统命令定义在：<code>Illuminate\Foundation\Console</code> 目录下。（通过搜索 <code>make:model</code>关键词找到的。</li>
+</ul>
+
+<p>各个包可以遵循 laravel command规则写的命令。<br/>
+要修改他们的话，就去对应的包的相应目录下修改即可。</p>
+
+<h3 id="toc_3">单个命令</h3>
+
+<ul>
+<li><p>命令创建方法：</p>
+
+<ol>
+<li>脚手架命令（或者自己按照约定写脚手架）</li>
+<li>闭包</li>
+</ol></li>
+<li><p>命令代码结构:<br/>
+<code>signature</code>, <code>description</code>, <code>handle()</code><br/>
+支持在构造器注入依赖。</p></li>
+<li><p>如何定义命令名？</p></li>
+<li><p>使用 <code>signature</code> 参数</p></li>
+<li><p>在路由中直接使用 <code>Artisan::command()</code>方法。第一个参数就是命令名。</p></li>
+<li><p>如何定义参数，选项？<br/>
+使用 <code>signature</code> 属性定义参数和选项。<br/>
+使用 <code>description</code> 属性定义帮助文档。</p></li>
+</ul>
+
+<pre><code>protected $signature = &#39;email:send&#39;; //命令
+protected $signature = &#39;email:send {user}&#39;; //命令带必须的参数
+protected $signature = &#39;email:send {user?}&#39;; //命令带可选参数
+protected $signature = &#39;email:send {user=foo}&#39;; //命令带必须的参数，但有默认值
+protected $signature = &#39;email:send {user} {--queue}&#39;; //命令带必须的参数，可选选项
+protected $signature = &#39;email:send {user} {--queue=}&#39;; //命令带必须的参数，可选选项，若带选项，必须指定值
+protected $signature = &#39;email:send {user} {--queue=default}&#39;; //命令带必须的参数，可选选项，如果传递了选项，但没有指定值，则使用默认值
+protected $signature = &#39;email:send {user} {--Q|queue}&#39;; //命令带必须的参数，可选选项, 支持简写形式的选项
+email:send {user*} //参数数组
+email:send {user} {--id=*} //选项数组
+protected $signature = &#39;email:send
+                        {user : The ID of the user}
+                        {--queue= : Whether the job should be queued}&#39;;
+                        //参数和选项描述
+</code></pre>
+
+<ul>
+<li>获取参数和选项：</li>
+</ul>
+
+<pre><code>$userId = $this-&gt;argument(&#39;user&#39;); //检索单个参数值
+$arguments = $this-&gt;arguments(); //所有参数值
+$queueName = $this-&gt;option(&#39;queue&#39;); //单个选项值
+$options = $this-&gt;options(); //所有选项值
+当参数或者选项不存在时，返回 null.
+$name = $this-&gt;ask(&#39;What is your name?&#39;); //提示用户输入
+$password = $this-&gt;secret(&#39;What is the password?&#39;); //提示用户输入密码
+if ($this-&gt;confirm(&#39;Do you wish to continue?&#39;)) {
+    //
+} // 提示用户确认
+$name = $this-&gt;anticipate(&#39;What is your name?&#39;, [&#39;Taylor&#39;, &#39;Dayle&#39;]); //自动完成
+$name = $this-&gt;choice(&#39;What is your name?&#39;, [&#39;Taylor&#39;, &#39;Dayle&#39;], $default); //提示用户选择，并且给出默认值
+</code></pre>
+
+<ul>
+<li>如何输出命令信息：</li>
+</ul>
+
+<p><strong>单行文本</strong></p>
+
+<pre><code>public function handle()
+{
+    $this-&gt;info(&#39;Display this on the screen&#39;);
+}
+
+$this-&gt;error(&#39;Something went wrong!&#39;);
+$this-&gt;line(&#39;Display this on the screen&#39;);
+
+还有  comment() , question() 方法输出。
+</code></pre>
+
+<p><strong>表格</strong></p>
+
+<pre><code>$headers = [&#39;Name&#39;, &#39;Email&#39;];
+
+$users = App\User::all([&#39;name&#39;, &#39;email&#39;])-&gt;toArray();
+
+$this-&gt;table($headers, $users);
+</code></pre>
+
+<p><strong>进度条</strong></p>
+
+<pre><code>$users = App\User::all();
+
+$bar = $this-&gt;output-&gt;createProgressBar(count($users));
+
+foreach ($users as $user) {
+    $this-&gt;performTask($user);
+
+    $bar-&gt;advance();
+}
+
+$bar-&gt;finish();
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel validation]]></title>
+    <link href="http://www.free-abc.com.cn/14807819904721.html"/>
+    <updated>2016-12-04T00:19:50+08:00</updated>
+    <id>http://www.free-abc.com.cn/14807819904721.html</id>
+    <content type="html"><![CDATA[
+<p>验证输入参数</p>
+
+<ul>
+<li>在哪个环节验证？怎么验证？</li>
+<li>各种验证需求是否能满足？</li>
+<li>验证不通过的情况下怎么处理？</li>
+<li>验证钩子</li>
+<li>错误信息如何定义</li>
+</ul>
+
+<h2 id="toc_0">在哪个环节验证？</h2>
+
+<ol>
+<li>控制器里使用中间件验证
+在控制器中，使用  <code>ValidatesRequests</code> trait 。
+控制器基类中use了它，子类中可以直接用。</li>
+</ol>
+
+<pre><code> $this-&gt;validate($request, [
+        &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,
+        &#39;body&#39; =&gt; &#39;required&#39;,
+    ]);
+</code></pre>
+
+<ol>
+<li>创建Form Requests来处理</li>
+</ol>
+
+<pre><code>php artisan make:request StoreProgramPost
+</code></pre>
+
+<p>然后在控制器中 use 这个 requests.</p>
+
+<p>关于这个request的编码，请见文档。</p>
+
+<pre><code>public function rules()
+{
+    return [
+        &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,
+        &#39;body&#39; =&gt; &#39;required&#39;,
+    ];
+}
+
+public function authorize()
+{
+    $comment = Comment::find($this-&gt;route(&#39;comment&#39;));
+
+    return $comment &amp;&amp; $this-&gt;user()-&gt;can(&#39;update&#39;, $comment);
+}
+
+public function authorize()
+{
+    return true;
+}
+
+public function messages()
+{
+    return [
+        &#39;title.required&#39; =&gt; &#39;A title is required&#39;,
+        &#39;body.required&#39;  =&gt; &#39;A message is required&#39;,
+    ];
+}
+</code></pre>
+
+<ol>
+<li>在控制器中，手动创建验证器来验证</li>
+</ol>
+
+<pre><code>$validator = Validator::make($request-&gt;all(), [
+  &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,
+  &#39;body&#39; =&gt; &#39;required&#39;,
+]);
+
+if ($validator-&gt;fails()) {
+  return redirect(&#39;post/create&#39;)
+              -&gt;withErrors($validator)
+              -&gt;withInput();
+}
+
+//自动重定向
+Validator::make($request-&gt;all(), [
+    &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,
+    &#39;body&#39; =&gt; &#39;required&#39;,
+])-&gt;validate();
+
+
+</code></pre>
+
+<h2 id="toc_1">各种验证需求怎么满足？</h2>
+
+<ul>
+<li>属性的第一条验证规则失败后，停止当前属性的验证。</li>
+</ul>
+
+<pre><code>$this-&gt;validate($request, [
+    &#39;title&#39; =&gt; &#39;bail|required|unique:posts|max:255&#39;,
+    &#39;body&#39; =&gt; &#39;required&#39;,
+]);
+</code></pre>
+
+<ul>
+<li>嵌套属性如何验证？</li>
+</ul>
+
+<pre><code>$this-&gt;validate($request, [
+    &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,
+    &#39;author.name&#39; =&gt; &#39;required&#39;,
+    &#39;author.description&#39; =&gt; &#39;required&#39;,
+]);
+</code></pre>
+
+<p>Below is a list of all available validation rules and their function:</p>
+
+<p>Accepted<br/>
+Active URL<br/>
+After (Date)<br/>
+Alpha<br/>
+Alpha Dash<br/>
+Alpha Numeric<br/>
+Array<br/>
+Before (Date)<br/>
+Between<br/>
+Boolean<br/>
+Confirmed<br/>
+Date<br/>
+Date Format<br/>
+Different<br/>
+Digits<br/>
+Digits Between<br/>
+Dimensions (Image Files)<br/>
+Distinct<br/>
+E-Mail<br/>
+Exists (Database)<br/>
+File<br/>
+Filled<br/>
+Image (File)<br/>
+In<br/>
+In Array<br/>
+Integer<br/>
+IP Address<br/>
+JSON<br/>
+Max<br/>
+MIME Types<br/>
+MIME Type By File Extension<br/>
+Min<br/>
+Nullable<br/>
+Not In<br/>
+Numeric<br/>
+Present<br/>
+Regular Expression<br/>
+Required<br/>
+Required If<br/>
+Required Unless<br/>
+Required With<br/>
+Required With All<br/>
+Required Without<br/>
+Required Without All<br/>
+Same<br/>
+Size<br/>
+String<br/>
+Timezone<br/>
+Unique (Database)<br/>
+URL</p>
+
+<h2 id="toc_2">验证不通过的情况下如何处理？</h2>
+
+<ol>
+<li>传统的http请求，重定向到原来请求验证的页面。
+所有的错误信息自动存储到sesson中，通过 <code>ShareErrorsFromSession</code> 中间件， view中可以直接使用。
+<code>$errors</code> 变量是一个<code>MessageBag</code>实例。</li>
+</ol>
+
+<pre><code>&lt;div class=&quot;form-group{{ $errors-&gt;has(&#39;name&#39;) ? &#39; has-error&#39; : &#39;&#39; }}&quot;&gt;
+   &lt;label for=&quot;name&quot; class=&quot;col-md-4 control-label&quot;&gt;Name&lt;/label&gt;
+
+   &lt;div class=&quot;col-md-6&quot;&gt;
+       &lt;input id=&quot;name&quot; type=&quot;text&quot; class=&quot;form-control&quot; name=&quot;name&quot; value=&quot;{{ old(&#39;name&#39;) }}&quot; required autofocus&gt;
+
+       @if ($errors-&gt;has(&#39;name&#39;))
+           &lt;span class=&quot;help-block&quot;&gt;
+               &lt;strong&gt;{{ $errors-&gt;first(&#39;name&#39;) }}&lt;/strong&gt;
+           &lt;/span&gt;
+       @endif
+   &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<ol>
+<li>ajax请求，返回一个json响应
+包含所有的验证错误信息。
+并且发送一个 422 的 http 状态码。</li>
+</ol>
+
+<pre><code>.fail(function(data){
+    console.log(data.responseJSON);
+    //此处使用js来验证值，我还需要精进下。
+    if( data.responseJSON.name[0] != &#39;&#39;){
+        $(&quot;#namediv&quot;).addClass(&#39;has-error&#39;);
+        $(&quot;#namediv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.name[0]+&quot;&lt;/strong&gt;&quot;);
+    }
+    if( data.responseJSON.intro[0] != &#39;&#39;){
+        $(&quot;#introdiv&quot;).addClass(&#39;has-error&#39;);
+        $(&quot;#introdiv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.intro[0]+&quot;&lt;/strong&gt;&quot;);
+    }
+    if( data.responseJSON.type[0] != &#39;&#39;){
+        $(&quot;#typediv&quot;).addClass(&#39;has-error&#39;);
+        $(&quot;#typediv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.type[0]+&quot;&lt;/strong&gt;&quot;);
+    }
+    if( data.responseJSON.status[0] != &#39;&#39;){
+        $(&quot;#statusdiv&quot;).addClass(&#39;has-error&#39;);
+        $(&quot;#statusdiv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.status[0]+&quot;&lt;/strong&gt;&quot;);
+    }
+    
+});
+</code></pre>
+
+<ol>
+<li>单页面多个form，如何检索错误信息</li>
+</ol>
+
+<pre><code>return redirect(&#39;register&#39;)
+            -&gt;withErrors($validator, &#39;login&#39;);
+            
+{{ $errors-&gt;login-&gt;first(&#39;email&#39;) }}
+</code></pre>
+
+<ol>
+<li>检索错误信息</li>
+</ol>
+
+<pre><code>$errors = $validator-&gt;errors();
+
+echo $errors-&gt;first(&#39;email&#39;);
+
+foreach ($errors-&gt;get(&#39;email&#39;) as $message) {
+    //
+}
+
+foreach ($errors-&gt;get(&#39;attachments.*&#39;) as $message) {
+    //
+}
+
+foreach ($errors-&gt;all() as $message) {
+    //
+}
+
+if ($errors-&gt;has(&#39;email&#39;)) {
+    //
+}
+</code></pre>
+
+<h2 id="toc_3">验证钩子</h2>
+
+<p>做进一步的验证或者添加更多的错误信息。</p>
+
+<pre><code>$validator = Validator::make(...);
+
+$validator-&gt;after(function ($validator) {
+    if ($this-&gt;somethingElseIsInvalid()) {
+        $validator-&gt;errors()-&gt;add(&#39;field&#39;, &#39;Something is wrong with this field!&#39;);
+    }
+});
+
+if ($validator-&gt;fails()) {
+    //
+}
+</code></pre>
+
+<h2 id="toc_4">自定义错误信息</h2>
+
+<ul>
+<li>方法传值</li>
+</ul>
+
+<pre><code>$messages = [
+    &#39;required&#39; =&gt; &#39;The :attribute field is required.&#39;,
+];
+
+$messages = [
+    &#39;same&#39;    =&gt; &#39;The :attribute and :other must match.&#39;,
+    &#39;size&#39;    =&gt; &#39;The :attribute must be exactly :size.&#39;,
+    &#39;between&#39; =&gt; &#39;The :attribute must be between :min - :max.&#39;,
+    &#39;in&#39;      =&gt; &#39;The :attribute must be one of the following types: :values&#39;,
+];
+
+$messages = [
+    &#39;email.required&#39; =&gt; &#39;We need to know your e-mail address!&#39;,
+];
+
+$validator = Validator::make($input, $rules, $messages);
+
+</code></pre>
+
+<ul>
+<li>在语言文件中定义
+add your messages to <code>custom</code> array in the <code>resources/lang/xx/validation.php</code> language file.</li>
+</ul>
+
+<pre><code>&#39;custom&#39; =&gt; [
+    &#39;email&#39; =&gt; [
+        &#39;required&#39; =&gt; &#39;We need to know your e-mail address!&#39;,
+    ],
+],
+
+&#39;attributes&#39; =&gt; [
+    &#39;email&#39; =&gt; &#39;email address&#39;,
+],
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel Eloquent ORM]]></title>
+    <link href="http://www.free-abc.com.cn/14807776698633.html"/>
+    <updated>2016-12-03T23:07:49+08:00</updated>
+    <id>http://www.free-abc.com.cn/14807776698633.html</id>
+    <content type="html"><![CDATA[
+<p>ORM<br/>
+跟数据库表对应起来的ORM。跟业务逻辑还没有什么关系。在它之上可以再封装一下业务逻辑给controller用。<br/>
+文件都存放到 <code>app/Model</code> 目录下吧。</p>
+
+<p>创建 Model， 只是创建到了 app 目录下，如果能直接创建到 Model 目录下就好了。</p>
+
+<pre><code>php artisan make:model User
+php artisan make:model User -m
+php artisan make:model User --migration
+</code></pre>
+
+<p>假设默认的表名是 model类名的复数。除非显示指定。<br/>
+假设默认的主键是<code>id</code>,除非显示指定。<br/>
+假设主键是自增的整数。如果不是，请设置 \(incrementing 属性为 false。<br/>
+假设表存在 ``created_at`` 和 ``updated_at`` 列。如果没有，设置 \)timestamps 属性为false。<br/>
+需要自定义时间戳格式，请使用 \(dataFormat 属性。<br/>
+默认使用默认的数据库连接，除非设置了 \)connection 属性。</p>
+
+<pre><code>protected $table = &#39;xxx&#39;;
+protected $primaryKey = &#39;xx&#39;;
+protected $incrementing = false;
+protected $timestamps = false;
+protected $connection = &#39;connection-name&#39;;
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel passport （API验证）]]></title>
+    <link href="http://www.free-abc.com.cn/14807554134214.html"/>
+    <updated>2016-12-03T16:56:53+08:00</updated>
+    <id>http://www.free-abc.com.cn/14807554134214.html</id>
+    <content type="html"><![CDATA[
+<p>API 使用 token 来验证用户。<br/>
+传统的登录，使用 session来验证。</p>
+
+<p>Laravel Passport 提供OAuth2 实现。</p>
+
+<h2 id="toc_0">安装流程</h2>
+
+<ol>
+<li>安装相应的passport包</li>
+<li>注册到 app.php 的 Provider 中</li>
+<li>使用 migrate 创建相关的表</li>
+<li>往数据库插入几条记录</li>
+<li>配置 UserModel, AuthServiceProvider, config/auth.php</li>
+</ol>
+
+<p>详情见：<a href="https://laravel.com/docs/5.3/passport#installation">https://laravel.com/docs/5.3/passport#installation</a></p>
+
+<h2 id="toc_1">概念及原理</h2>
+
+<p>第三方开发者，如果需要调用你的接口的话，需要注册他们的应用为你的 client。<br/>
+第三方开发者需要提供应用名和回调链接。<br/>
+回调链接用于，在普通用户批准授权后，回调。</p>
+
+<p>可以通过 <code>php artisan passport:clint</code> 命令来创建client。<br/>
+第三方开发者获取到：clientId, Secret 。这些信息在请求 access_token 和 授权码 的时候会用到。</p>
+
+<p>要请求token：<br/>
+第三方app，带上必要的参数，发起重定向请求到平台的 oauth/authorize 路由。</p>
+
+<blockquote>
+<p>oauth/authorize 这个路由怎么需要验证用户登录呢？<br/>
+是的，需要用户已登录，然后再选择是否授权。如果未登录，得先登录。</p>
+</blockquote>
+
+<p>平台自动显示一个授权界面，让用户批准或者拒绝授权请求。<br/>
+如果用户批准授权，平台会根据申请client的时配置的重定向url，重定向回第三方。<br/>
+此时，第三方会获得授权码参数。<br/>
+接着，第三方app，再发起post请求到 oauth/token 请求获取 access_token ，refresh_token ，expires_in 的值。</p>
+
+<h2 id="toc_2">第一方应用</h2>
+
+<p>像自己平台开发的 移动应用。不希望走完整的流程，那么，如何获取 access_token 呢？</p>
+
+<p>使用 username 和 password 来获得。</p>
+
+<p>使用前，需要为自家的应用创建一个 client。</p>
+
+<p>然后通过post调用 oauth/token 来获取 access_token。<br/>
+这个接口，是通过 Passport::route 注册的。<br/>
+scope 参数，设置为“*”</p>
+
+<h2 id="toc_3">当第三方不方便保管 secret 时，使用隐式准许token</h2>
+
+<p>如：第三方app是javascript程序。<br/>
+类似于 第三方oAuth2实现。</p>
+
+<h2 id="toc_4">对于API测试的情况，用户希望自己获得access_token ，不走重定向循环</h2>
+
+<h2 id="toc_5">API如何验证access_token？</h2>
+
+<p>使用中间件 <code>auth:api</code></p>
+
+<p>接口调用者，通过 header 来传递 access_token 。<br/>
+<code>&#39;Authorization&#39; =&gt; &#39;Bearer &#39;.$accessToken,</code></p>
+
+<h2 id="toc_6">token 范围</h2>
+
+<p>考虑到我现在的app是自己的app，不需要控制范围。<br/>
+暂略。</p>
+
+<h2 id="toc_7">从js来调用api</h2>
+
+<p>api的调用者包括：web application, mobile application, third-party applications, any sdk,javascript application.</p>
+
+<p>在web中间件组中，使用 CreateFreshApiToken 中间件。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel authentication(用户验证）]]></title>
+    <link href="http://www.free-abc.com.cn/14807401998111.html"/>
+    <updated>2016-12-03T12:43:19+08:00</updated>
+    <id>http://www.free-abc.com.cn/14807401998111.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">创建验证体系脚手架</h2>
+
+<pre><code>php artisan make:auth  （scaffold all of the routes and views you need for authentication)
+php artisan migrate
+</code></pre>
+
+<p>验证的配置文件：<code>config/auth.php</code></p>
+
+<p>laravel的验证系统由：guards（警卫）和 provider 组成。<br/>
+guards 定义了怎么验证用户。例如： session guard 维护session 和 cookies 来验证。<br/>
+provider 定义了用户在存储中怎么被检索。例如：Eloquent、database query builder.</p>
+
+<p>管理后台的用户验证方式和用户信息存储方式，可以自定义。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel query builder]]></title>
+    <link href="http://www.free-abc.com.cn/14806523394907.html"/>
+    <updated>2016-12-02T12:18:59+08:00</updated>
+    <id>http://www.free-abc.com.cn/14806523394907.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">它是什么？能做什么？不能做什么？</h2>
+
+<ol>
+<li>数据库查询语句的构造器。</li>
+<li>执行数据库查询。</li>
+<li>不提供数据缓存功能。</li>
+</ol>
+
+<h2 id="toc_1">它有哪些功能</h2>
+
+<h3 id="toc_2">构造查询语句</h3>
+
+<ul>
+<li>支持链式</li>
+<li></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[mysql技术选型]]></title>
+    <link href="http://www.free-abc.com.cn/14805676445589.html"/>
+    <updated>2016-12-01T12:47:24+08:00</updated>
+    <id>http://www.free-abc.com.cn/14805676445589.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">因素</h2>
+
+<ol>
+<li>mysql5.7是最新版本，支持很多新的特性，如：json数据类型</li>
+<li>阿里云目前支持mysql5.6，mysql5.5语法。</li>
+<li>mysql创始人后来发行的 mariadb，还没有原生支持 json。</li>
+</ol>
+
+<h2 id="toc_1">选择</h2>
+
+<p>先选择兼容阿里云的mysql5.6吧。本机上选择 mariadb 吧。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[obs配置]]></title>
+    <link href="http://www.free-abc.com.cn/14805282358853.html"/>
+    <updated>2016-12-01T01:50:35+08:00</updated>
+    <id>http://www.free-abc.com.cn/14805282358853.html</id>
+    <content type="html"><![CDATA[
+<p><a href="https://www.livecoding.tv/obs-guide-mac/">https://www.livecoding.tv/obs-guide-mac/</a><br/>
+* 输出选项</p>
+
+<pre><code>Then navigate to &#39;Output&#39;. Here we will just make these changes:
+Video Bitrate: 2300kbps
+Audio Bitrate: 160kbps
+Check &quot;Enable Advanced Encoder Settings&quot;
+Set your custom buffer size to exactly your video birate
+Custom Encoder Settings: keyint=5
+</code></pre>
+
+<ul>
+<li>视频选项</li>
+</ul>
+
+<pre><code>Then navigate to &#39;Video&#39;. Here we will just make these changes:
+Resolution: 
+1. Set your base resolution in OBS exactly to your desktop native resolution. 
+2. Divide your first resolution size by the second one, e.g. 1920 divided by 1080 gives 1.7777 or 2560/1600 = 1.6 If you get 1.7777, set downscale resolution size to 1920 * 1080. If you get 1.6 set it 1280 * 800 
+3. Set your buffer size to the same value as your video bitrate 
+4. Advanced -&gt; Video -&gt; Keyframe interval = 5 
+5. Advanced -&gt; Video -&gt; Code profile = High (A good CPU can deal with Higher profile) 
+6. FPS: 20 (play with 15-30 if your screen is blurry)
+</code></pre>
+
+<ul>
+<li>问题</li>
+</ul>
+
+<pre><code>Problem: Frequent disconnections even the recommended video bit rate is used. OBS has 2 output modes simple and advanced which is the first option you see in the output tab. Sometimes the video bit rate entered in simple may be different from what you have when you change it to advanced. Please before you can switch between modes you need to stop streaming temporarily.
+Solution: Make sure the video bitrate, custom buffer size set in simple and advanced mode are the same.
+
+Problem: Screen is blurry?
+Solution: Go to video tab and Set your FPS to 10.
+
+Problem: Having Dropped frames.
+Solution: You need to do a speedtest using speedtest.net and compare the result of your upload speed with your video bitrate. The video bit rate should not be more than your upload speed.
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[jquery]]></title>
+    <link href="http://www.free-abc.com.cn/14803410429860.html"/>
+    <updated>2016-11-28T21:50:42+08:00</updated>
+    <id>http://www.free-abc.com.cn/14803410429860.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">介绍</h2>
+
+<p>jQuery是一个javascript函数库。<br/>
+可以通过一行简单的标记被添加到网页中。</p>
+
+<h2 id="toc_1">包含的功能</h2>
+
+<ul>
+<li>HTML 元素选取</li>
+<li>HTML 元素操作</li>
+<li>CSS 操作</li>
+<li>HTML 事件函数</li>
+<li>Javascript 特效和动画</li>
+<li>HTML DOM 遍历和修改</li>
+<li>AJAX</li>
+<li>Utilities</li>
+</ul>
+
+<h2 id="toc_2">原理</h2>
+
+<p>浏览器是从上往下执行代码，所以引入顺序特别重要。</p>
+
+<h2 id="toc_3">注意事项</h2>
+
+<ul>
+<li>this 表示上下文的当前元素</li>
+</ul>
+
+<pre><code>$(document).ready(function(){
+    $(&quot;p&quot;).click(function(){
+        $(this).hide();
+    })
+});
+</code></pre>
+
+<ul>
+<li>对象中，不要出现<code>;</code></li>
+</ul>
+
+<h2 id="toc_4">选择器</h2>
+
+<p>有很多种选择器，请看文档。<br/>
+常见的：</p>
+
+<pre><code>$(&#39;#id&#39;)
+$(&quot;.class&quot;)
+$(&quot;p&quot;)
+$(&quot;input[name=&#39;_token&#39;]&quot;)
+...
+</code></pre>
+
+<h2 id="toc_5">事件</h2>
+
+<h3 id="toc_6">事件类型</h3>
+
+<p>单击：click<br/>
+双击：dbclick<br/>
+鼠标移入：mouseenter<br/>
+鼠标移开：mouseleave</p>
+
+<h3 id="toc_7">绑定事件</h3>
+
+<pre><code>$(&quot;#id&quot;).bind(&quot;click&quot;, clickAction);
+$(&quot;#id&quot;).unbind(&quot;click&quot;, clickAction);
+$(&quot;#id&quot;).on(&quot;click&quot;, clickAction);
+$(&quot;#id&quot;).off(&quot;click&quot;, clickAction);
+
+$(&quot;#id&quot;).click(clickAction)
+他们效果一样，只是 bind 更有扩展性。
+
+function clickAction(event){
+    console.log(event); //event 可以打印。
+    event.isImmediatePropagationStopped(); //阻止事件冒泡
+    event.isPropagationStopped(); //阻止事件冒泡
+}
+</code></pre>
+
+<p>console.log() 函数在ie浏览器也可能不好使。</p>
+
+<h3 id="toc_8">自定义事件</h3>
+
+<p>略。</p>
+
+<h2 id="toc_9">AJAX</h2>
+
+<pre><code>&lt;script type=&quot;text/javascript&quot;&gt;
+    $(document).ready(function(){
+        var url = &quot;{{ url(&#39;houtai/ajax/programs/store&#39;) }}&quot;;
+        
+        // $(&quot;#submit&quot;).on(&#39;click&#39;, function(){
+        //  alert(&#39;ok&#39;);
+        //  // $.get(&quot;http://voa.dev&quot;,function(data){
+        //  //  alert(data);
+        //  // });
+        //  var name = $(&quot;#name&quot;).val();
+        //  var intro = $(&quot;#intro&quot;).val();
+        //  var type = $(&quot;#type&quot;).val();
+        //  var status = $(&quot;#status&quot;).val();
+        //  var token = $(&quot;input[name=&#39;_token&#39;]&quot;).val();
+        //  var postData = {name: name, intro: intro, type: type, status: status, _token: token};           
+        //  $.post(url, postData, function(data){
+        //      alert(data.id);
+        //      console.log(data);              
+        //  }); 
+        //  return false;       
+        // });
+        $(&#39;#programCreate&#39;).submit(function(){
+            var name = $(&quot;#name&quot;).val();
+            var intro = $(&quot;#intro&quot;).val();
+            var type = $(&quot;#type&quot;).val();
+            var status = $(&quot;#status&quot;).val();
+            var token = $(&quot;input[name=&#39;_token&#39;]&quot;).val();
+            var postData = {name: name, intro: intro, type: type, status: status, _token: token};
+            console.log(postData);
+
+            $.post(url, postData, function(data){
+                alert(data);
+                console.log(data);
+                //表单重置
+                document.getElementById(&#39;programCreate&#39;).reset();
+                //错误提示删除
+                $(&quot;#namediv&quot;).removeClass(&#39;has-error&#39;);
+                $(&quot;#introdiv&quot;).addClass(&#39;has-error&#39;);
+                $(&quot;#typediv&quot;).addClass(&#39;has-error&#39;);
+                $(&quot;#statusdiv&quot;).addClass(&#39;has-error&#39;);
+                $(&quot;#namediv .help-block&quot;).html(&quot;&quot;);
+                $(&quot;#introdiv .help-block&quot;).html(&quot;&quot;);
+                $(&quot;#typediv .help-block&quot;).html(&quot;&quot;);
+                $(&quot;#statusdiv .help-block&quot;).html(&quot;&quot;);
+            });
+            return false;
+        });
+    })
+    .fail(function(data){
+                console.log(data.responseJSON);
+                //此处使用js来验证值，我还需要精进下。
+                if( data.responseJSON.name[0] != &#39;&#39;){
+                    $(&quot;#namediv&quot;).addClass(&#39;has-error&#39;);
+                    $(&quot;#namediv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.name[0]+&quot;&lt;/strong&gt;&quot;);
+                }
+                if( data.responseJSON.intro[0] != &#39;&#39;){
+                    $(&quot;#introdiv&quot;).addClass(&#39;has-error&#39;);
+                    $(&quot;#introdiv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.intro[0]+&quot;&lt;/strong&gt;&quot;);
+                }
+                if( data.responseJSON.type[0] != &#39;&#39;){
+                    $(&quot;#typediv&quot;).addClass(&#39;has-error&#39;);
+                    $(&quot;#typediv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.type[0]+&quot;&lt;/strong&gt;&quot;);
+                }
+                if( data.responseJSON.status[0] != &#39;&#39;){
+                    $(&quot;#statusdiv&quot;).addClass(&#39;has-error&#39;);
+                    $(&quot;#statusdiv .help-block&quot;).html(&quot;&lt;strong&gt;&quot;+data.responseJSON.status[0]+&quot;&lt;/strong&gt;&quot;);
+                }
+                
+            });;
+
+&lt;/script&gt;
+</code></pre>
+
+<p><strong>特别注意</strong>： return false ！！！！不然，提交完会自动刷新当前页面。<br/>
+当ajax请求没有成功的时候，我采取一步一步跟踪的方法进行尝试。</p>
+
+<p>表单提交成功后，可能想重置表单。jquery 不提供方法。</p>
+
+<pre><code>&lt;input id=&quot;res&quot; name=&quot;res&quot; type=&quot;reset&quot; style=&quot;display:none;&quot; /&gt; 
+$(&quot;input[name=&#39;res&#39;]&quot;).click();  好像不好使。
+
+或
+document.getElementById(&quot;form1&quot;).reset();  可以。
+document.formName.reset(); 
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel 团队合作开发建议]]></title>
+    <link href="http://www.free-abc.com.cn/14803049595107.html"/>
+    <updated>2016-11-28T11:49:19+08:00</updated>
+    <id>http://www.free-abc.com.cn/14803049595107.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">使用默认文件夹组织方式</h2>
+
+<ol>
+<li>在controller 文件夹下的 Admin, Home, Api 目录下，建相应同事名的目录。</li>
+<li>在 Model 文件夹下，建相应同事名的目录。</li>
+<li>把同事每天需要频繁修改的文件放在以他自己的名字命名的文件夹下。</li>
+</ol>
+
+<h2 id="toc_1">重新组合app目录</h2>
+
+<ol>
+<li>把controller、model、view等都可以集合到单个同事名目录下。</li>
+</ol>
+
+<h2 id="toc_2">总结</h2>
+
+<p>应该第二种方式更合理吧，耦合度更小。<br/>
+先熟悉一下laravel，再改吧。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel 控制器的使用]]></title>
+    <link href="http://www.free-abc.com.cn/14803040439522.html"/>
+    <updated>2016-11-28T11:34:03+08:00</updated>
+    <id>http://www.free-abc.com.cn/14803040439522.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">作用</h2>
+
+<ol>
+<li>MVC设计模式</li>
+<li>替代在 route 文件中，定义所有的请求处理逻辑</li>
+</ol>
+
+<h2 id="toc_1">编写controller类</h2>
+
+<ol>
+<li>要继承基类，虽然框架不强制继承</li>
+<li>基类提供了一些必要的功能</li>
+<li>控制器的命名：单数资源名+Controller</li>
+</ol>
+
+<p>php artisan make:controller ProgramInfoController --resource</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel 路由使用]]></title>
+    <link href="http://www.free-abc.com.cn/14803022814023.html"/>
+    <updated>2016-11-28T11:04:41+08:00</updated>
+    <id>http://www.free-abc.com.cn/14803022814023.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">最简单的路由</h2>
+
+<h2 id="toc_1">跟控制器配合</h2>
+
+<pre><code>Route::get(&#39;user/{id}&#39;, &#39;UserController@show&#39;);
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel database migrations]]></title>
+    <link href="http://www.free-abc.com.cn/14802671854653.html"/>
+    <updated>2016-11-28T01:19:45+08:00</updated>
+    <id>http://www.free-abc.com.cn/14802671854653.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">介绍</h2>
+
+<p>版本控制你的数据库</p>
+
+<h2 id="toc_1">生成 Migrations</h2>
+
+<pre><code>php artisan make:migration create_users_table
+php artisan make:migration create_users_table --create=users
+php artisan make:migration add_votes_to_users_table --table=users
+</code></pre>
+
+<h2 id="toc_2">运行 Migrations</h2>
+
+<pre><code>php artisan migrate
+php artisan migrate:rollback #回滚最后执行的操作，可能包含多个 migration files
+php artisan migrate:rollback --step=5 #回滚最后5步操作。
+php artisan migrate:reset #回滚所有操作
+php artisan migrate:refresh #先回滚再重新执行
+// Refresh the database and run all database seeds...
+php artisan migrate:refresh --seed
+</code></pre>
+
+<h2 id="toc_3">管理表，使用 schema builder</h2>
+
+<ul>
+<li>数据库命名：复数资源名。</li>
+</ul>
+
+<pre><code>Schema::create(&#39;users&#39;, function (Blueprint $table) {
+    $table-&gt;increments(&#39;id&#39;);
+});
+
+Schema::connection(&#39;foo&#39;)-&gt;create(&#39;users&#39;, function ($table) {
+    $table-&gt;increments(&#39;id&#39;);
+});
+
+Schema::create(&#39;users&#39;, function ($table) {
+    $table-&gt;engine = &#39;InnoDB&#39;;
+
+    $table-&gt;increments(&#39;id&#39;);
+});
+
+Schema::rename($from, $to);
+
+Schema::drop(&#39;users&#39;);
+
+Schema::dropIfExists(&#39;users&#39;);
+
+</code></pre>
+
+<h2 id="toc_4">管理列和列修饰符</h2>
+
+<ul>
+<li>创建列</li>
+<li>列修饰符</li>
+<li>修改列</li>
+<li>删除列</li>
+</ul>
+
+<h2 id="toc_5">索引管理</h2>
+
+<ul>
+<li>创建索引</li>
+<li>删除索引</li>
+<li>外键约束</li>
+</ul>
+
+<h2 id="toc_6">PS</h2>
+
+<p>执行完：<code>php artisan migrate:refresh</code> 之后，还需要执行哪个命令：</p>
+
+<pre><code>php artisan passport:install //建用于oauth验证的平台clint。
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[laravel 使用 database]]></title>
+    <link href="http://www.free-abc.com.cn/14802645455291.html"/>
+    <updated>2016-11-28T00:35:45+08:00</updated>
+    <id>http://www.free-abc.com.cn/14802645455291.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">支持的数据库</h2>
+
+<ul>
+<li>MySQL</li>
+<li>Postgres</li>
+<li>SQLite</li>
+<li>SQL Server</li>
+</ul>
+
+<h2 id="toc_1">配置文件</h2>
+
+<ol>
+<li><code>config/database.php</code></li>
+<li><code>.env</code></li>
+<li>支持读写分离</li>
+</ol>
+
+<h2 id="toc_2">支持怎么拼接sql</h2>
+
+<ul>
+<li>raw queries </li>
+</ul>
+
+<pre><code>$users = DB::select(&#39;select * from users where active = ?&#39;, [1]);
+
+$results = DB::select(&#39;select * from users where id = :id&#39;, [&#39;id&#39; =&gt; 1]);
+
+DB::insert(&#39;insert into users (id, name) values (?, ?)&#39;, [1, &#39;Dayle&#39;]);
+
+$affected = DB::update(&#39;update users set votes = 100 where name = ?&#39;, [&#39;John&#39;]);
+
+$deleted = DB::delete(&#39;delete from users&#39;);
+
+DB::statement(&#39;drop table users&#39;);
+
+DB::transaction(function () {
+    DB::table(&#39;users&#39;)-&gt;update([&#39;votes&#39; =&gt; 1]);
+
+    DB::table(&#39;posts&#39;)-&gt;delete();
+});
+</code></pre>
+
+<ul>
+<li><p>the query builder</p></li>
+<li><p>the Eloquent ORM</p></li>
+</ul>
+
+<h2 id="toc_3">使用多个数据库连接</h2>
+
+<pre><code>$users = DB::connection(&#39;foo&#39;)-&gt;select(...);
+$pdo = DB::connection()-&gt;getPdo();
+</code></pre>
+
+]]></content>
+  </entry>
+  
+</feed>
