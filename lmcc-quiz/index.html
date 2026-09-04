@@ -1097,7 +1097,9 @@ function isCodeLine(line) {
     /^top_/, /^sorted_/, /^probs_/, /^cumulative_/, /^min_/, /^scaled_/,
     /^logits\s*\[/, /^temperature\s*=/, /^sample_/,
     // 参数文档行，如 logits:、temperature:、返回:
-    /^[a-zA-Z_][a-zA-Z0-9_]*:/
+    /^[a-zA-Z_][a-zA-Z0-9_]*:/,
+    // 方法调用，如 precisions.append(0)、output_buffer.getvalue()
+    /^[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_]/
   ];
   for (var i = 0; i < patterns.length; i++) {
     if (patterns[i].test(trimmed)) return true;
