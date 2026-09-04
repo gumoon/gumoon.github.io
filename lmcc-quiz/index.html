@@ -988,7 +988,9 @@ function isCodeLine(line) {
     /^[a-zA-Z_][a-zA-Z0-9_]*\s*=/,
     /^[a-zA-Z_][a-zA-Z0-9_]*\.__/, /^torch\./, /^nn\./, /^F\./,
     /^top_/, /^sorted_/, /^probs_/, /^cumulative_/, /^min_/, /^scaled_/,
-    /^logits\s*\[/, /^temperature\s*=/, /^sample_/
+    /^logits\s*\[/, /^temperature\s*=/, /^sample_/,
+    // 参数文档行，如 logits:、temperature:、返回:
+    /^[a-zA-Z_][a-zA-Z0-9_]*:/
   ];
   for (var i = 0; i < patterns.length; i++) {
     if (patterns[i].test(trimmed)) return true;
@@ -1006,8 +1008,37 @@ function formatQuestionText(text) {
   var lines = escaped.split('\n');
   var result = [];
   var codeBuffer = [];
+  var inDocstring = false;
+  var docstringQuote = '';
   for (var i = 0; i < lines.length; i++) {
     var line = lines[i];
+    var trimmed = line.trim();
+    // Docstring 状态机：遇到 """ 或 ''' 进入/退出 docstring 模式
+    if (!inDocstring && (trimmed.startsWith('"""') || trimmed.startsWith("'''"))) {
+      inDocstring = true;
+      docstringQuote = trimmed.startsWith('"""') ? '"""' : "'''";
+      codeBuffer.push(line);
+      // 如果同一行也闭合了 docstring（单行 docstring），立即退出
+      if (trimmed.length > 3 && trimmed.endsWith(docstringQuote)) {
+        inDocstring = false;
+      }
+      continue;
+    }
+    if (inDocstring) {
+      codeBuffer.push(line);
+      if (trimmed.endsWith(docstringQuote)) {
+        inDocstring = false;
+      }
+      continue;
+    }
+    // 短标识符延续：前一行是代码且当前行是 ≤15 字符的纯 ASCII 标识符
+    if (codeBuffer.length > 0) {
+      var isShortAsciiId = /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(trimmed) && trimmed.length <= 15;
+      if (isShortAsciiId) {
+        codeBuffer.push(line);
+        continue;
+      }
+    }
     if (isCodeLine(line)) {
       codeBuffer.push(line);
     } else {
