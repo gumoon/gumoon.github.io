@@ -767,7 +767,7 @@ const QUESTIONS = [
     "category": "其他"
   },
   {
-    "question": "关于提示工程（Prompt Engineering）的主要目的和局限，\n下列说法正确的是：",
+    "question": "关于提示工程（Prompt Engineering）的主要目的和局限，下列说法正确的是：",
     "options": {
       "A": "目的在于改变模型权重，使其永久掌握新知识",
       "B": "范围仅限于文本分类，无法处理多模态任务",
