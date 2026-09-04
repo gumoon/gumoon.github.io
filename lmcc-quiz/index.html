@@ -902,6 +902,23 @@ function init() {
   var input = document.getElementById('quizQuestionCount');
   input.max = total;
   input.value = Math.min(20, total);
+  // 绑定组别变化事件
+  var groupRadios = document.querySelectorAll('input[name="quizGroup"]');
+  for (var i = 0; i < groupRadios.length; i++) {
+    groupRadios[i].addEventListener('change', function() {
+      selectedCategories.clear();
+      renderQuizSetup();
+      var groupFilter = this.value;
+      var pool = allQuestions.slice();
+      if (groupFilter !== 'all') {
+        pool = pool.filter(function(q){ return q.group === groupFilter; });
+      }
+      document.getElementById('quizMaxCount').textContent = pool.length;
+      var countInput = document.getElementById('quizQuestionCount');
+      countInput.max = pool.length;
+      if (parseInt(countInput.value) > pool.length) countInput.value = pool.length;
+    });
+  }
 }
 
 function showAuth() {
@@ -979,22 +996,29 @@ function startFreeQuiz() {
 }
 
 function renderQuizSetup() {
+  var groupEl = document.querySelector('input[name="quizGroup"]:checked');
+  var groupFilter = groupEl ? groupEl.value : 'all';
+  var pool = allQuestions.slice();
+  if (groupFilter !== 'all') {
+    pool = pool.filter(function(q){ return q.group === groupFilter; });
+  }
   var cats = {};
-  for (var i = 0; i < allQuestions.length; i++) {
-    var c = allQuestions[i].category;
+  for (var i = 0; i < pool.length; i++) {
+    var c = pool[i].category;
     cats[c] = (cats[c] || 0) + 1;
   }
   var youthCount = allQuestions.filter(function(q){ return q.group === 'youth'; }).length;
   var adultCount = allQuestions.filter(function(q){ return q.group === 'adult'; }).length;
   document.getElementById('quizStatsGrid').innerHTML =
-    '<div class="stat-item"><div class="number">' + allQuestions.length + '</div><div class="label">总题数</div></div>' +
+    '<div class="stat-item"><div class="number">' + pool.length + '</div><div class="label">' + (groupFilter === 'all' ? '总题数' : (groupFilter === 'youth' ? '青少年组' : '成人组')) + '</div></div>' +
     '<div class="stat-item"><div class="number">' + Object.keys(cats).length + '</div><div class="label">模块数</div></div>' +
     '<div class="stat-item"><div class="number">' + youthCount + '</div><div class="label">青少年组</div></div>' +
     '<div class="stat-item"><div class="number">' + adultCount + '</div><div class="label">成人组</div></div>';
   var html = '';
   var entries = Object.entries(cats).sort(function(a,b){ return b[1]-a[1]; });
   for (var j = 0; j < entries.length; j++) {
-    html += '<span class="category-chip" data-cat="' + entries[j][0] + '" onclick="toggleQuizCategory(this)">' + entries[j][0] + ' (' + entries[j][1] + ')</span>';
+    var isActive = selectedCategories.has(entries[j][0]) ? ' active' : '';
+    html += '<span class="category-chip' + isActive + '" data-cat="' + entries[j][0] + '" onclick="toggleQuizCategory(this)">' + entries[j][0] + ' (' + entries[j][1] + ')</span>';
   }
   document.getElementById('quizCategoryFilters').innerHTML = html;
 }
@@ -1003,7 +1027,13 @@ function toggleQuizCategory(el) {
   var cat = el.dataset.cat;
   if (selectedCategories.has(cat)) { selectedCategories.delete(cat); el.classList.remove('active'); }
   else { selectedCategories.add(cat); el.classList.add('active'); }
-  var max = selectedCategories.size > 0 ? allQuestions.filter(function(q){ return selectedCategories.has(q.category); }).length : allQuestions.length;
+  var groupEl = document.querySelector('input[name="quizGroup"]:checked');
+  var groupFilter = groupEl ? groupEl.value : 'all';
+  var pool = allQuestions.slice();
+  if (groupFilter !== 'all') {
+    pool = pool.filter(function(q){ return q.group === groupFilter; });
+  }
+  var max = selectedCategories.size > 0 ? pool.filter(function(q){ return selectedCategories.has(q.category); }).length : pool.length;
   document.getElementById('quizMaxCount').textContent = max;
   var input = document.getElementById('quizQuestionCount');
   input.max = max;
