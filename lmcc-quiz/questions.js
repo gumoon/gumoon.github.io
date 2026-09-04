@@ -1492,5 +1492,603 @@ const QUESTIONS = [
     "explanation": "且仅限于实现该目的的最小范围。",
     "category": "其他",
     "group": "youth"
-  }
+  },
+{
+  "question": "以下关于人工智能与机器学习的说法，正确的是：",
+  "options": {
+    "A": "有监督学习不需要标签数据，主要用于发现数据结构",
+    "B": "无监督学习需要大量标注数据才能训练",
+    "C": "分类和回归属于有监督学习，而聚类属于无监督学习",
+    "D": "聚类算法的目标是预测连续数值"
+  },
+  "answer": "B",
+  "explanation": "A错误：机器学习属于人工智能",
+  "category": "人工智能基础概念",
+  "group": "youth"
+},
+{
+  "question": "下列关于有监督学习与无监督学习的描述，正确的是：",
+  "options": {
+    "A": "模型测试 → 数据采集 → 模型训练 → 数据预处理",
+    "B": "数据预处理 → 模型训练 → 模型验证 → 模型测试",
+    "C": "模型训练 → 数据清洗 → 模型部署 → 数据收集",
+    "D": "数据分析 → 模型测试 → 数据清洗 → 模型训练"
+  },
+  "answer": "C",
+  "explanation": "",
+  "category": "人工智能基础概念",
+  "group": "youth"
+},
+{
+  "question": "在机器学习流程中，下列步骤顺序最合理的是：",
+  "options": {
+    "A": "数据清洗主要是对模型参数进行优化",
+    "B": "数据工程包括数据采集、清洗、变换等多个环节",
+    "C": "数据变换只在模型训练完成后进行",
+    "D": "数据清洗的主要目的是增加数据量"
+  },
+  "answer": "B",
+  "explanation": "",
+  "category": "人工智能基础概念",
+  "group": "youth"
+},
+{
+  "question": "关于数据清洗与数据工程的描述，正确的是：",
+  "options": {
+    "A": "精确率表示所有正样本中被正确预测的比例",
+    "B": "召回率表示预测为正的样本中有多少是正确的",
+    "C": "精确率关注预测结果的准确性，召回率关注对正样本的\n覆盖能力",
+    "D": "两者完全等价，只是名称不同"
+  },
+  "answer": "B",
+  "explanation": "",
+  "category": "人工智能基础概念",
+  "group": "youth"
+},
+{
+  "question": "关于精确率（Precision）和召回率（Recall），正确的是：",
+  "options": {
+    "A": "交叉验证的主要作用是增加模型复杂度",
+    "B": "过拟合是模型在训练数据上表现很好，在新数据上表现\n较差",
+    "C": "过拟合是因为模型太简单",
+    "D": "交叉验证只能用于无监督学习"
+  },
+  "answer": "C",
+  "explanation": "",
+  "category": "人工智能基础概念",
+  "group": "youth"
+},
+{
+  "question": "关于交叉验证与过拟合，下列说法正确的是：",
+  "options": {
+    "A": "自然语言理解和计算机视觉",
+    "B": "仅限于数据库管理系统",
+    "C": "只用于数值计算",
+    "D": "只应用于硬件设计"
+  },
+  "answer": "B",
+  "explanation": "",
+  "category": "人工智能基础概念",
+  "group": "youth"
+},
+{
+  "question": "以下属于人工智能应用领域的是：",
+  "options": {
+    "A": "推荐系统主要依赖人工规则，不使用数据",
+    "B": "智能检索无法理解语义，只能进行关键词匹配",
+    "C": "推荐系统和智能检索都可以利用机器学习技术提升效果",
+    "D": "推荐系统只能用于电商领域"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "其他",
+  "group": "youth"
+},
+{
+  "question": "关于推荐系统与智能检索的描述，正确的是：",
+  "options": {
+    "A": "离散性：自然语言由离散的符号（如汉字、单词）组成",
+    "B": "抽象性：语言符号可以代表具体的实物，也可以代表抽\n象的概念",
+    "C": "确定性：自然语言的语义在任何语境下都是唯一确定、\n没有歧义的",
+    "D": "社会性：语言是人类在社会发展中约定俗成的沟通工具"
+  },
+  "answer": "C",
+  "explanation": "",
+  "category": "智能体应用",
+  "group": "youth"
+},
+{
+  "question": "关于自然语言（Natural Language）的特点，下列说法错误\n的是：",
+  "options": {
+    "A": "图像是密集的像素矩阵，而自然语言通常表现为离散的\n序列",
+    "B": "语言信号比图像信号包含更多的冗余像素信息",
+    "C": "图像具有天然的语序结构，而语言没有先后顺序",
+    "D": "计算机处理图像不需要数字化，而处理语言必须数字化"
+  },
+  "answer": "C",
+  "explanation": "",
+  "category": "其他",
+  "group": "youth"
+},
+{
+  "question": "与图像数据（Image）相比，自然语言在作为大模型输入数\n据时，最显著的物理特征区别是：",
+  "options": {
+    "A": "GPT、Llama 等基于 Transformer 的预训练模型通常被视\n为大语言模型",
+    "B": "Transformer 架构模型参数量必然很小，不可能成为大语\n言模型",
+    "C": "卷积神经网络是大语言模型的唯一形式",
+    "D": "线性回归模型由于结构简单，是大语言模型的典型代表"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "多模态",
+  "group": "youth"
+},
+{
+  "question": "关于大语言模型的代表性模型，以下哪项描述最准确？",
+  "options": {
+    "A": "大语言模型在创造性任务上表现优异，但可能存在事实\n性错误",
+    "B": "大语言模型完全不会产生偏见内容",
+    "C": "大语言模型在所有任务上都优于人类专家",
+    "D": "大语言模型不需要大量训练数据即可达到最佳效果"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "大模型基础概念",
+  "group": "youth"
+},
+{
+  "question": "关于大语言模型的优势与局限性，以下描述正确的是？",
+  "options": {
+    "A": "循环神经网络(RNN) → N-gram 统计模型 → Transformer\n→ 大语言模型",
+    "B": "N-gram 统计模型 → 循环神经网络 (RNN) → 预训练模型\n(如BERT) → 大语言模型",
+    "C": "大语言模型 → Transformer → 统计语言模型 → 神经网络\n模型",
+    "D": "专家系统 → 大语言模型 → 统计语言模型 → 神经网络模型"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "大模型基础概念",
+  "group": "youth"
+},
+{
+  "question": "在语言模型的发展史上，以下技术或模型按时间先后顺序排\n列正确的是：",
+  "options": {
+    "A": "GPT-3 的发布证明了通过简单增加模型参数和数据量可\n以实现强大的通用能力",
+    "B": "Transformer 架构的提出为现代大模型奠定了并行计算的\n基础",
+    "C": "DeepSeek 系列模型展示了在模型架构优化和推理成本降\n低方面的国产技术进步",
+    "D": "GPT-1 是历史上第一个采用“仅编码器（Encoder-only）”\n架构取得成功的模型"
+  },
+  "answer": "B",
+  "explanation": "",
+  "category": "大模型基础概念",
+  "group": "youth"
+},
+{
+  "question": "关于大模型发展过程中的里程碑事件，下列说法错误的是：",
+  "options": {
+    "A": "模型性能主要受限于模型架构的精细程度，而非数据量",
+    "B": "模型性能与参数量、数据集大小及计算量之间存在幂律\n关系，且随着规模增加性能可预测地提升",
+    "C": "只要模型参数量翻倍，推理速度就会自动提升一倍",
+    "D": "当模型达到一定规模后，增加数据量反而会导致性能急\n剧下降"
+  },
+  "answer": "D",
+  "explanation": "",
+  "category": "大模型基础概念",
+  "group": "youth"
+},
+{
+  "question": "关于大模型的扩展法则（Scaling Laws），下列描述最符合\nKM法则核心观点的是：",
+  "options": {
+    "A": "只要算力充足，参数量越大的模型性能永远越好，无需\n考虑数据量",
+    "B": "当算力预算增加时，应同比例地增加模型参数量和训练\n数据量，许多早期模型往往“训练不足”",
+    "C": "175B 参数的模型是人类能训练的极限",
+    "D": "模型的训练数据应该全部来自教科书，以保证质量"
+  },
+  "answer": "B",
+  "explanation": "",
+  "category": "大模型基础概念",
+  "group": "youth"
+},
+{
+  "question": "DeepMind 提出的 Chinchilla 扩展法则给出的核心启示是：",
+  "options": {
+    "A": "监督微调 (Supervised Fine-tuning)",
+    "B": "知识蒸馏 (Knowledge Distillation)",
+    "C": "上下文学习 (In-context Learning)",
+    "D": "持续学习 (Continual Learning)"
+  },
+  "answer": "B",
+  "explanation": "",
+  "category": "其他",
+  "group": "youth"
+},
+{
+  "question": "大模型在没有进行权重更新的前提下，仅通过在提示词\n（Prompt）中加入几个示例就能学会处理新任务，这种能力\n被称为：",
+  "options": {
+    "A": "涌现能力是指小模型也具备，只是在大模型中表现得更\n明显而已",
+    "B": "涌现能力通常指在模型参数量超过一定阈值后，模型在\n某些复杂任务上的表现突然从“随机猜测”跃升至“远超随机”\n的现象",
+    "C": "涌现能力意味着模型已经产生了自我意识",
+    "D": "涌现能力只能通过增加模型的层数获得，与参数量无关"
+  },
+  "answer": "C",
+  "explanation": "",
+  "category": "提示学习",
+  "group": "youth"
+},
+{
+  "question": "关于大模型的“涌现能力（Emergent Abilities）”，以下理解\n最准确的是：",
+  "options": {
+    "A": "Query用于存储待检索的信息，Key用于生成最终输出",
+    "B": "注意力分数通过 Query 与 Key 的点积计算得到，再经\nsoftmax归一化后对Value加权求和",
+    "C": "softmax 函数的作用是将注意力分数映射到 ( −∞ , + ∞ )\n的范围",
+    "D": "Value向量决定了哪些位置应该获得更高的注意力权重"
+  },
+  "answer": "B",
+  "explanation": "",
+  "category": "大模型基础概念",
+  "group": "youth"
+},
+{
+  "question": "关于注意力机制中查询（Query）、键（Key）、值（Value）\n的作用，下列说法正确的是：",
+  "options": {
+    "A": "自注意力机制中 Query、Key、Value 均来自同一序列，\n交叉注意力中Query 来自一个序列而Key 和 Value 来自另一\n个序列",
+    "B": "自注意力机制只能用于编码器，交叉注意力只能用于解\n码器",
+    "C": "交叉注意力中Query、Key、Value都来自同一个输入序列",
+    "D": "自注意力机制不使用softmax函数进行归一化"
+  },
+  "answer": "B",
+  "explanation": "",
+  "category": "其他",
+  "group": "youth"
+},
+{
+  "question": "关于自注意力机制与交叉注意力机制的区别，下列描述正确\n的是：",
+  "options": {
+    "A": "因果解码器架构允许每个位置关注序列中所有位置的信息",
+    "B": "编码器-解码器架构中，编码器使用双向注意力，解码器\n使用因果（单向）注意力",
+    "C": "前缀解码器架构与因果解码器架构完全相同，没有任何\n区别",
+    "D": "编码器 - 解码器架构只能处理分类任务，无法进行文本\n生成"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "模型架构",
+  "group": "youth"
+},
+{
+  "question": "关于大语言模型的三种主流架构，下列描述正确的是：",
+  "options": {
+    "A": "编码器架构（如BERT）更适合自然语言理解任务，因果\n解码器架构（如GPT）更适合文本生成任务",
+    "B": "因果解码器架构只能用于文本生成，完全不能做理解任务",
+    "C": "编码器-解码器架构只适合机器翻译，不适合其他任何任务",
+    "D": "所有任务都应该使用同一种架构，架构选择对性能没有\n影响"
+  },
+  "answer": "B",
+  "explanation": "",
+  "category": "模型架构",
+  "group": "youth"
+},
+{
+  "question": "关于模型架构选择与任务类型的关系，下列说法正确的是：",
+  "options": {
+    "A": "Transformer仅由注意力层组成，不包含前馈网络层",
+    "B": "Transformer 的编码器由多头自注意力层和前馈网络层交\n替堆叠而成，每层之后通常有残差连接和层归一化",
+    "C": "位置编码的作用是对输入词汇进行语义编码，与位置顺\n序无关",
+    "D": "多头注意力机制是指只使用一个注意力头来处理全部信息"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "模型架构",
+  "group": "youth"
+},
+{
+  "question": "关于Transformer模型的基本结构组成，下列描述正确的是：",
+  "options": {
+    "A": "[1] q_rotated_even = q_even * cos_vals - q_odd * sin_vals [2]\nq_rotated_odd = q_even * sin_vals + q_odd * cos_vals",
+    "B": "[1] q_rotated_even = q_even * sin_vals - q_odd * cos_vals [2]\nq_rotated_odd = q_even * cos_vals + q_odd * sin_vals",
+    "C": "[1] q_rotated_even = q_even + cos_vals [2] q_rotated_odd =\nq_odd + sin_vals",
+    "D": "[1] q_rotated_even = q_even * cos_vals + q_odd * sin_vals\n[2] q_rotated_odd = q_even * sin_vals - q_odd * cos_vals"
+  },
+  "answer": "B",
+  "explanation": "",
+  "category": "模型架构",
+  "group": "youth"
+},
+{
+  "question": "以下代码实现了旋转位置编码（RoPE），请阅读代码并填\n写空缺部分。\nimport torch\nimport math\ndef apply_rotary_pos_emb(q, k, pos):\n\"\"\"\n对 Query 和 Key 应用旋转位置编码（RoPE）\n参数:\nq: Query张量, shape (batch, heads, seq_len, head_dim)\nk: Key张量, shape (batch, heads, seq_len, head_dim)\npos: 位置索引, shape (seq_len,)\n返回:\n旋转编码后的 q 和 k\n\"\"\"\nhead_dim = q.size(-1)\n# 计算频率基底: theta_i = 1 / (10000 ^ (2i / d))\nfreq_indices = torch.arange(0, head_dim, 2, dtype=torch.float32)\nfreqs = 1.0 / (10000.0 ** (freq_indices / head_dim))\n# 计算位置角度: pos * theta\nangles = pos.unsqueeze(-1).float() * freqs.unsqueeze(0) # (seq_len, head_dim//2)\ncos_vals = torch.cos(angles) # (seq_len, head_dim//2)\nsin_vals = torch.sin(angles) # (seq_len, head_dim//2)\n# 将 q 拆分为偶数维和奇数维\nq_even = q[..., 0::2] # (..., head_dim//2)\nq_odd = q[..., 1::2] # (..., head_dim//2)\n# [1] 对 Query 应用旋转变换: q_rotated_even = q_even * cos - q_odd * sin\n______________________________\n# [2] 对 Query 应用旋转变换: q_rotated_odd = q_even * sin + q_odd * cos\n[1] 和 [2] 处应分别填入：",
+  "options": {
+    "A": "RMSNorm 相比 LayerNorm 省去了均值的计算，仅使用\n均方根进行归一化，计算效率更高",
+    "B": "LayerNorm和RMSNorm的计算方式完全相同，没有区别",
+    "C": "GELU激活函数与ReLU完全一致，都在负数区域输出恒\n为零",
+    "D": "Pre-Norm 和 Post-Norm 的区别仅在于是否使用归一化，\n放置位置无影响"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "模型架构",
+  "group": "adult"
+},
+{
+  "question": "关于 Transformer 模型中的归一化和激活函数配置，下列说\n法正确的是：",
+  "options": {
+    "A": "探针技术通过在模型中间层训练简单分类器来探测模型\n是否学到了特定的语言知识",
+    "B": "注意力可视化可以直接证明模型的推理因果过程",
+    "C": "特征重要性分析只适用于传统机器学习模型，不能用于\n大语言模型",
+    "D": "大模型的可解释性分析方法目前只有注意力可视化一种"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "模型架构",
+  "group": "youth"
+},
+{
+  "question": "关于大模型可解释性分析方法，下列描述正确的是：",
+  "options": {
+    "A": "[1] router_probs = F.softmax(router_logits, dim=-1) [2] top_\nk_weights, top_k_indices = torch.topk(router_probs, self.top_k,\ndim=-1)",
+    "B": "[1] router_probs = F.sigmoid(router_logits) [2] top_k_\nweights, top_k_indices = torch.topk(router_probs, self.top_k,\ndim=-1)",
+    "C": "[1] router_probs = F.softmax(router_logits, dim=0) [2] top_\nk_weights, top_k_indices = torch.sort(router_probs, dim=-1)",
+    "D": "[1] router_probs = F.relu(router_logits) [2] top_k_weights,\ntop_k_indices = torch.topk(router_probs, self.num_experts,\ndim=-1)"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "模型架构",
+  "group": "youth"
+},
+{
+  "question": "以下代码实现了 MoE（混合专家模型）的路由机制和稀疏\n激活，请阅读代码并填写空缺部分。\nimport torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nclass MoELayer(nn.Module):\ndef __init__(self, input_dim, hidden_dim, num_experts, top_k=2):\nsuper().__init__()\nself.num_experts = num_experts\nself.top_k = top_k\n# 路由网络：将输入映射到专家概率分布\nself.gate = nn.Linear(input_dim, num_experts, bias=False)\n# 多个专家网络\nself.experts = nn.ModuleList([\nnn.Sequential(\nnn.Linear(input_dim, hidden_dim),\nnn.ReLU(),\nnn.Linear(hidden_dim, input_dim)\n) for _ in range(num_experts)\n])\ndef forward(self, x):\n# x: (batch_size, seq_len, input_dim)\nbatch_size, seq_len, dim = x.shape\nx_flat = x.view(-1, dim) # (batch*seq, dim)\n# [1] 通过路由网络计算每个token对应各专家的分数，并用softmax归一化\nrouter_logits = self.gate(x_flat) # (batch*seq, num_experts)\n______________________________\n# [2] 选择Top-K个专家\n______________________________\n[1] 和 [2] 处应分别填入：",
+  "options": {
+    "A": "MoE 模型虽然计算量与稠密模型相近，但由于所有专家\n参数都需要加载，显存占用远大于同等计算量的稠密模型",
+    "B": "MoE 模型在分布式训练中不需要跨设备通信，因为每个\n专家独立工作",
+    "C": "MoE模型的显存占用与稠密模型完全相同",
+    "D": "专家并行（Expert Parallelism）会增加显存占用但不会带\n来通信开销"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "模型架构",
+  "group": "adult"
+},
+{
+  "question": "关于MoE模型的显存优化与通信开销，下列描述正确的是：",
+  "options": {
+    "A": "ALiB（i Attention with Linear Biases）不使用位置编码向量，\n而是在注意力分数上直接加上与距离成正比的线性偏置",
+    "B": "所有位置编码方法都无法处理超出训练时最大长度的序列",
+    "C": "长上下文窗口拓展只需要修改位置编码，不需要使用长\n文本数据进行额外训练",
+    "D": "ALiBi需要为每个位置学习独立的位置嵌入向量"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "模型架构",
+  "group": "youth"
+},
+{
+  "question": "关于长上下文模型中的位置编码拓展方法，下列说法正确的是：",
+  "options": {
+    "A": "标准自注意力的计算复杂度与序列长度呈线性关系",
+    "B": "长上下文模型通常采用渐进式训练策略，先在短序列上\n训练再逐步增加序列长度",
+    "C": "增加上下文窗口长度不会增加任何额外的显存消耗",
+    "D": "长上下文模型只需要使用短文本数据就可以获得良好的\n长文本处理能力"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "模型架构",
+  "group": "youth"
+},
+{
+  "question": "关于长上下文模型的效率优化和训练方法，下列描述正确\n的是：",
+  "options": {
+    "A": "[1] self.num_groups = num_q_heads // num_kv_heads [2] k\n= k.repeat_interleave(self.num_groups, dim=1) 和 v = v.repeat_\ninterleave(self.num_groups, dim=1)",
+    "B": "[1] self.num_groups = num_kv_heads // num_q_heads [2] k\n= k.repeat(1, self.num_groups, 1, 1) 和 v = v.repeat(1, self.num_\ngroups, 1, 1)",
+    "C": "[1] self.num_groups = num_q_heads // num_kv_heads [2]\nk = k.expand(B, self.num_q_heads, L, self.head_dim) 和 v =\nv.expand(B, self.num_q_heads, L, self.head_dim)",
+    "D": "[1] self.num_groups = num_q_heads * num_kv_heads [2] k\n= k.repeat_interleave(self.num_groups, dim=1) 和 v = v.repeat_\ninterleave(self.num_groups, dim=1)"
+  },
+  "answer": "B",
+  "explanation": "",
+  "category": "预训练技术",
+  "group": "youth"
+},
+{
+  "question": "一个大模型训练任务的理论计算量（FLOPs）估算为\n10^24FLOPs。若使用的硬件峰值算力为 10^17FLOPS（每秒\n浮点运算次数），并且模型能够充分利用硬件的峰值算力。\n则完成该训练任务所需的最少时间（理论上）约为：",
+  "options": {
+    "A": "P+G",
+    "B": "P+O",
+    "C": "P",
+    "D": "P+G+O"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "预训练技术",
+  "group": "adult"
+},
+{
+  "question": "在 混 合 精 度 训 练 中，BF16（Bfloat16） 和 FP16（Half\nPrecision Float）相比，BF16的主要特点是：",
+  "options": {
+    "A": "FSDP 将模型参数、梯度和优化器状态都进行了分片，极\n大地减少了每个GPU的显存占用",
+    "B": "FSDP 只需要一个 GPU即可完成大规模模型的训练",
+    "C": "FSDP 能够自动选择最优的模型架构，无需人工干预",
+    "D": "FSDP 主要用于加速模型的推理速度，而非训练速度"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "预训练技术",
+  "group": "youth"
+},
+{
+  "question": "完全分片数据并行（Fully Sharded Data Parallelism, FSDP）\n与传统数据并行（Data Parallelism）相比，其核心优势在于：",
+  "options": {
+    "A": "Gradient Checkpointing（梯度检查点）",
+    "B": "All-Reduce 算法优化（如Ring All-Reduce）",
+    "C": "ZeRO 优化器（特别是ZeRO-2/3）",
+    "D": "Token Compression（词元压缩）"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "预训练技术",
+  "group": "youth"
+},
+{
+  "question": "关于参数高效微调的理论基础，下列描述正确的是：",
+  "options": {
+    "A": "文化适应性：模型应能理解并尊重不同地区的文化禁忌\n与习俗",
+    "B": "语言风格对齐：模型生成的回复应符合特定场景下的语\n态要求（如专业报告需严谨，客服回复需亲切）",
+    "C": "道德绝对性：对齐的目标是让模型遵循一套全球统一、\n永恒不变的绝对道德准则",
+    "D": "合规性：模型的输出必须符合所在国家的法律法规及互\n联网内容管理规定"
+  },
+  "answer": "D",
+  "explanation": "",
+  "category": "预训练技术",
+  "group": "youth"
+},
+{
+  "question": "以下代码实现了温度采样、Top-K 采样和 Top-P 采样，请阅\n读代码并填写空缺部分。\nimport torch\nimport torch.nn.functional as F\ndef sample_with_strategies(logits, temperature=1.0, top_k=0, top_p=0.0):\n\"\"\"\n对模型输出的logits应用温度、Top-K、Top-P采样策略\n参数:\nlogits: 模型输出的原始分数, shape (vocab_size,)\ntemperature: 温度参数，控制分布的平滑程度\ntop_k: 只保留概率最高的k个token（0表示不启用）\ntop_p: 只保留累积概率达到p的最少token集合（0.0表示不启用）\n返回:\n采样得到的token索引\n\"\"\"\n# [1] 温度缩放：用temperature对logits进行缩放\n______________________________\n# Top-K 采样：只保留概率最高的k个token\nif top_k > 0:\ntop_k_values, _ = torch.topk(scaled_logits, top_k)\nmin_top_k = top_k_values[-1]\nscaled_logits = scaled_logits.masked_fill(scaled_logits < min_top_k, float('-inf'))\n# Top-P (Nucleus) 采样\nif top_p > 0.0:\nsorted_logits, sorted_indices = torch.sort(scaled_logits, descending=True)\nprobs_sorted = F.softmax(sorted_logits, dim=-1)\ncumulative_probs = torch.cumsum(probs_sorted, dim=-1)\n# [2] 创建掩码：移除累积概率超过top_p的token，但保留第一个超过阈值的\ntoken\n[1] 和 [2] 处应分别填入：",
+  "options": {
+    "A": "top-p采样（核采样）根据累积概率动态调整候选词数量，\n当概率集中时自动减少候选词，分散时自动增加",
+    "B": "使用top-k=1的采样与使用高温采样的效果相同",
+    "C": "同时使用top-k和top-p策略是不可能的",
+    "D": "采样策略只影响生成速度，不影响生成质量和多样性"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "解码与部署",
+  "group": "adult"
+},
+{
+  "question": "关于不同采样策略对生成多样性的影响，下列描述正确的是：",
+  "options": {
+    "A": "增量解码（KV Cache）通过缓存已计算的Key和Value，\n避免重复计算，从而加速自回归生成",
+    "B": "全量解码每一步都重新计算所有位置的注意力，效率高\n于增量解码",
+    "C": "vLLM是一个专门用于训练模型的工具，不用于推理加速",
+    "D": "解码效率的评估只看生成文本的质量，不考虑吞吐量和\n延迟"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "解码与部署",
+  "group": "youth"
+},
+{
+  "question": "关于大语言模型的解码方式和推理工具，下列说法正确的是：",
+  "options": {
+    "A": "推测解码（Speculative Decoding）使用一个小模型快速生\n成候选token，再由大模型并行验证，从而加速生成",
+    "B": "FlashAttention 通过降低注意力计算精度来加速，会显著\n损失模型精度",
+    "C": "PagedAttention 是一种新型的注意力计算公式，与显存管\n理无关",
+    "D": "非自回归解码比自回归解码更慢，因为它需要逐个生成\ntoken"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "解码与部署",
+  "group": "youth"
+},
+{
+  "question": "在提示学习中，以下哪项不属于人工提示设计的基本原则？",
+  "options": {
+    "A": "随机选择任何任务的示例",
+    "B": "选择语义上与当前输入最相似的示例",
+    "C": "选择最长的示例",
+    "D": "每次都使用相同的固定示例"
+  },
+  "answer": "B",
+  "explanation": "",
+  "category": "提示学习",
+  "group": "youth"
+},
+{
+  "question": "为了增强上下文学习的效果，在选择示例（Exemplars）时\n最有效的策略是：",
+  "options": {
+    "A": "\"请给出最终答案\"",
+    "B": "\"不要胡说八道\"",
+    "C": "\"让我们一步步思考\"",
+    "D": "\"这是一个分类任务\""
+  },
+  "answer": "B",
+  "explanation": "",
+  "category": "提示学习",
+  "group": "youth"
+},
+{
+  "question": "Zero-shot CoT（零样本思维链）最简单且常用的触发短语是：",
+  "options": {
+    "A": "它通过增加输入长度来强迫模型运行更久",
+    "B": "它将复杂的全局任务分解为一系列连续的局部中间推理\n步骤",
+    "C": "它通过改变词表概率分布来消除随机性",
+    "D": "它仅通过增加 Token 数量来规避计算量限制"
+  },
+  "answer": "C",
+  "explanation": "",
+  "category": "预训练技术",
+  "group": "youth"
+},
+{
+  "question": "检索增强生成（RAG）相较于直接生成，其核心优势在于：",
+  "options": {
+    "A": "推理包括演绎推理、归纳推理和溯因推理等多种形式，\n大语言模型可以通过不同策略模拟这些推理过程",
+    "B": "推理仅指数学计算，不包括逻辑判断和因果分析",
+    "C": "大语言模型的推理能力完全依赖于模型参数量，与训练\n数据无关",
+    "D": "所有类型的推理任务难度相同，不需要不同的处理策略"
+  },
+  "answer": "B",
+  "explanation": "",
+  "category": "人类对齐",
+  "group": "youth"
+},
+{
+  "question": "在高级 RAG 流程中，通常会对检索到的文档进行重排序\n（Rerank）以提升质量。请补全 RAG 增强流程的代码：\ndef advanced_rag(query):\n# 1. 从向量数据库初步检索回 K 个相关文档\ninitial_docs = vector_db.search(query, k=10)\n# 2. [填空1]：使用重排序模型对文档进行精选，选出最相关的Top 3\nrefined_docs = reranker.______(query, initial_docs, top_k=3)\n# 3. 将精选文档作为上下文拼接入提示词\ncontext = \"\\n\".join(refined_docs)\nprompt = f\"Context: {context}\\nQuestion: {query}\\nAnswer:\"\n# 4. [填空2]：将增强后的提示词发送给大模型\nresponse = llm.______(prompt)\nreturn response\n1. rerank ( 或 score / rank)； 2. generate ( 或 predict /\n答案：\ninvoke)\n检索增强的优化策略包括重排序（Reranking），它\n解析：\n能过滤掉初步检索中的噪声，确保提供给模型的上下文最\n准确。\n○ 考核方式：概念、实现\n复杂推理\n●【1】认知推理\n○ 知识点：推理的基本方法与范畴\n题目：\n关于推理的基本方法与范畴，下列说法正确的是：",
+  "options": {
+    "A": "感知侧重于从原始输入中提取信息（如图像识别），认\n知侧重于理解和表示知识，推理侧重于基于已有知识进行逻\n辑演绎",
+    "B": "感知、认知和推理是完全相同的概念",
+    "C": "推理不需要以感知和认知为基础",
+    "D": "大语言模型只具备推理能力，不具备任何感知和认知能力"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "解码与部署",
+  "group": "adult"
+},
+{
+  "question": "为了解决长时对话中“记忆碎片化”和“上下文窗口限制”问题，\n以下哪种记忆管理策略最为合理？",
+  "options": {
+    "A": "直接执行 API 后台的 Python 代码",
+    "B": "根据用户意图和工具描述（Docstring），生成符合格式\n要求的调用指令（如 JSON）",
+    "C": "自动修补 API 接口的漏洞",
+    "D": "在没有互联网连接的情况下伪造 API 返回结果"
+  },
+  "answer": "B",
+  "explanation": "",
+  "category": "智能体应用",
+  "group": "youth"
+},
+{
+  "question": "多智能体频繁通信会消耗大量 Token。为了优化通信数据，\n以下哪种方案是不合理的？",
+  "options": {
+    "A": "重新设计该 Agent 的角色提示词（Role Prompt），明确\n输入输出格式",
+    "B": "立即对该 Agent 进行全量参数微调（Full Fine-tuning）",
+    "C": "增加该 Agent 的计算资源（GPU 数量）",
+    "D": "减少智能体数量，合并所有职能"
+  },
+  "answer": "C",
+  "explanation": "",
+  "category": "智能体应用",
+  "group": "youth"
+},
+{
+  "question": "以下代码展示了如何构建一个简单的 Python 代码执行仿真\n沙箱。智能体将生成的代码发送给环境，环境在隔离空间中\n执行并捕获输出（Observation），最后返回给智能体。请补\n全缺失的逻辑。\nimport sys\nfrom io import StringIO\nclass AgentSimulationEnvironment:\n\"\"\"智能体代码执行仿真环境（沙箱）\"\"\"\ndef __init__(self):\n# 初始化一个独立的命名空间，模拟环境持久状态\nself.state_scope = {}\ndef step(self, agent_code):\n\"\"\"执行智能体动作并返回环境观察值\"\"\"\n# 1. 准备捕获标准输出\noutput_buffer = StringIO()\nold_stdout = sys.stdout\nsys.stdout = output_buffer\nobservation = \"\"\ntry:\n# 2. [填空1]：在隔离的命名空间中执行智能体生成的代码\n______(agent_code, self.state_scope)\n# 3. [填空2]：从缓冲器中获取执行后的输出结果作为观察值\nobservation = output_buffer.______()\nexcept Exception as e:\n# 如果代码执行报错，将异常信息作为环境反馈返回\nobservation = f\"Environment Error: {str(e)}\"\nfinally:\n# 4. 恢复标准输出\nsys.stdout = old_stdout\nreturn observation\n# --- 模拟智能体与环境交互循环 ---\nenv = AgentSimulationEnvironment()\n# 智能体计划在环境中定义一个变量并打印\ntask_code = \"x = 100; y = 200; print(x + y)\"\n答案：\nexec\ngetvalue\nstep\n解析：\n填空 1：exec 是构建 Python 仿真环境的核心函数，它允许\n在指定的 globals/locals 字典（即沙箱作用域）中运行代码。\n填空 2：StringIO.getvalue() 方法用于提取所有通过 print 等\n重定向到内存缓冲区的文本信息，这些信息构成了 Agent 对\n环境的 Observation。\n填空 3：step 是强化学习或智能体框架中常见的交互接口名\n称，代表 Agent 向环境“迈出一步”。\n○ 考核方式：概念、实现\n模型评测\n●【1】评测流程\n○ 知识点：数据集划分、模型的泛化能力\n题目：\n关于模型评测中的数据集划分和泛化能力，下列说法正确的\n是：",
+  "options": {
+    "A": "充足的训练数据量和合理的模型复杂度有助于提供更好\n的泛化保证",
+    "B": "模型越复杂泛化能力一定越强",
+    "C": "泛化误差只取决于训练误差，与模型复杂度无关",
+    "D": "只要训练误差为零，模型的泛化能力就一定很好"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "智能体应用",
+  "group": "adult"
+},
+{
+  "question": "涉及的知识是否在模型训练数\n据截止日期之后\n○ 考核方式：概念\n●【2】复杂推理评测\n○ 知识点：知识利用能力评测基本任务（闭卷问答、\n开卷问答、知识不全）及对应指标\n题目：\n关于复杂推理能力的评测，下列说法正确的是：",
+  "options": {
+    "A": "推理评测的可靠性受到数据污染、评测方式（如few-shot\n设置）和随机性等因素的影响",
+    "B": "单一评测集的结果就能完全代表模型的推理能力",
+    "C": "推理评测不受提示词（prompt）格式的影响",
+    "D": "评测结果在不同运行之间不会有任何波动"
+  },
+  "answer": "A",
+  "explanation": "",
+  "category": "预训练技术",
+  "group": "youth"
+}
 ];
