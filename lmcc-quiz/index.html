@@ -669,8 +669,8 @@ body {
       </div>
       <div class="settings-row">
         <label>题目数量：</label>
-        <input type="number" id="quizQuestionCount" value="115" min="1" max="115">
-        <span style="color:var(--text-secondary);font-size:0.85rem;">（最多 <span id="quizMaxCount">115</span> 题）</span>
+        <input type="number" id="quizQuestionCount" value="20" min="1" max="20">
+        <span style="color:var(--text-secondary);font-size:0.85rem;">（最多 <span id="quizMaxCount">—</span> 题）</span>
       </div>
       <div style="text-align:center;margin-top:20px;">
         <button class="btn btn-secondary btn-sm" onclick="goHome()">返回</button>
@@ -681,7 +681,7 @@ body {
 
   <!-- Quiz Screen -->
   <div id="quizScreen" class="hidden">
-    <div class="progress-text"><span id="quizCurrentNum">1</span> / <span id="quizTotalNum">115</span></div>
+    <div class="progress-text"><span id="quizCurrentNum">1</span> / <span id="quizTotalNum">—</span></div>
     <div class="progress-bar"><div class="fill" id="quizProgressFill" style="width:0%"></div></div>
     <div class="question-card">
       <div class="question-header">
@@ -861,6 +861,12 @@ function init() {
   } else {
     showAuth();
   }
+  // 动态初始化题目数量
+  var total = allQuestions.length;
+  document.getElementById('quizMaxCount').textContent = total;
+  var input = document.getElementById('quizQuestionCount');
+  input.max = total;
+  input.value = Math.min(20, total);
 }
 
 function showAuth() {
