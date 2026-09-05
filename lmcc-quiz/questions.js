@@ -1858,32 +1858,6 @@ const QUESTIONS = [
     "group": "youth"
   },
   {
-    "question": "关于长上下文模型中的位置编码拓展方法，下列说法正确的是：",
-    "options": {
-      "A": "标准自注意力的计算复杂度与序列长度呈线性关系",
-      "B": "长上下文模型通常采用渐进式训练策略，先在短序列上\n训练再逐步增加序列长度",
-      "C": "增加上下文窗口长度不会增加任何额外的显存消耗",
-      "D": "长上下文模型只需要使用短文本数据就可以获得良好的\n长文本处理能力"
-    },
-    "answer": "A",
-    "explanation": "",
-    "category": "模型架构",
-    "group": "youth"
-  },
-  {
-    "question": "关于长上下文模型的效率优化和训练方法，下列描述正确\n的是：",
-    "options": {
-      "A": "[1] self.num_groups = num_q_heads // num_kv_heads [2] k\n= k.repeat_interleave(self.num_groups, dim=1) 和 v = v.repeat_\ninterleave(self.num_groups, dim=1)",
-      "B": "[1] self.num_groups = num_kv_heads // num_q_heads [2] k\n= k.repeat(1, self.num_groups, 1, 1) 和 v = v.repeat(1, self.num_\ngroups, 1, 1)",
-      "C": "[1] self.num_groups = num_q_heads // num_kv_heads [2]\nk = k.expand(B, self.num_q_heads, L, self.head_dim) 和 v =\nv.expand(B, self.num_q_heads, L, self.head_dim)",
-      "D": "[1] self.num_groups = num_q_heads * num_kv_heads [2] k\n= k.repeat_interleave(self.num_groups, dim=1) 和 v = v.repeat_\ninterleave(self.num_groups, dim=1)"
-    },
-    "answer": "B",
-    "explanation": "",
-    "category": "预训练技术",
-    "group": "youth"
-  },
-  {
     "question": "一个大模型训练任务的理论计算量（FLOPs）估算为\n10^24FLOPs。若使用的硬件峰值算力为 10^17FLOPS（每秒\n浮点运算次数），并且模型能够充分利用硬件的峰值算力。\n则完成该训练任务所需的最少时间（理论上）约为：",
     "options": {
       "A": "P+G",
@@ -1897,32 +1871,6 @@ const QUESTIONS = [
     "group": "adult"
   },
   {
-    "question": "在 混 合 精 度 训 练 中，BF16（Bfloat16） 和 FP16（Half\nPrecision Float）相比，BF16的主要特点是：",
-    "options": {
-      "A": "FSDP 将模型参数、梯度和优化器状态都进行了分片，极\n大地减少了每个GPU的显存占用",
-      "B": "FSDP 只需要一个 GPU即可完成大规模模型的训练",
-      "C": "FSDP 能够自动选择最优的模型架构，无需人工干预",
-      "D": "FSDP 主要用于加速模型的推理速度，而非训练速度"
-    },
-    "answer": "A",
-    "explanation": "",
-    "category": "预训练技术",
-    "group": "youth"
-  },
-  {
-    "question": "完全分片数据并行（Fully Sharded Data Parallelism, FSDP）\n与传统数据并行（Data Parallelism）相比，其核心优势在于：",
-    "options": {
-      "A": "Gradient Checkpointing（梯度检查点）",
-      "B": "All-Reduce 算法优化（如Ring All-Reduce）",
-      "C": "ZeRO 优化器（特别是ZeRO-2/3）",
-      "D": "Token Compression（词元压缩）"
-    },
-    "answer": "A",
-    "explanation": "",
-    "category": "预训练技术",
-    "group": "youth"
-  },
-  {
     "question": "关于参数高效微调的理论基础，下列描述正确的是：",
     "options": {
       "A": "文化适应性：模型应能理解并尊重不同地区的文化禁忌\n与习俗",
@@ -1933,45 +1881,6 @@ const QUESTIONS = [
     "answer": "D",
     "explanation": "",
     "category": "预训练技术",
-    "group": "youth"
-  },
-  {
-    "question": "以下代码实现了温度采样、Top-K 采样和 Top-P 采样，请阅读代码并填写空缺部分。\nimport torch\nimport torch.nn.functional as F\ndef sample_with_strategies(logits, temperature=1.0, top_k=0, top_p=0.0):\n    \"\"\"\n    对模型输出的logits应用温度、Top-K、Top-P采样策略\n    参数:\n    logits: 模型输出的原始分数, shape (vocab_size,)\n    temperature: 温度参数，控制分布的平滑程度\n    top_k: 只保留概率最高的k个token（0表示不启用）\n    top_p: 只保留累积概率达到p的最少token集合（0.0表示不启用）\n    返回:\n    采样得到的token索引\n    \"\"\"\n    # [1] 温度缩放：用temperature对logits进行缩放\n    ______________________________\n    # Top-K 采样：只保留概率最高的k个token\n    if top_k > 0:\n        top_k_values, _ = torch.topk(scaled_logits, top_k)\n        min_top_k = top_k_values[-1]\n        scaled_logits = scaled_logits.masked_fill(scaled_logits < min_top_k, float(\"-inf\"))\n    # Top-P (Nucleus) 采样\n    if top_p > 0.0:\n        sorted_logits, sorted_indices = torch.sort(scaled_logits, descending=True)\n        probs_sorted = F.softmax(sorted_logits, dim=-1)\n        cumulative_probs = torch.cumsum(probs_sorted, dim=-1)\n        # [2] 创建掩码：移除累积概率超过top_p的token，但保留第一个超过阈值的token\n    [1] 和 [2] 处应分别填入：",
-    "options": {
-      "A": "[1] scaled_logits = logits / temperature [2] sorted_indices_to_remove = cumulative_probs > top_p",
-      "B": "[1] scaled_logits = logits * temperature [2] sorted_indices_to_remove = cumulative_probs > top_p",
-      "C": "[1] scaled_logits = logits / temperature [2] sorted_indices_to_remove = cumulative_probs < top_p",
-      "D": "[1] scaled_logits = logits - temperature [2] sorted_indices_to_remove = probs_sorted > top_p"
-    },
-    "answer": "A",
-    "explanation": "A 正确：温度采样的公式为 logits/T，T越大分布越平滑（更随机），T越小越尖锐（更确定）；Top-P 先用 cumulative_probs > top_p 标记超过阈值的位置，再将掩码右移一位，从而保留第一个超过阈值的token，得到\"累计概率刚好覆盖top_p\"的最小候选集合。\nB 错误：温度应该是除法（logits/T）而非乘法。\nC 错误：Top-P 应移除累积概率超过 p 的 token（>p），而非低于p的（<p）。\nD 错误：温度缩放是除法操作，不是减法；且应基于累积概率而非单个token概率来过滤。",
-    "category": "解码与部署",
-    "group": "adult"
-  },
-  {
-    "question": "关于不同采样策略对生成多样性的影响，下列描述正确的是：",
-    "options": {
-      "A": "增量解码（KV Cache）通过缓存已计算的Key和Value，\n避免重复计算，从而加速自回归生成",
-      "B": "全量解码每一步都重新计算所有位置的注意力，效率高\n于增量解码",
-      "C": "vLLM是一个专门用于训练模型的工具，不用于推理加速",
-      "D": "解码效率的评估只看生成文本的质量，不考虑吞吐量和\n延迟"
-    },
-    "answer": "A",
-    "explanation": "",
-    "category": "解码与部署",
-    "group": "youth"
-  },
-  {
-    "question": "关于大语言模型的解码方式和推理工具，下列说法正确的是：",
-    "options": {
-      "A": "推测解码（Speculative Decoding）使用一个小模型快速生\n成候选token，再由大模型并行验证，从而加速生成",
-      "B": "FlashAttention 通过降低注意力计算精度来加速，会显著\n损失模型精度",
-      "C": "PagedAttention 是一种新型的注意力计算公式，与显存管\n理无关",
-      "D": "非自回归解码比自回归解码更慢，因为它需要逐个生成\ntoken"
-    },
-    "answer": "A",
-    "explanation": "",
-    "category": "解码与部署",
     "group": "youth"
   },
   {
@@ -2048,32 +1957,6 @@ const QUESTIONS = [
     "explanation": "填空 1：rerank（或 score/rank）是重排序模型的核心方法，用于对初步检索结果进行重新排序筛选。\n填空 2：generate（或 predict/invoke）是大模型生成响应的标准调用方式。重排序能过滤掉初步检索中的噪声，确保提供给模型的上下文最准确。",
     "category": "智能体应用",
     "group": "adult"
-  },
-  {
-    "question": "为了解决长时对话中“记忆碎片化”和“上下文窗口限制”问题，\n以下哪种记忆管理策略最为合理？",
-    "options": {
-      "A": "直接执行 API 后台的 Python 代码",
-      "B": "根据用户意图和工具描述（Docstring），生成符合格式\n要求的调用指令（如 JSON）",
-      "C": "自动修补 API 接口的漏洞",
-      "D": "在没有互联网连接的情况下伪造 API 返回结果"
-    },
-    "answer": "B",
-    "explanation": "",
-    "category": "智能体应用",
-    "group": "youth"
-  },
-  {
-    "question": "多智能体频繁通信会消耗大量 Token。为了优化通信数据，\n以下哪种方案是不合理的？",
-    "options": {
-      "A": "重新设计该 Agent 的角色提示词（Role Prompt），明确\n输入输出格式",
-      "B": "立即对该 Agent 进行全量参数微调（Full Fine-tuning）",
-      "C": "增加该 Agent 的计算资源（GPU 数量）",
-      "D": "减少智能体数量，合并所有职能"
-    },
-    "answer": "C",
-    "explanation": "",
-    "category": "智能体应用",
-    "group": "youth"
   },
   {
     "question": "以下代码展示了如何构建一个简单的 Python 代码执行仿真沙箱。智能体将生成的代码发送给环境，环境在隔离空间中执行并捕获输出（Observation），最后返回给智能体。请补全缺失的逻辑。\nimport sys\nfrom io import StringIO\nclass AgentSimulationEnvironment:\n    \"\"\"智能体代码执行仿真环境（沙箱）\"\"\"\n    def __init__(self):\n        # 初始化一个独立的命名空间，模拟环境持久状态\n        self.state_scope = {}\n    def step(self, agent_code):\n        \"\"\"执行智能体动作并返回环境观察值\"\"\"\n        # 1. 准备捕获标准输出\n        output_buffer = StringIO()\n        old_stdout = sys.stdout\n        sys.stdout = output_buffer\n        observation = \"\"\n        try:\n            # 2. [填空1]：在隔离的命名空间中执行智能体生成的代码\n            ______(agent_code, self.state_scope)\n            # 3. [填空2]：从缓冲器中获取执行后的输出结果作为观察值\n            observation = output_buffer.______()\n        except Exception as e:\n            # 如果代码执行报错，将异常信息作为环境反馈返回\n            observation = f\"Environment Error: {str(e)}\"\n        finally:\n            # 4. 恢复标准输出\n            sys.stdout = old_stdout\n        return observation",
